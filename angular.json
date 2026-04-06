@@ -27,9 +27,15 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
               }
             ],
             "styles": [
+              "node_modules/primeicons/primeicons.css",
               "src/styles.scss"
             ]
           },
@@ -85,14 +91,23 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/app/core/layout/header/assets",
+                "output": "assets"
               }
             ],
             "styles": [
+              "node_modules/primeicons/primeicons.css",
               "src/styles.scss"
             ]
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
