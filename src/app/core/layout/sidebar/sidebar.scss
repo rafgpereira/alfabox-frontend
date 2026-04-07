@@ -1,0 +1,142 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+p {
+    padding-left: 1.25rem;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--p-red-600);
+}
+.sidebar-container {
+    width: 0; /* Largura quando recolhido (apenas ícones) */
+    height: 100%;
+    background-color: var(--p-surface-0);
+    transition: width 0.3s ease; /* Animação suave na abertura/fechamento */
+    overflow-y: auto; /* Rolagem independente para o menu */
+    overflow-x: hidden; /* Esconde conteúdo horizontal quando fechado */
+    white-space: nowrap; /* Evita quebra de linha nos itens do menu */
+}
+
+/* Classe ativada quando isExpanded for true */
+.sidebar-container.expanded {
+    width: 250px; /* Largura quando expandido */
+    border-right: 1px solid var(--p-surface-200); /* Opcional: divisória visual */
+}
+
+
+
+/* 1. Remove o gap nativo do container raiz (o causador do espaço entre os painéis) */
+::ng-deep .p-panelmenu {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0 !important; 
+}
+
+/* 2. Zera as cápsulas externas e aplica APENAS a linha divisória inferior */
+::ng-deep .p-panelmenu .p-panelmenu-panel {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-bottom: 1px solid var(--p-surface-200) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-panel:last-child {
+    border-bottom: none !important;
+}
+
+/* 3. Neutraliza completamente os wrappers do cabeçalho */
+::ng-deep .p-panelmenu .p-panelmenu-header,
+::ng-deep .p-panelmenu .p-panelmenu-header-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+}
+
+/* 4. O Link é o único elemento que dita a altura. Hover pega 100% do espaço */
+::ng-deep .p-panelmenu .p-panelmenu-header-link {
+    display: flex !important;
+    align-items: center;
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: 1rem !important; /* Este padding define a altura final do bloco */
+    margin: 0 !important;
+    text-decoration: none !important;
+    transition: background-color 0.2s;
+    border-radius: 0 !important;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-header-link:hover {
+    background-color: var(--p-surface-100) !important;
+}
+
+/* --- MANTER AS REGRAS DOS FILHOS E ÍCONES ABAIXO --- */
+
+::ng-deep .p-panelmenu .p-panelmenu-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-item-content {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-item-link {
+    display: flex !important;
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: 0.75rem 1rem 0.75rem 2.5rem !important; 
+    text-decoration: none !important;
+    transition: background-color 0.2s;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-item-link:hover {
+    background-color: var(--p-surface-100) !important;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-root-list {
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-submenu-icon {
+    margin-left: auto !important; 
+    order: 3 !important; 
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-header-icon,
+::ng-deep .p-panelmenu .p-panelmenu-item-icon {
+    margin-right: 0.5rem !important; 
+}
+
+/* Remove margens e paddings de TODAS as listas (UL) e itens (LI) dentro do conteúdo */
+::ng-deep .p-panelmenu .p-panelmenu-content ul,
+::ng-deep .p-panelmenu .p-panelmenu-content li {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+/* Garante que, se o PrimeNG usar flexbox internamente nas listas, o gap seja zerado */
+::ng-deep .p-panelmenu .p-panelmenu-content ul {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+}
+
+/* 2. Estilo do Menu Pai quando está ABERTO (ativo) */
+/* O PrimeNG adiciona a classe 'p-panelmenu-header-active' no pai quando ele expande */
+::ng-deep .p-panelmenu-header.p-panelmenu-header-active .p-panelmenu-header-link,
+::ng-deep .p-panelmenu-header.p-panelmenu-header-active .p-panelmenu-header-icon,
+::ng-deep .p-panelmenu-header.p-panelmenu-header-active .p-panelmenu-submenu-icon {
+    color: var(--p-red-500) !important; 
+}

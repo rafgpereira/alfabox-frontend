@@ -1,11 +1,18 @@
 import { Component } from '@angular/core';
 import { Header } from './header/header';
 import { RouterOutlet } from '@angular/router';
+import { Sidebar } from './sidebar/sidebar';
 
 @Component({
   selector: 'app-layout',
-  imports: [Header, RouterOutlet],
+  imports: [Header, Sidebar, RouterOutlet],
   templateUrl: './layout.html',
   styleUrl: './layout.scss',
 })
-export class Layout {}
+export class Layout {
+  sidebarExpanded: boolean = true;
+
+  toggleSidebar() {
+    this.sidebarExpanded = !this.sidebarExpanded;
+  }
+}
