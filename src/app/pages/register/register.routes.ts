@@ -14,11 +14,11 @@ export const REGISTER_ROUTES: Routes = [
     path: 'produtos',
     loadComponent: () => import('./product/product').then((m) => m.Product),
   },
-    {
+  {
     path: 'montadores',
     loadComponent: () => import('./assembler/assembler').then((m) => m.Assembler),
   },
-    {
+  {
     path: 'vendedores',
     loadComponent: () => import('./seller/seller').then((m) => m.Seller),
   },

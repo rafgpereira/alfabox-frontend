@@ -10,7 +10,7 @@ import { Sidebar } from './sidebar/sidebar';
   styleUrl: './layout.scss',
 })
 export class Layout {
-  sidebarExpanded: boolean = true;
+  sidebarExpanded = true;
 
   toggleSidebar() {
     this.sidebarExpanded = !this.sidebarExpanded;

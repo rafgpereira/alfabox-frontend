@@ -1,1 +1,23 @@
-<p>product works!</p>
+<div class="products">
+  <h1><span>|</span> Produtos</h1>
+  <div class="card">
+    <h3>Cadastrar Produto</h3>
+    <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-field">
+        <p-floatlabel variant="on" class="full-width-control">
+          <input pInputText fluid id="on_label" formControlName="name" [invalid]="isInvalid('name')" />
+          <label for="on_label">Nome do Produto</label>
+        </p-floatlabel>
+        <app-error-message 
+           [control]="form.get('name')" 
+           [customMessages]="{ 'nameTaken': 'Este nome de produto já existe' }">
+        </app-error-message>
+      </div>
+      <p-button type="submit" label="Salvar" [disabled]="form.invalid" icon="pi pi-save" />
+    </form>
+  </div>
+  <div class="card">
+    <h3>Produtos Cadastrados</h3>
+    <div>{{produto}}</div>
+  </div>
+</div>

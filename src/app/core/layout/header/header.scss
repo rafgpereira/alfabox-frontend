@@ -1,27 +1,29 @@
-header, .left-items, .title {
-    display: flex;
-    align-items: center;
+header,
+.left-items,
+.title {
+  display: flex;
+  align-items: center;
 }
 
 header {
-    height: 50px;
-    background-color: var(--p-red-500);
-    color: var(--p-surface-0);
-    justify-content: space-between;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    font-size: 22px;
-    font-weight: 700;
+  height: 50px;
+  background-color: var(--p-primary-500);
+  color: var(--p-surface-0);
+  justify-content: space-between;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 22px;
+  font-weight: 700;
 }
 
 .left-items {
-    gap: 1.5rem;
+  gap: 1.5rem;
 }
 
 .title {
-    gap: 0.7rem;
+  gap: 0.7rem;
 }
 
 .logo {
-    width: 25px;
+  width: 25px;
 }

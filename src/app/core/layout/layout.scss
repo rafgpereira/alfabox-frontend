@@ -1,28 +1,28 @@
 /* Trava a tela inteira, removendo a rolagem do body */
 .layout-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* O Header ocupa o espaço dele e não encolhe */
 app-header {
-    flex-shrink: 0;
-    z-index: 10;
+  flex-shrink: 0;
+  z-index: 10;
 }
 
 /* Container do meio pra baixo: flex row para colocar itens lado a lado */
 .main-container {
-    display: flex;
-    flex: 1; /* Ocupa todo o resto da altura disponível (100vh - header) */
-    overflow: hidden;
+  display: flex;
+  flex: 1; /* Ocupa todo o resto da altura disponível (100vh - header) */
+  overflow: hidden;
 }
 
 /* A área de conteúdo principal */
 .content-container {
-    flex: 1; /* Ocupa toda a largura que o sidebar não estiver usando */
-    overflow-y: auto; /* Rolagem própria da página renderizada pelo router */
-    padding: 1rem; /* Espaçamento interno padrão */
-    background-color: var(--p-surface-100); /* Fundo opcional para contraste */
+  flex: 1; /* Ocupa toda a largura que o sidebar não estiver usando */
+  overflow-y: auto; /* Rolagem própria da página renderizada pelo router */
+  padding: 2rem; /* Espaçamento interno padrão */
+  background-color: var(--p-surface-50); /* Fundo opcional para contraste */
 }

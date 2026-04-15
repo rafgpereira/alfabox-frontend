@@ -9,7 +9,7 @@ import { PanelMenuModule } from 'primeng/panelmenu';
   styleUrl: './sidebar.scss',
 })
 export class Sidebar implements OnInit {
-  @Input() isExpanded: boolean = false;
+  @Input() isExpanded = false;
 
   items: MenuItem[] = [];
 

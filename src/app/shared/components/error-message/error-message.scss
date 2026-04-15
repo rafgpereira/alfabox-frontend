@@ -1,0 +1,11 @@
+.error-wrapper {
+  min-height: 1.5rem; /* Reserva o espaço para evitar o "pulo" no layout */
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  margin-top: 0.25rem;
+  
+  ::ng-deep p-message {
+    margin-left: 3px;
+  }
+}
