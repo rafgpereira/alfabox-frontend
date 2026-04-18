@@ -144,7 +144,7 @@ export class Product implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message:
-        'Ao editar este produto, ele será alterado em todas as Ordens de Serviço que o possuem. Deseja continuar?',
+        'Ao editar este produto, a alteração será refletida em todas as Ordens de Serviço vinculadas a ele. Deseja continuar?',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Confirmar',
       rejectLabel: 'Cancelar',
@@ -184,7 +184,7 @@ export class Product implements OnInit {
   confirmDelete(event: Event, product: ProductModel): void {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `Tem certeza que deseja excluir "${product.name}"? O item só poderá ser excluído se não estiver presente em nenhuma Ordem de Serviço.`,
+      message: `Tem certeza que deseja excluir "${product.name}"? O produto só poderá ser excluído se não estiver vinculado em nenhuma Ordem de Serviço.`,
       icon: 'pi pi-trash',
       acceptLabel: 'Excluir',
       rejectLabel: 'Cancelar',

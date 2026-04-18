@@ -56,6 +56,8 @@ export class ErrorMessageComponent {
         return `Valor máximo é ${maxVal}`;
       case 'pattern':
         return 'Formato inválido';
+      case 'invalidCpf':
+        return 'CPF inválido';
       default:
         return 'Campo inválido';
     }

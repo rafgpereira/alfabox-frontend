@@ -1,0 +1,86 @@
+// ── Estilos compartilhados das telas de cadastro ───────────────────────
+
+// Títulos
+h1, h2, h3 {
+  color: var(--p-primary-500);
+  span { color: var(--p-red-500); }
+}
+
+// Container da página
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// Layout interno do card (complementa o .card global que cuida do visual)
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// ── Formulário de cadastro ──────────────────────────────────────────────
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+
+  // Variantes de tamanho — usar no HTML: <div class="form-field field-sm">
+  &.field-sm  { flex-basis: 10rem; }
+  &.field-lg  { flex-basis: 24rem; }
+  &.field-xl  { flex-basis: 32rem; }
+
+  // Garante que inputs do PrimeNG expandam dentro do field
+  .full-width-control {
+    width: 100%;
+
+    ::ng-deep input,
+    ::ng-deep .p-inputmask,
+    ::ng-deep .p-select {
+      width: 100%;
+    }
+  }
+}
+
+// Tamanho dos campos apenas no formulário horizontal de cadastro
+.form > .form-field {
+  flex: 0 1 16rem;
+
+  &.field-sm  { flex-basis: 10rem; }
+  &.field-lg  { flex-basis: 24rem; }
+  &.field-xl  { flex-basis: 32rem; }
+}
+
+// Botão de submit alinhado com os campos
+.form > p-button {
+  align-self: flex-start;
+}
+
+// ── Responsividade (telas muito estreitas) ──────────────────────────────
+
+@media (max-width: 30rem) {
+  .form > .form-field,
+  .form > .form-field.field-sm,
+  .form > .form-field.field-lg,
+  .form > .form-field.field-xl {
+    flex: 1 1 100%;
+  }
+
+  .form > p-button {
+    width: 100%;
+
+    ::ng-deep button {
+      width: 100%;
+    }
+  }
+}

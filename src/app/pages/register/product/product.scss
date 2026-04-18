@@ -1,45 +1,4 @@
-h1,
-h2,
-h3 {
-  color: var(--p-primary-500);
-  span {
-    color: var(--p-red-500);
-  }
-}
-
-.products {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-.form {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 1rem;
-  width: 100%;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  width: 100%;
-}
-
-.full-width-control {
-  width: 100%;
-  
-  /* Garante que o input interno do floatlabel expanda mesmo com o formGroup inserindo divs */
-  ::ng-deep input {
-    width: 100%;
-  }
-}
+@use '../register' as *;
 
 // ── Tabela ──────────────────────────────────────────────────────────────
 

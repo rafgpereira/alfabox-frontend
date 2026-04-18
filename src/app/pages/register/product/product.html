@@ -1,11 +1,11 @@
-<div class="products">
+<div class="page">
   <h1><span>|</span> Produtos</h1>
 
   <!-- ═══ Card de Cadastro ═══ -->
   <div class="card">
     <h3>Cadastrar Produto</h3>
     <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="form-field">
+      <div class="form-field field-xl">
         <p-floatlabel variant="on" class="full-width-control">
           <input pInputText fluid id="on_label" formControlName="name" [invalid]="isInvalid('name')" />
           <label for="on_label">Nome do Produto</label>
