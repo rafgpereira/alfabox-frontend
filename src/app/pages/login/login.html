@@ -1,0 +1,36 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <img src="../../../assets/logo.png" alt="Logo Alfabox" class="login-logo" />
+      <h1>ALFABOX</h1>
+      <p>Acesse sua conta</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+      <p-floatlabel variant="on">
+        <input pInputText fluid id="email" formControlName="email" />
+        <label for="email">E-mail</label>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on">
+        <p-password
+          fluid
+          id="password"
+          formControlName="password"
+          [feedback]="false"
+          [toggleMask]="true"
+        />
+        <label for="password">Senha</label>
+      </p-floatlabel>
+
+      <p-button
+        type="submit"
+        label="Entrar"
+        [disabled]="form.invalid || loading"
+        [loading]="loading"
+        icon="pi pi-sign-in"
+        [style]="{ width: '100%' }"
+      />
+    </form>
+  </div>
+</div>

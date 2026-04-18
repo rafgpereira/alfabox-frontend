@@ -1,5 +1,6 @@
 header,
 .left-items,
+.right-items,
 .title {
   display: flex;
   align-items: center;
@@ -20,10 +21,19 @@ header {
   gap: 1.5rem;
 }
 
+.right-items {
+  gap: 1rem;
+}
+
 .title {
   gap: 0.7rem;
 }
 
 .logo {
   width: 25px;
+}
+
+.user-name {
+  font-size: 1rem;
+  font-weight: 600;
 }

@@ -6,5 +6,8 @@
       <span>ALFABOX</span>
     </div>
   </div>
-  <p-button icon="pi pi-sign-in"></p-button>
+  <div class="right-items">
+    <span class="user-name">{{ userName }}</span>
+    <p-button icon="pi pi-sign-out" pTooltip="Sair" tooltipPosition="bottom" (click)="onLogout()" />
+  </div>
 </header>

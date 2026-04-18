@@ -22,7 +22,7 @@ h3 {
   flex-direction: row;
   align-items: flex-start;
   gap: 1rem;
-  width: 50%;
+  width: 100%;
 }
 
 .form-field {
@@ -39,4 +39,50 @@ h3 {
   ::ng-deep input {
     width: 100%;
   }
+}
+
+// ── Tabela ──────────────────────────────────────────────────────────────
+
+.column-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.empty-message {
+  text-align: center;
+  color: var(--p-text-muted-color);
+  padding: 2rem !important;
+}
+
+// ── Dialog de Edição ────────────────────────────────────────────────────
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+.toggle-field {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  label {
+    font-weight: 500;
+    color: var(--p-text-color);
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }

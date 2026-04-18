@@ -1,5 +1,7 @@
 <div class="products">
   <h1><span>|</span> Produtos</h1>
+
+  <!-- ═══ Card de Cadastro ═══ -->
   <div class="card">
     <h3>Cadastrar Produto</h3>
     <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -8,16 +10,142 @@
           <input pInputText fluid id="on_label" formControlName="name" [invalid]="isInvalid('name')" />
           <label for="on_label">Nome do Produto</label>
         </p-floatlabel>
-        <app-error-message 
-           [control]="form.get('name')" 
-           [customMessages]="{ 'nameTaken': 'Este nome de produto já existe' }">
-        </app-error-message>
+        <app-error-message [control]="form.get('name')"></app-error-message>
       </div>
-      <p-button type="submit" label="Salvar" [disabled]="form.invalid" icon="pi pi-save" />
+      <p-button type="submit" label="Salvar" [disabled]="form.invalid || saving" [loading]="saving" icon="pi pi-save" />
     </form>
   </div>
+
+  <!-- ═══ Card de Listagem ═══ -->
   <div class="card">
     <h3>Produtos Cadastrados</h3>
-    <div>{{produto}}</div>
+
+    <p-table
+      #dt
+      stripedRows
+      [size]="'small'"
+      [scrollable]="true" 
+      scrollHeight="calc(100vh - 30rem)"
+      [value]="products"
+      [loading]="loading"
+      [tableStyle]="{ 'min-width': '40rem', 'table-layout': 'auto' }"
+      dataKey="id"
+    >
+
+      <!-- Cabeçalho -->
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="name">
+            <div class="column-header">
+              Nome
+              <p-sortIcon field="name" />
+            </div>
+          </th>
+          <th style="width: 15rem">
+            <div class="column-header">
+              Status
+            </div>
+          </th>
+          <th style="width: 10rem; text-align: center">Ações</th>
+        </tr>
+        <!-- Linha de filtros -->
+        <tr>
+          <th>
+            <p-columnFilter type="text" field="name" placeholder="Filtrar por nome" />
+          </th>
+          <th>
+            <p-columnFilter field="isActive" matchMode="equals" [showMenu]="false">
+              <ng-template #filter let-value let-filterCallback="filterCallback">
+                <p-select
+                  [options]="statusOptions"
+                  [ngModel]="value"
+                  (onChange)="filterCallback($event.value)"
+                  placeholder="Todos"
+                  [showClear]="true"
+                  [style]="{ 'min-width': '8rem' }"
+                >
+                  <ng-template #selectedItem let-selected>
+                    <p-tag [value]="selected.label" [severity]="getStatusSeverity(selected.value)" />
+                  </ng-template>
+                  <ng-template #item let-option>
+                    <p-tag [value]="option.label" [severity]="getStatusSeverity(option.value)" />
+                  </ng-template>
+                </p-select>
+              </ng-template>
+            </p-columnFilter>
+          </th>
+          <th></th>
+        </tr>
+      </ng-template>
+
+      <!-- Corpo -->
+      <ng-template #body let-product>
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>
+            <p-tag [value]="getStatusLabel(product.isActive)" [severity]="getStatusSeverity(product.isActive)" />
+          </td>
+          <td class="actions">
+            <p-button
+              icon="pi pi-pencil"
+              [rounded]="true"
+              [text]="true"
+              severity="info"
+              pTooltip="Editar"
+              tooltipPosition="top"
+              (click)="openEditDialog(product)"
+            />
+            <p-button
+              icon="pi pi-trash"
+              [rounded]="true"
+              [text]="true"
+              severity="danger"
+              pTooltip="Excluir"
+              tooltipPosition="top"
+              (click)="confirmDelete($event, product)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Vazio -->
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="3" class="empty-message">Nenhum produto encontrado.</td>
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
 </div>
+
+<!-- ═══ Dialog de Edição ═══ -->
+<p-dialog
+  header="Editar Produto"
+  [modal]="true"
+  [(visible)]="editDialogVisible"
+  [style]="{ width: '28rem' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form [formGroup]="editForm" class="edit-form">
+    <div class="form-field">
+      <p-floatlabel variant="on" class="full-width-control">
+        <input pInputText fluid id="edit_name" formControlName="name" [invalid]="isEditInvalid('name')" />
+        <label for="edit_name">Nome do Produto</label>
+      </p-floatlabel>
+      <app-error-message [control]="editForm.get('name')"></app-error-message>
+    </div>
+
+    <div class="toggle-field">
+      <label for="edit_active">Ativo</label>
+      <p-toggleswitch formControlName="isActive" inputId="edit_active" />
+    </div>
+  </form>
+
+  <ng-template #footer>
+    <div class="dialog-footer">
+      <p-button label="Cancelar" icon="pi pi-times" severity="secondary" [outlined]="true" (click)="editDialogVisible = false" />
+      <p-button label="Salvar" icon="pi pi-save" [disabled]="editForm.invalid || editLoading" [loading]="editLoading" (click)="confirmEdit($event)" />
+    </div>
+  </ng-template>
+</p-dialog>
