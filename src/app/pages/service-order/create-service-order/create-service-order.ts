@@ -1,12 +1,18 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { AutoCompleteModule, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
+import {
+  AutoCompleteModule,
+  AutoCompleteCompleteEvent,
+  AutoCompleteSelectEvent,
+} from 'primeng/autocomplete';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { NgxMaskDirective } from 'ngx-mask';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subject, debounceTime, switchMap, of } from 'rxjs';
 import { ClientService } from '../../../shared/services/client.service';
+import { ServiceOrderService } from '../../../shared/services/service-order.service';
 import { Client, ClientPhone } from '../../../shared/models/client.model';
+import { ServiceOrderAddress } from '../../../shared/models/service-order.model';
 import { cpfValidator } from '../../../shared/validators/cpf.validator';
 import { cnpjValidator } from '../../../shared/validators/cnpj.validator';
 import { CpfFormatPipe } from '../../../shared/pipes/cpf-format.pipe';
@@ -23,8 +29,20 @@ import { SHARED_CRUD_IMPORTS } from '../../../shared/constants/shared-crud-impor
 export class CreateServiceOrder implements OnInit {
   private fb = inject(FormBuilder);
   private clientService = inject(ClientService);
+  private serviceOrderService = inject(ServiceOrderService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+
+  // ── Formulário principal da OS ────────────────────────────────────────
+
+  form = this.fb.nonNullable.group({
+    clientId: ['', Validators.required],
+    street: ['', Validators.maxLength(255)],
+    addressNumber: ['', Validators.maxLength(50)],
+    neighborhood: ['', Validators.maxLength(100)],
+    complement: ['', Validators.maxLength(100)],
+    city: ['', Validators.maxLength(100)],
+  });
 
   // ── Cliente (autocomplete) ────────────────────────────────────────────
 
@@ -32,6 +50,13 @@ export class CreateServiceOrder implements OnInit {
   clientSuggestions: Client[] = [];
   clientSearchQuery = '';
   private searchSubject = new Subject<string>();
+
+  // ── Endereço (autocomplete de histórico) ──────────────────────────────
+
+  /** Lista completa de endereços do cliente selecionado, carregada uma vez ao selecionar o cliente. */
+  private clientAddresses: ServiceOrderAddress[] = [];
+  /** Sugestões filtradas em tempo real conforme o usuário digita na rua. */
+  addressSuggestions: ServiceOrderAddress[] = [];
 
   // ── Dialog criar/editar cliente ───────────────────────────────────────
 
@@ -81,16 +106,78 @@ export class CreateServiceOrder implements OnInit {
   onClientSelect(event: { value: Client }): void {
     this.selectedClient = event.value;
     this.clientSearchQuery = '';
+    this.form.controls.clientId.setValue(event.value.id);
+    this.loadClientAddresses(event.value.id);
   }
 
   onClientClear(): void {
     this.selectedClient = null;
     this.clientSearchQuery = '';
+    this.form.controls.clientId.setValue('');
+    this.clientAddresses = [];
+    this.addressSuggestions = [];
   }
 
   removeClient(): void {
     this.selectedClient = null;
     this.clientSearchQuery = '';
+    this.form.controls.clientId.setValue('');
+    this.clientAddresses = [];
+    this.addressSuggestions = [];
+  }
+
+  // ── Endereço handlers ─────────────────────────────────────────────────
+
+  private loadClientAddresses(clientId: string): void {
+    this.serviceOrderService.getAddressesByClient(clientId).subscribe({
+      next: (addresses) => {
+        this.clientAddresses = addresses;
+      },
+    });
+  }
+
+  /**
+   * Filtra os endereços do cliente comparando a query com TODOS os campos
+   * (comportamento análogo a um ILIKE sobre a concatenação dos campos).
+   */
+  searchAddresses(event: AutoCompleteCompleteEvent): void {
+    const query = event.query.toLowerCase().trim();
+    if (!query) {
+      this.addressSuggestions = [...this.clientAddresses];
+      return;
+    }
+    this.addressSuggestions = this.clientAddresses.filter((addr) => {
+      const haystack = [
+        addr.street,
+        addr.addressNumber,
+        addr.neighborhood,
+        addr.complement,
+        addr.city,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      return haystack.includes(query);
+    });
+  }
+
+  /** Preenche todos os campos de endereço quando o usuário seleciona uma sugestão. */
+  onAddressSelect(event: AutoCompleteSelectEvent): void {
+    const addr: ServiceOrderAddress = event.value;
+    this.form.patchValue({
+      street: addr.street ?? '',
+      addressNumber: addr.addressNumber ?? '',
+      neighborhood: addr.neighborhood ?? '',
+      complement: addr.complement ?? '',
+      city: addr.city ?? '',
+    });
+  }
+
+  /** Label concatenado exibido nas sugestões do autocomplete de endereço. */
+  addressSuggestionLabel(addr: ServiceOrderAddress): string {
+    return [addr.street, addr.addressNumber, addr.complement, addr.neighborhood, addr.city]
+      .filter(Boolean)
+      .join(', ');
   }
 
   // ── Dialog de cliente ─────────────────────────────────────────────────

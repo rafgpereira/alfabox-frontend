@@ -3,7 +3,7 @@ h1, h2, h3 {
   span { color: var(--p-red-500); }
 }
 
-.card > h3{
+.card > h3 {
   display: flex;
   gap: 0.75rem;
 }
@@ -100,6 +100,33 @@ h1, h2, h3 {
 .selected-client-actions {
   display: flex;
   gap: 0.25rem;
+}
+
+// ── Endereço ────────────────────────────────────────────────────────────
+
+.address-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.address-field {
+  display: block;
+  min-width: 0;
+
+  // Força o input e o autocomplete a ocuparem toda a largura do flex item
+  input.p-inputtext,
+  p-autocomplete,
+  .p-autocomplete {
+    width: 100% !important;
+  }
+
+  &--street       { flex: 3; min-width: 12rem; }
+  &--complement   { flex: 2; min-width: 9rem; }
+  &--neighborhood { flex: 2; min-width: 9rem; }
+  &--city         { flex: 2; min-width: 8rem; }
+  &--number       { flex: 1; min-width: 5rem; }
 }
 
 // ── Dialog ──────────────────────────────────────────────────────────────
