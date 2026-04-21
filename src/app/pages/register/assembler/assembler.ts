@@ -1,38 +1,16 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputTextModule } from 'primeng/inputtext';
+import { FormBuilder, Validators } from '@angular/forms';
 import { InputMaskModule } from 'primeng/inputmask';
-import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message';
-import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
-import { Dialog } from 'primeng/dialog';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { SelectModule } from 'primeng/select';
-import { AssemblerService } from '../../../shared/services/assembler.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Assembler as AssemblerModel } from '../../../shared/models/assembler.model';
+import { AssemblerService } from '../../../shared/services/assembler.service';
 import { cpfValidator } from '../../../shared/validators/cpf.validator';
 import { CpfFormatPipe } from '../../../shared/pipes/cpf-format.pipe';
+import { SHARED_CRUD_IMPORTS } from '../../../shared/constants/shared-crud-imports';
 
 @Component({
   selector: 'app-assembler',
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    InputMaskModule,
-    FloatLabelModule,
-    ButtonModule,
-    ErrorMessageComponent,
-    TableModule,
-    TagModule,
-    Dialog,
-    ToggleSwitch,
-    SelectModule,
-    CpfFormatPipe,
-  ],
+  imports: [...SHARED_CRUD_IMPORTS, InputMaskModule, CpfFormatPipe],
   templateUrl: './assembler.html',
   styleUrl: './assembler.scss',
 })

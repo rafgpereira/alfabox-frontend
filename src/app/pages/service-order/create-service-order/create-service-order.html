@@ -1,0 +1,185 @@
+<div class="page">
+  <h1><span>|</span> Nova Ordem de Serviço</h1>
+
+  <!-- ═══ Card Cliente ═══ -->
+  <div class="card">
+    <h3><span><i class="pi pi-user"></i></span> Cliente</h3>
+
+    @if (!selectedClient) {
+      <!-- Autocomplete de busca -->
+      <p-floatlabel variant="on" class="client-autocomplete">
+        <p-autocomplete
+          inputId="client_search"
+          [suggestions]="clientSuggestions"
+          (completeMethod)="searchClients($event)"
+          (onSelect)="onClientSelect($event)"
+          (onClear)="onClientClear()"
+          optionLabel="name"
+          [forceSelection]="true"
+          [showClear]="true"
+          [minLength]="1"
+          [delay]="300"
+          [fluid]="true"
+          dataKey="id"
+          emptyMessage="Nenhum cliente encontrado."
+          [completeOnFocus]="false"
+          scrollHeight="250px"
+        >
+          <!-- Item da lista -->
+          <ng-template let-client #item>
+            <div class="autocomplete-item">
+              <p-tag
+                [value]="client.personType === 'F' ? 'PF' : 'PJ'"
+                [severity]="getPersonTypeSeverity(client.personType)"
+              />
+              <span class="autocomplete-item-name">{{ client.name }}</span>
+            </div>
+          </ng-template>
+
+          <!-- Footer: botão criar -->
+          <ng-template #footer>
+            <div class="autocomplete-footer">
+              <p-button
+                [label]="'Criar &quot;' + clientSearchQuery + '&quot;'"
+                [text]="true"
+                severity="secondary"
+                size="small"
+                icon="pi pi-plus"
+                [fluid]="true"
+                (click)="openCreateClientDialog()"
+              />
+            </div>
+          </ng-template>
+        </p-autocomplete>
+        <label for="client_search">Buscar Cliente</label>
+      </p-floatlabel>
+    } @else {
+      <!-- Cliente selecionado -->
+      <div class="selected-client">
+        <div class="selected-client-info">
+          <div class="info-item">
+            <span class="info-label">Nome:</span>
+            <p-tag [value]="selectedClient.name" [severity]="'secondary'"/>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pessoa:</span>
+            <p-tag
+                [value]="getPersonTypeLabel(selectedClient.personType)"
+                severity="secondary"
+            />
+          </div>
+          <div class="info-item">
+            <span class="info-label">{{selectedClient.personType === 'F' ? 'CPF' : 'CNPJ'}}:</span>
+            <p-tag [value]="formatDocument(selectedClient)" [severity]="getDocumentSeverity(selectedClient)" />
+          </div>
+          <div class="info-item">
+            <span class="info-label">Telefones:</span>
+            <span class="info-phones">
+              @for (phone of selectedClient.phones; track phone.id) {
+                <p-tag [value]="formatPhone(phone)" severity="secondary" />
+              }
+              @if (selectedClient.phones.length === 0) {
+                <span class="selected-client-doc">Nenhum</span>
+              }
+            </span>
+          </div>
+        </div>
+        <div class="selected-client-actions">
+          <p-button
+            icon="pi pi-pencil"
+            [rounded]="true"
+            [text]="true"
+            severity="info"
+            pTooltip="Editar"
+            tooltipPosition="top"
+            (click)="openEditClientDialog()"
+          />
+          <p-button
+            icon="pi pi-times"
+            [rounded]="true"
+            [text]="true"
+            severity="danger"
+            pTooltip="Remover"
+            tooltipPosition="top"
+            (click)="removeClient()"
+          />
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- ═══ Dialog Criar/Editar Cliente ═══ -->
+<p-dialog
+  [header]="clientDialogHeader"
+  [modal]="true"
+  [(visible)]="clientDialogVisible"
+  [style]="{ width: '36rem' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form [formGroup]="clientForm" class="edit-form">
+    <!-- Nome -->
+    <div class="form-field">
+      <p-floatlabel variant="on" class="full-width-control">
+        <input pInputText fluid id="dialog_client_name" formControlName="name" [invalid]="isDialogInvalid('name')" />
+        <label for="dialog_client_name">Nome do Cliente</label>
+      </p-floatlabel>
+      <app-error-message [control]="clientForm.get('name')"></app-error-message>
+    </div>
+
+    <!-- Tipo de Pessoa + Documento -->
+    <div class="edit-person-doc-row">
+      <div>
+        <p-selectbutton
+          [options]="personTypeOptions"
+          formControlName="personType"
+          optionLabel="label"
+          optionValue="value"
+          [allowEmpty]="false"
+        />
+      </div>
+      <div class="form-field doc-field">
+        <p-floatlabel variant="on" class="full-width-control">
+          <input
+            pInputText
+            fluid
+            id="dialog_client_document"
+            formControlName="document"
+            [mask]="dialogDocumentMask"
+            [dropSpecialCharacters]="true"
+            [invalid]="isDialogInvalid('document')"
+            style="text-transform: uppercase"
+          />
+          <label for="dialog_client_document">{{ dialogDocumentLabel }}</label>
+        </p-floatlabel>
+        <app-error-message [control]="clientForm.get('document')"></app-error-message>
+      </div>
+    </div>
+
+    <!-- Telefones -->
+    <div class="phones-dialog">
+        <app-multi-input
+          formControlName="phones"
+          label="Telefone"
+          [min]="1"
+          [max]="3"
+          masks="(00) 0000-0000||(00) 00000-0000"
+          scrollHeight="149px"
+        />
+    </div>
+  </form>
+
+  <ng-template #footer>
+    <div class="dialog-footer">
+      <p-button label="Cancelar" icon="pi pi-times" severity="secondary" [outlined]="true" (click)="clientDialogVisible = false" />
+      <p-button
+        label="Salvar"
+        icon="pi pi-save"
+        [disabled]="clientForm.invalid || clientDialogLoading"
+        [loading]="clientDialogLoading"
+        (click)="saveClient($event)"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

@@ -26,6 +26,11 @@ export class Sidebar implements OnInit {
 
     const menu: AppMenuItem[] = [
       {
+        label: 'Ordem de Serviço',
+        icon: 'pi pi-fw pi-briefcase',
+        routerLink: '/os',
+      },
+      {
         label: 'Cadastro',
         icon: 'pi pi-fw pi-file-edit',
         items: [

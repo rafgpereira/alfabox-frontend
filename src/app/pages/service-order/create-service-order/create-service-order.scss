@@ -1,0 +1,146 @@
+h1, h2, h3 {
+  color: var(--p-primary-500);
+  span { color: var(--p-red-500); }
+}
+
+.card > h3{
+  display: flex;
+  gap: 0.75rem;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// ── Autocomplete ────────────────────────────────────────────────────────
+
+.client-autocomplete {
+  max-width: 28rem;
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &-name {
+    font-weight: 500;
+  }
+}
+
+.autocomplete-footer {
+  border-top: 1px solid var(--p-surface-200);
+  padding: 0.5rem 0.75rem;
+}
+
+// ── Cliente selecionado ─────────────────────────────────────────────────
+
+.selected-client {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border: 1px solid var(--p-surface-200);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+}
+
+.selected-client-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+}
+
+.info-item {
+ display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+
+
+.info-label {
+  padding-left: 1px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--p-text-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+
+.selected-client-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--p-text-color);
+}
+
+.selected-client-doc {
+  font-size: 1rem;
+  color: var(--p-text-muted-color);
+}
+
+.info-phones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+
+
+.selected-client-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+// ── Dialog ──────────────────────────────────────────────────────────────
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+.edit-person-doc-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+
+  .doc-field {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.phones-dialog {
+  margin-top: -1rem;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+// ── Responsivo ──────────────────────────────────────────────────────────
+
+@media (max-width: 48rem) {
+  .selected-client {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .edit-person-doc-row {
+    flex-direction: column;
+  }
+}

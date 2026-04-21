@@ -1,45 +1,20 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputTextModule } from 'primeng/inputtext';
+import { FormBuilder, Validators } from '@angular/forms';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { NgxMaskDirective } from 'ngx-mask';
-import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message';
-import { MultiInputComponent } from '../../../shared/components/multi-input/multi-input';
 import { ClientService } from '../../../shared/services/client.service';
 import { ConfirmationService, FilterService, MessageService } from 'primeng/api';
 import { cpfValidator } from '../../../shared/validators/cpf.validator';
 import { cnpjValidator } from '../../../shared/validators/cnpj.validator';
 import { Client as ClientModel } from '../../../shared/models/client.model';
-import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
-import { Dialog } from 'primeng/dialog';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { SelectModule } from 'primeng/select';
 import { CpfFormatPipe } from '../../../shared/pipes/cpf-format.pipe';
 import { CnpjFormatPipe } from '../../../shared/pipes/cnpj-format.pipe';
 import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
+import { SHARED_CRUD_IMPORTS } from '../../../shared/constants/shared-crud-imports';
 
 @Component({
   selector: 'app-client',
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    FloatLabelModule,
-    ButtonModule,
-    SelectButtonModule,
-    NgxMaskDirective,
-    ErrorMessageComponent,
-    MultiInputComponent,
-    TableModule,
-    TagModule,
-    Dialog,
-    ToggleSwitch,
-    SelectModule,
-    PhoneFormatPipe,
-  ],
+  imports: [...SHARED_CRUD_IMPORTS, SelectButtonModule, NgxMaskDirective, PhoneFormatPipe],
   templateUrl: './client.html',
   styleUrl: './client.scss',
 })

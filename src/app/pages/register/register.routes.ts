@@ -4,7 +4,7 @@ import { roleGuard } from '../../core/guards/role.guard';
 export const REGISTER_ROUTES: Routes = [
   {
     path: '',
-    redirectTo: 'produtos',
+    redirectTo: 'clientes',
     pathMatch: 'full',
   },
   {

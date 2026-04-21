@@ -1,34 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message';
-import { ProductService } from '../../../shared/services/product.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
-import { Dialog } from 'primeng/dialog';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { SelectModule } from 'primeng/select';
-import { FormsModule } from '@angular/forms';
 import { Product as ProductModel } from '../../../shared/models/product.model';
+import { ProductService } from '../../../shared/services/product.service';
+import { SHARED_CRUD_IMPORTS } from '../../../shared/constants/shared-crud-imports';
 
 @Component({
   selector: 'app-product',
-  imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    InputTextModule,
-    FloatLabelModule,
-    ButtonModule,
-    ErrorMessageComponent,
-    TableModule,
-    TagModule,
-    Dialog,
-    ToggleSwitch,
-    SelectModule,
-  ],
+  imports: [...SHARED_CRUD_IMPORTS],
   templateUrl: './product.html',
   styleUrl: './product.scss',
 })

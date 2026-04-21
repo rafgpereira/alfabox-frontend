@@ -12,6 +12,16 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
+        path: '',
+        redirectTo: 'os',
+        pathMatch: 'full',
+      },
+      {
+        path: 'os',
+        loadChildren: () =>
+          import('./pages/service-order/service-order.routes').then((m) => m.SERVICE_ORDER_ROUTES),
+      },
+      {
         path: 'cadastro',
         loadChildren: () =>
           import('./pages/register/register.routes').then((m) => m.REGISTER_ROUTES),
@@ -20,6 +30,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '',
+    redirectTo: 'os',
   },
 ];
