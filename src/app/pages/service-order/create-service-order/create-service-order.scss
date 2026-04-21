@@ -24,13 +24,16 @@ h1, h2, h3 {
 .cards-row {
   display: flex;
   gap: 1.5rem;
-  align-items: stretch; // mesma altura
+  align-items: stretch;
 
-  .card--client  { flex: 3; }   // ~75%
-  .card--seller  { flex: 1; min-width: 14rem; } // ~25%
+  .card--client  { flex: 5; }
+  .card--seller  { flex: 1; min-width: 18rem; }
+
+  .card--address { flex: 5; }
+  .card--date    { flex: 1; min-width: 18rem; }
 }
 
-@media (max-width: 52rem) {
+@media (max-width: 88rem) {
   .cards-row {
     flex-direction: column;
   }

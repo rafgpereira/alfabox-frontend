@@ -147,84 +147,101 @@
     </div>
 
   </div><!-- /.cards-row -->
+  <div class="cards-row">
+    <div class="card card--address">
+      <h3><span><i class="pi pi-map-marker"></i></span> Endereço</h3>
+  
+      <div class="address-row">
+  
+        <!-- Rua — autocomplete com histórico do cliente -->
+        <p-floatlabel variant="on" class="address-field address-field--street">
+          <p-autocomplete
+            inputId="addr_street"
+            [formControl]="form.controls.street"
+            [suggestions]="addressSuggestions"
+            (completeMethod)="searchAddresses($event)"
+            (onSelect)="onAddressSelect($event)"
+            [forceSelection]="false"
+            [fluid]="true"
+            [minLength]="0"
+            [delay]="0"
+            [completeOnFocus]="true"
+            scrollHeight="250px"
+            emptyMessage="Nenhum endereço anterior encontrado."
+            [maxlength]="255"
+          >
+            <ng-template let-addr #item>
+              <span>{{ addressSuggestionLabel(addr) }}</span>
+            </ng-template>
+          </p-autocomplete>
+          <label for="addr_street">Rua</label>
+        </p-floatlabel>
+  
+        <!-- Número -->
+        <p-floatlabel variant="on" class="address-field address-field--number">
+          <input
+            pInputText
+            [fluid]="true"
+            id="addr_number"
+            [formControl]="form.controls.addressNumber"
+            maxlength="50"
+          />
+          <label for="addr_number">Número</label>
+        </p-floatlabel>
+  
+        <!-- Complemento -->
+        <p-floatlabel variant="on" class="address-field address-field--complement">
+          <input
+            pInputText
+            [fluid]="true"
+            id="addr_complement"
+            [formControl]="form.controls.complement"
+            maxlength="100"
+          />
+          <label for="addr_complement">Complemento</label>
+        </p-floatlabel>
+  
+        <!-- Bairro -->
+        <p-floatlabel variant="on" class="address-field address-field--neighborhood">
+          <input
+            pInputText
+            [fluid]="true"
+            id="addr_neighborhood"
+            [formControl]="form.controls.neighborhood"
+            maxlength="100"
+          />
+          <label for="addr_neighborhood">Bairro</label>
+        </p-floatlabel>
+  
+        <!-- Cidade -->
+        <p-floatlabel variant="on" class="address-field address-field--city">
+          <input
+            pInputText
+            [fluid]="true"
+            id="addr_city"
+            [formControl]="form.controls.city"
+            maxlength="100"
+          />
+          <label for="addr_city">Cidade</label>
+        </p-floatlabel>
+  
+      </div>
+    </div>
+    
+    <div class="card card--date">
+        <h3><span><i class="pi pi-calendar"></i></span> Data</h3>
 
-  <div class="card">
-    <h3><span><i class="pi pi-map-marker"></i></span> Endereço</h3>
-
-    <div class="address-row">
-
-      <!-- Rua — autocomplete com histórico do cliente -->
-      <p-floatlabel variant="on" class="address-field address-field--street">
-        <p-autocomplete
-          inputId="addr_street"
-          [formControl]="form.controls.street"
-          [suggestions]="addressSuggestions"
-          (completeMethod)="searchAddresses($event)"
-          (onSelect)="onAddressSelect($event)"
-          [forceSelection]="false"
-          [fluid]="true"
-          [minLength]="0"
-          [delay]="0"
-          [completeOnFocus]="true"
-          scrollHeight="250px"
-          emptyMessage="Nenhum endereço anterior encontrado."
-          [maxlength]="255"
-        >
-          <ng-template let-addr #item>
-            <span>{{ addressSuggestionLabel(addr) }}</span>
-          </ng-template>
-        </p-autocomplete>
-        <label for="addr_street">Rua</label>
-      </p-floatlabel>
-
-      <!-- Número -->
-      <p-floatlabel variant="on" class="address-field address-field--number">
-        <input
-          pInputText
-          [fluid]="true"
-          id="addr_number"
-          [formControl]="form.controls.addressNumber"
-          maxlength="50"
-        />
-        <label for="addr_number">Número</label>
-      </p-floatlabel>
-
-      <!-- Complemento -->
-      <p-floatlabel variant="on" class="address-field address-field--complement">
-        <input
-          pInputText
-          [fluid]="true"
-          id="addr_complement"
-          [formControl]="form.controls.complement"
-          maxlength="100"
-        />
-        <label for="addr_complement">Complemento</label>
-      </p-floatlabel>
-
-      <!-- Bairro -->
-      <p-floatlabel variant="on" class="address-field address-field--neighborhood">
-        <input
-          pInputText
-          [fluid]="true"
-          id="addr_neighborhood"
-          [formControl]="form.controls.neighborhood"
-          maxlength="100"
-        />
-        <label for="addr_neighborhood">Bairro</label>
-      </p-floatlabel>
-
-      <!-- Cidade -->
-      <p-floatlabel variant="on" class="address-field address-field--city">
-        <input
-          pInputText
-          [fluid]="true"
-          id="addr_city"
-          [formControl]="form.controls.city"
-          maxlength="100"
-        />
-        <label for="addr_city">Cidade</label>
-      </p-floatlabel>
-
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="order_date"
+            [formControl]="form.controls.orderDate"
+            showIcon
+            iconDisplay="input"
+            [fluid]="true"
+            [invalid]="form.controls.orderDate.invalid && form.controls.orderDate.touched"
+          />
+          <label for="order_date">Data *</label>
+        </p-floatlabel>
     </div>
   </div>
 

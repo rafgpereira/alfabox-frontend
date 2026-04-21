@@ -19,8 +19,13 @@ import { SelectModule } from 'primeng/select';
 import { ErrorMessageComponent } from '../components/error-message/error-message';
 import { MultiInputComponent } from '../components/multi-input/multi-input';
 import { TooltipModule } from 'primeng/tooltip';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { DatePickerModule } from 'primeng/datepicker';
 
 export const SHARED_CRUD_IMPORTS = [
+  AutoCompleteModule,
+  DatePickerModule,
   FormsModule,
   ReactiveFormsModule,
   TooltipModule,
@@ -32,6 +37,7 @@ export const SHARED_CRUD_IMPORTS = [
   Dialog,
   ToggleSwitch,
   SelectModule,
+  SelectButtonModule,
   ErrorMessageComponent,
   MultiInputComponent,
 ] as const;

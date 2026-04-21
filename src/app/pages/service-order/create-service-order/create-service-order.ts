@@ -1,12 +1,7 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
-import {
-  AutoCompleteModule,
-  AutoCompleteCompleteEvent,
-  AutoCompleteSelectEvent,
-} from 'primeng/autocomplete';
-import { SelectButtonModule } from 'primeng/selectbutton';
+import { AutoCompleteCompleteEvent, AutoCompleteSelectEvent } from 'primeng/autocomplete';
 import { NgxMaskDirective } from 'ngx-mask';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subject, debounceTime, switchMap, of } from 'rxjs';
@@ -23,10 +18,11 @@ import { CnpjFormatPipe } from '../../../shared/pipes/cnpj-format.pipe';
 import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
 import { SHARED_CRUD_IMPORTS } from '../../../shared/constants/shared-crud-imports';
 import { Router } from '@angular/router';
+import { todayLocal, toApiDate } from '../../../shared/utils/date.utils';
 
 @Component({
   selector: 'app-create-service-order',
-  imports: [...SHARED_CRUD_IMPORTS, AutoCompleteModule, SelectButtonModule, NgxMaskDirective],
+  imports: [...SHARED_CRUD_IMPORTS, NgxMaskDirective],
   templateUrl: './create-service-order.html',
   styleUrl: './create-service-order.scss',
 })
@@ -49,6 +45,7 @@ export class CreateServiceOrder implements OnInit {
   form = this.fb.nonNullable.group({
     clientId: ['', Validators.required],
     sellerId: ['', Validators.required],
+    orderDate: [todayLocal(), Validators.required],
     street: ['', Validators.maxLength(255)],
     addressNumber: ['', Validators.maxLength(50)],
     neighborhood: ['', Validators.maxLength(100)],
@@ -233,7 +230,12 @@ export class CreateServiceOrder implements OnInit {
   submit(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
-    console.log('OS form values:', this.form.getRawValue());
+    const raw = this.form.getRawValue();
+    const payload = {
+      ...raw,
+      orderDate: toApiDate(raw.orderDate),
+    };
+    console.log('OS form values:', payload);
   }
 
   // ── Dialog de cliente ─────────────────────────────────────────────────
