@@ -245,6 +245,56 @@
     </div>
   </div>
 
+  <!-- ═══ Linha: Itens do Serviço ═══ -->
+  <div class="cards-row">
+    <div class="card card--items">
+      <h3><span><i class="pi pi-box"></i></span> Itens</h3>
+      <app-os-items-input
+        [formControl]="form.controls.items"
+        scrollHeight="350px"
+      />
+    </div>
+  </div>
+
+  <!-- ═══ Linha: Observação + Valor Total ═══ -->
+  <div class="cards-row">
+
+    <!-- ── Card Observação ── -->
+    <div class="card card--observation">
+      <h3><span><i class="pi pi-comment"></i></span> Observação</h3>
+      <p-floatlabel variant="on" class="full-height-field">
+        <textarea
+          pTextarea
+          id="observation"
+          [formControl]="form.controls.observation"
+          [autoResize]="false"
+          [rows]="3"
+          maxlength="500"
+          class="observation-textarea"
+        ></textarea>
+        <label for="observation">Observação</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- ── Card Valor Total ── -->
+    <div class="card card--total">
+      <h3><span><i class="pi pi-money-bill"></i></span> Valor Total</h3>
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          inputId="total_amount"
+          [formControl]="form.controls.totalAmount"
+          mode="currency"
+          currency="BRL"
+          locale="pt-BR"
+          [fluid]="true"
+          [invalid]="form.controls.totalAmount.invalid && form.controls.totalAmount.touched"
+        />
+        <label for="total_amount">Valor Total *</label>
+      </p-floatlabel>
+    </div>
+
+  </div>
+
   <!-- ═══ Ações ═══ -->
   <div class="form-actions">
     <p-button
@@ -252,6 +302,7 @@
       label="Salvar"
       icon="pi pi-save"
       [disabled]="form.invalid"
+      [loading]="isSubmitting"
       (click)="submit()"
     />
   </div>

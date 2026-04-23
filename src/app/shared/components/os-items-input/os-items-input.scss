@@ -1,0 +1,72 @@
+.os-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+// Header: botão adicionar totalmente à direita
+.os-items-header {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 2rem;
+}
+
+// Área de scroll — sem borda
+.os-items-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.os-items-empty {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--p-text-muted-color);
+  padding: 0.75rem 0;
+}
+
+// Cada linha de item
+.os-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--p-content-border-color);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+// Campos da linha
+.os-item-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  // Garante que os inputs internos respeitem o fluid
+  ::ng-deep input.p-inputtext,
+  ::ng-deep p-autocomplete,
+  ::ng-deep .p-autocomplete,
+  ::ng-deep p-inputnumber,
+  ::ng-deep .p-inputnumber {
+    width: 100% !important;
+    display: block;
+  }
+}
+
+.os-item-field--qty {
+  flex: 0 0 7rem;
+}
+
+.os-item-field--product {
+  flex: 1;
+}
+
+.os-item-field--details {
+  flex: 2;
+}
+
+.os-item-field--amount {
+  flex: 0 0 10rem;
+}

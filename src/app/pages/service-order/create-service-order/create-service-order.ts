@@ -17,12 +17,21 @@ import { CpfFormatPipe } from '../../../shared/pipes/cpf-format.pipe';
 import { CnpjFormatPipe } from '../../../shared/pipes/cnpj-format.pipe';
 import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
 import { SHARED_CRUD_IMPORTS } from '../../../shared/constants/shared-crud-imports';
+import { OsItemsInputComponent } from '../../../shared/components/os-items-input/os-items-input';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { TextareaModule } from 'primeng/textarea';
 import { Router } from '@angular/router';
 import { todayLocal, toApiDate } from '../../../shared/utils/date.utils';
 
 @Component({
   selector: 'app-create-service-order',
-  imports: [...SHARED_CRUD_IMPORTS, NgxMaskDirective],
+  imports: [
+    ...SHARED_CRUD_IMPORTS,
+    NgxMaskDirective,
+    OsItemsInputComponent,
+    InputNumberModule,
+    TextareaModule,
+  ],
   templateUrl: './create-service-order.html',
   styleUrl: './create-service-order.scss',
 })
@@ -51,6 +60,16 @@ export class CreateServiceOrder implements OnInit {
     neighborhood: ['', Validators.maxLength(100)],
     complement: ['', Validators.maxLength(100)],
     city: ['', Validators.maxLength(100)],
+    items: [
+      [] as {
+        productId: string | null;
+        quantity: number | null;
+        amount: number | null;
+        details: string | null;
+      }[],
+    ],
+    observation: [null as string | null, Validators.maxLength(500)],
+    totalAmount: [null as number | null, [Validators.required, Validators.min(0)]],
   });
 
   // ── Cliente (autocomplete) ────────────────────────────────────────────
@@ -225,17 +244,41 @@ export class CreateServiceOrder implements OnInit {
     this.form.controls.sellerId.setValue('');
   }
 
-  // ── Submit ────────────────────────────────────────────────────────────
+  isSubmitting = false;
 
   submit(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
+
     const raw = this.form.getRawValue();
     const payload = {
-      ...raw,
+      clientId: raw.clientId,
+      sellerId: raw.sellerId,
       orderDate: toApiDate(raw.orderDate),
+      totalAmount: raw.totalAmount as number,
+      observation: raw.observation || null,
+      street: raw.street || null,
+      addressNumber: raw.addressNumber || null,
+      neighborhood: raw.neighborhood || null,
+      complement: raw.complement || null,
+      city: raw.city || null,
+      items: raw.items,
     };
-    console.log('OS form values:', payload);
+
+    this.isSubmitting = true;
+    this.serviceOrderService.create(payload).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Ordem de Serviço criada com sucesso!',
+        });
+        this.router.navigate(['/os']);
+      },
+      error: () => {
+        this.isSubmitting = false;
+      },
+    });
   }
 
   // ── Dialog de cliente ─────────────────────────────────────────────────

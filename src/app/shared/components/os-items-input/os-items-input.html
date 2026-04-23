@@ -1,0 +1,115 @@
+<div class="os-items-container">
+
+  <!-- ── Header: botão adicionar à direita ── -->
+  <div class="os-items-header">
+    <p-button
+      icon="pi pi-plus"
+      label="Adicionar Item"
+      severity="secondary"
+      size="small"
+      (click)="addItem()"
+    />
+  </div>
+
+  <!-- ── Lista de itens com scroll ── -->
+  <div
+    class="os-items-list"
+    [style.maxHeight]="scrollHeight"
+    [style.overflowY]="'auto'"
+  >
+    @if (formArray.length === 0) {
+      <span class="os-items-empty">Nenhum item adicionado.</span>
+    }
+
+    @for (group of formArray.controls; track $index; let i = $index) {
+      <div class="os-item-row">
+
+        <!-- Quantidade -->
+        <p-floatlabel variant="on" class="os-item-field os-item-field--qty">
+          <p-inputnumber
+            [inputId]="'item_qty_' + i"
+            [formControl]="getControl(i, 'quantity')"
+            [showButtons]="true"
+            [min]="1"
+            [fluid]="true"
+            (onBlur)="onFieldBlur()"
+          />
+          <label [for]="'item_qty_' + i">Qtd</label>
+        </p-floatlabel>
+
+        <!-- Produto -->
+        <p-floatlabel variant="on" class="os-item-field os-item-field--product">
+          <p-autocomplete
+            [inputId]="'item_product_' + i"
+            [ngModel]="getSelectedProduct(i)"
+            [ngModelOptions]="{ standalone: true }"
+            [suggestions]="getProductSuggestions(i)"
+            (completeMethod)="searchProducts($event, i)"
+            (onSelect)="onProductSelect($event.value, i)"
+            (onClear)="onProductClear(i)"
+            optionLabel="name"
+            dataKey="id"
+            [forceSelection]="true"
+            [showClear]="true"
+            [fluid]="true"
+            [minLength]="0"
+            [completeOnFocus]="true"
+            appendTo="body"
+            emptyMessage="Nenhum produto encontrado."
+            scrollHeight="200px"
+            [invalid]="isProductInvalid(i)"
+            (onBlur)="onFieldBlur()"
+          >
+            <ng-template let-product #item>
+              <span>{{ product.name }}</span>
+            </ng-template>
+          </p-autocomplete>
+          <label [for]="'item_product_' + i">Produto</label>
+        </p-floatlabel>
+
+        <!-- Detalhes -->
+        <p-floatlabel variant="on" class="os-item-field os-item-field--details">
+          <input
+            pInputText
+            [id]="'item_details_' + i"
+            [formControl]="getControl(i, 'details')"
+            [fluid]="true"
+            maxlength="500"
+            [invalid]="isDetailsInvalid(i)"
+            (blur)="onFieldBlur()"
+          />
+          <label [for]="'item_details_' + i">Detalhes @if (!getControl(i, 'productId').value) { * }</label>
+        </p-floatlabel>
+
+        <!-- Valor -->
+        <p-floatlabel variant="on" class="os-item-field os-item-field--amount">
+          <p-inputnumber
+            [inputId]="'item_amount_' + i"
+            [formControl]="getControl(i, 'amount')"
+            mode="currency"
+            currency="BRL"
+            locale="pt-BR"
+            [fluid]="true"
+            (onBlur)="onFieldBlur()"
+          />
+          <label [for]="'item_amount_' + i">Valor</label>
+        </p-floatlabel>
+
+        <!-- Remover -->
+        @if (canRemove()) {
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            [text]="true"
+            [rounded]="true"
+            pTooltip="Remover item"
+            tooltipPosition="top"
+            (click)="removeItem(i)"
+          />
+        }
+
+      </div>
+    }
+  </div>
+
+</div>
