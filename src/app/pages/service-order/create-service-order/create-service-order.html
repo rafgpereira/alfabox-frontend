@@ -295,6 +295,100 @@
 
   </div>
 
+  <!-- ═══ Toggle: Pagamento de Entrada ═══ -->
+  <div class="payment-toggle-row">
+    <span class="payment-toggle-label">Deseja cadastrar pagamento de entrada?</span>
+    <p-toggleswitch
+      [(ngModel)]="addInitialPayment"
+      (onChange)="onTogglePayment($event.checked)"
+      inputId="toggle_payment"
+    />
+  </div>
+
+  <!-- ═══ Card: Pagamento de Entrada (condicional) ═══ -->
+  @if (addInitialPayment) {
+    <div class="cards-row">
+      <div class="card card--payment">
+        <h3><span><i class="pi pi-wallet"></i></span> Pagamento de Entrada</h3>
+
+        <div class="payment-fields-row">
+
+          <!-- Data do Pagamento -->
+          <p-floatlabel variant="on" class="payment-field payment-field--date">
+            <p-datepicker
+              inputId="payment_date"
+              [formControl]="form.controls.paymentDate"
+              showIcon
+              iconDisplay="input"
+              [fluid]="true"
+              [invalid]="form.controls.paymentDate.invalid && form.controls.paymentDate.touched"
+            />
+            <label for="payment_date">Data do Pagamento *</label>
+          </p-floatlabel>
+
+          <!-- Valor -->
+          <p-floatlabel variant="on" class="payment-field payment-field--amount">
+            <p-inputnumber
+              inputId="payment_amount"
+              [formControl]="form.controls.paymentAmount"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              [fluid]="true"
+              [invalid]="form.controls.paymentAmount.invalid && form.controls.paymentAmount.touched"
+            />
+            <label for="payment_amount">Valor *</label>
+          </p-floatlabel>
+
+          <!-- Método de Pagamento -->
+          <p-floatlabel variant="on" class="payment-field payment-field--method">
+            <p-autocomplete
+              inputId="payment_method"
+              [(ngModel)]="selectedPaymentMethod"
+              [suggestions]="paymentMethodSuggestions"
+              (completeMethod)="searchPaymentMethods($event)"
+              (onSelect)="onPaymentMethodSelect($event)"
+              (onClear)="onPaymentMethodClear()"
+              [showClear]="true"
+              [forceSelection]="true"
+              [fluid]="true"
+              [minLength]="0"
+              [completeOnFocus]="true"
+              optionLabel="label"
+              dataKey="value"
+              emptyMessage="Nenhum método encontrado."
+              scrollHeight="250px"
+              [invalid]="form.controls.paymentMethod.invalid && form.controls.paymentMethod.touched"
+            >
+              <ng-template let-method #item>
+                <span>{{ method.label }}</span>
+              </ng-template>
+            </p-autocomplete>
+            <label for="payment_method">Método de Pagamento *</label>
+          </p-floatlabel>
+
+          <!-- Parcelas (apenas para Cartão de Crédito) -->
+          @if (form.controls.paymentMethod.value === 'CARTAO_CREDITO') {
+            <p-floatlabel variant="on" class="payment-field payment-field--installments">
+              <p-inputnumber
+                inputId="payment_installments"
+                [formControl]="form.controls.installments"
+                [useGrouping]="false"
+                [showButtons]="true"
+                [min]="1"
+                [max]="12"
+                [fluid]="true"
+                [invalid]="form.controls.installments.invalid && form.controls.installments.touched"
+              />
+              <label for="payment_installments">Parcelas *</label>
+            </p-floatlabel>
+          }
+
+        </div>
+      </div>
+    </div>
+  }
+
   <!-- ═══ Ações ═══ -->
   <div class="form-actions">
     <p-button

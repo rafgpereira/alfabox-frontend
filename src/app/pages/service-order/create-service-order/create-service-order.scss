@@ -227,3 +227,45 @@ h1, h2, h3 {
     flex-direction: column;
   }
 }
+
+// ── Toggle de Pagamento ──────────────────────────────────────────────────
+
+.payment-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.payment-toggle-label {
+  font-size: 0.95rem;
+  color: var(--p-text-color);
+}
+
+// ── Card Pagamento ───────────────────────────────────────────────────────
+
+.cards-row {
+  .card--payment { flex: 1; }
+}
+
+.payment-fields-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.payment-field {
+  display: block;
+  min-width: 0;
+
+  input.p-inputtext,
+  p-autocomplete,
+  .p-autocomplete {
+    width: 100% !important;
+  }
+
+  &--date          { flex: 2; min-width: 12rem; }
+  &--amount        { flex: 2; min-width: 12rem; }
+  &--method        { flex: 3; min-width: 14rem; }
+  &--installments  { flex: 1; min-width: 8rem; }
+}

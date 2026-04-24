@@ -13,6 +13,13 @@ export interface CreateServiceOrderItem {
   details: string | null;
 }
 
+export interface CreateInitialPayment {
+  amount: number;
+  paymentDate: string;
+  method: string;
+  installments?: number | null;
+}
+
 export interface CreateServiceOrder {
   clientId: string;
   sellerId: string;
@@ -25,6 +32,7 @@ export interface CreateServiceOrder {
   complement?: string | null;
   city?: string | null;
   items: CreateServiceOrderItem[];
+  initialPayment?: CreateInitialPayment | null;
 }
 
 export interface ServiceOrder {

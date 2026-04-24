@@ -70,6 +70,11 @@ export class CreateServiceOrder implements OnInit {
     ],
     observation: [null as string | null, Validators.maxLength(500)],
     totalAmount: [null as number | null, [Validators.required, Validators.min(0)]],
+    // ── Pagamento inicial (campos opcionais, ativados pelo toggle) ──────
+    paymentDate: [todayLocal()],
+    paymentAmount: [null as number | null],
+    paymentMethod: [null as string | null],
+    installments: [null as number | null],
   });
 
   // ── Cliente (autocomplete) ────────────────────────────────────────────
@@ -92,6 +97,21 @@ export class CreateServiceOrder implements OnInit {
   /** Lista completa de vendedores ativos, carregada uma vez no init. */
   private allSellers: Seller[] = [];
   sellerSuggestions: Seller[] = [];
+
+  // ── Pagamento inicial (toggle) ────────────────────────────────────────
+
+  addInitialPayment = false;
+
+  /** Opções estáticas de método de pagamento, espelhando o enum do backend. */
+  readonly paymentMethodOptions: { label: string; value: string }[] = [
+    { label: 'Dinheiro', value: 'DINHEIRO' },
+    { label: 'Cartão de Crédito', value: 'CARTAO_CREDITO' },
+    { label: 'Cartão de Débito', value: 'CARTAO_DEBITO' },
+    { label: 'Pix', value: 'PIX' },
+  ];
+
+  selectedPaymentMethod: { label: string; value: string } | null = null;
+  paymentMethodSuggestions: { label: string; value: string }[] = [];
 
   // ── Dialog criar/editar cliente ───────────────────────────────────────
 
@@ -244,6 +264,61 @@ export class CreateServiceOrder implements OnInit {
     this.form.controls.sellerId.setValue('');
   }
 
+  // ── Pagamento inicial handlers ────────────────────────────────────────
+
+  onTogglePayment(active: boolean): void {
+    const { paymentDate, paymentAmount, paymentMethod, installments } = this.form.controls;
+    if (active) {
+      paymentDate.setValidators([Validators.required]);
+      paymentAmount.setValidators([Validators.required, Validators.min(0.01)]);
+      paymentMethod.setValidators([Validators.required]);
+    } else {
+      paymentDate.clearValidators();
+      paymentAmount.clearValidators();
+      paymentMethod.clearValidators();
+      installments.clearValidators();
+      // Limpa seleção visual
+      this.selectedPaymentMethod = null;
+      this.form.patchValue({
+        paymentDate: todayLocal(),
+        paymentAmount: null,
+        paymentMethod: null,
+        installments: null,
+      });
+    }
+    paymentDate.updateValueAndValidity();
+    paymentAmount.updateValueAndValidity();
+    paymentMethod.updateValueAndValidity();
+    installments.updateValueAndValidity();
+  }
+
+  searchPaymentMethods(event: AutoCompleteCompleteEvent): void {
+    const query = event.query.toLowerCase().trim();
+    this.paymentMethodSuggestions = query
+      ? this.paymentMethodOptions.filter((m) => m.label.toLowerCase().includes(query))
+      : [...this.paymentMethodOptions];
+  }
+
+  onPaymentMethodSelect(event: AutoCompleteSelectEvent): void {
+    const method = event.value as { label: string; value: string };
+    this.form.controls.paymentMethod.setValue(method.value);
+    const installmentsCtrl = this.form.controls.installments;
+    if (method.value === 'CARTAO_CREDITO') {
+      installmentsCtrl.setValidators([Validators.required, Validators.min(1), Validators.max(12)]);
+    } else {
+      installmentsCtrl.clearValidators();
+      installmentsCtrl.setValue(null);
+    }
+    installmentsCtrl.updateValueAndValidity();
+  }
+
+  onPaymentMethodClear(): void {
+    this.form.controls.paymentMethod.setValue(null);
+    this.form.controls.installments.clearValidators();
+    this.form.controls.installments.setValue(null);
+    this.form.controls.installments.updateValueAndValidity();
+  }
+
   isSubmitting = false;
 
   submit(): void {
@@ -263,6 +338,15 @@ export class CreateServiceOrder implements OnInit {
       complement: raw.complement || null,
       city: raw.city || null,
       items: raw.items,
+      initialPayment: this.addInitialPayment
+        ? {
+            amount: raw.paymentAmount as number,
+            paymentDate: toApiDate(raw.paymentDate),
+            method: raw.paymentMethod as string,
+            installments:
+              raw.paymentMethod === 'CARTAO_CREDITO' ? (raw.installments ?? null) : null,
+          }
+        : null,
     };
 
     this.isSubmitting = true;
