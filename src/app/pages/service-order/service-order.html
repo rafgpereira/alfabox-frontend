@@ -1,4 +1,269 @@
-<div class="title">
+<div class="page">
+
+  <!-- ═══ Título ═══ -->
+  <div class="title">
     <h1><span>|</span> Ordens de Serviço</h1>
     <p-button label="Nova Ordem de Serviço" size="large" icon="pi pi-plus-circle" (onClick)="createNewOS()"></p-button>
+  </div>
+
+  <!-- ═══ Card Principal ═══ -->
+  <div class="card">
+
+    <!-- ── Toolbar de Filtros ── -->
+    <div class="toolbar">
+
+      <!-- Filtro por Data -->
+      <div class="toolbar-left">
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="date_range"
+            iconDisplay="input"
+            [(ngModel)]="dateRange"
+            (ngModelChange)="onDateRangeChange($event)"
+            selectionMode="range"
+            showIcon
+            [disabled]="searchMode"
+            [readonlyInput]="true"
+            fluid="true"
+            dateFormat="dd/mm/yy"
+            [style]="{ 'min-width': '17rem' }"
+          />
+          <label for="date_range">Período</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Busca Global -->
+      <div class="toolbar-right">
+        <p-float-label variant="on">
+            <p-iconfield>
+                <p-inputicon class="pi pi-search" />
+                <input
+                pInputText
+                id="global_search"
+                [(ngModel)]="searchText"
+                (ngModelChange)="onSearchChange($event)"
+                (keydown)="onSearchKeydown($event)"
+                label="Código da OS ou nome do cliente..."
+                class="search-input"
+                />
+                @if (searchText) {
+                    <p-inputicon
+                    class="pi pi-times search-clear"
+                    (click)="clearSearch()"
+                    />
+                }
+            </p-iconfield>
+            <label for="global_search">Código ou Cliente</label>
+        </p-float-label>
+        <p-button
+          label="Buscar"
+          icon="pi pi-search"
+          [loading]="loading && searchMode"
+          (click)="submitSearch()"
+        />
+      </div>
+
+    </div>
+
+    <!-- ── KPIs ── -->
+    <div class="kpi-grid">
+
+      <!-- Total Vendido -->
+      <div class="kpi-card kpi-card--vendido">
+        <div class="kpi-body">
+          <div class="kpi-left">
+            <i class="pi pi-shopping-cart kpi-icon"></i>
+            <span class="kpi-label">Total Vendido</span>
+          </div>
+          <span class="kpi-value">{{ totalVendido | currency:'BRL' }}</span>
+        </div>
+      </div>
+
+      <!-- Total Recebido -->
+      <div class="kpi-card kpi-card--recebido">
+        <div class="kpi-body">
+          <div class="kpi-left">
+            <i class="pi pi-check-circle kpi-icon"></i>
+            <span class="kpi-label">Total Recebido</span>
+          </div>
+          <span class="kpi-value">{{ totalRecebido | currency:'BRL' }}</span>
+        </div>
+        <div class="kpi-progress">
+          <p-progressbar [value]="paidPercentage" [showValue]="false" styleClass="kpi-progressbar kpi-progressbar--success" />
+          <span class="kpi-progress-label">{{ paidPercentage }}% recebido</span>
+        </div>
+      </div>
+
+      <!-- Total a Receber -->
+      <div class="kpi-card kpi-card--receber">
+        <div class="kpi-body">
+          <div class="kpi-left">
+            <i class="pi pi-clock kpi-icon"></i>
+            <span class="kpi-label">A Receber</span>
+          </div>
+          <span class="kpi-value">{{ totalAReceber | currency:'BRL' }}</span>
+        </div>
+        <div class="kpi-progress">
+          <p-progressbar [value]="receivablePercentage" [showValue]="false" styleClass="kpi-progressbar kpi-progressbar--warn" />
+          <span class="kpi-progress-label">{{ receivablePercentage }}% pendente</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Tabela ── -->
+    <p-table
+      #dt
+      stripedRows
+      [size]="'small'"
+      [scrollable]="true"
+      scrollHeight="calc(100vh - 26rem)"
+      [value]="orders"
+      [loading]="loading"
+      [tableStyle]="{ 'min-width': '60rem', 'table-layout': 'fixed' }"
+      dataKey="id"
+      (onFilter)="onTableFilter($event)"
+    >
+
+      <!-- Cabeçalho -->
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="code" style="width: 7rem">
+            <div class="column-header">Código <p-sortIcon field="code" /></div>
+          </th>
+          <th pSortableColumn="orderDate" style="width: 9rem">
+            <div class="column-header">Data OS <p-sortIcon field="orderDate" /></div>
+          </th>
+          <th pSortableColumn="clientName" style="width: 17rem">
+            <div class="column-header">Cliente <p-sortIcon field="clientName" /></div>
+          </th>
+          <th pSortableColumn="sellerName" style="width: 11rem">
+            <div class="column-header">Vendedor <p-sortIcon field="sellerName" /></div>
+          </th>
+          <th pSortableColumn="totalAmount" style="width: 8rem">
+            <div class="column-header">Valor Total <p-sortIcon field="totalAmount" /></div>
+          </th>
+          <th pSortableColumn="paidAmount" style="width: 8rem">
+            <div class="column-header">Valor Pago <p-sortIcon field="paidAmount" /></div>
+          </th>
+          <th pSortableColumn="lastPaymentDate" style="width: 9rem">
+            <div class="column-header">Último Pgto <p-sortIcon field="lastPaymentDate" /></div>
+          </th>
+          <th style="width: 8rem">
+            <div class="column-header">Status Pgto</div>
+          </th>
+          <th style="width: 9rem">
+            <div class="column-header">Status Exec.</div>
+          </th>
+          <th style="width: 10rem; text-align: center">Ações</th>
+        </tr>
+
+        <!-- Linha de filtros locais -->
+        <tr>
+          <th>
+            <p-columnFilter type="text" field="code" matchMode="contains" placeholder="Filtrar" [showMenu]="false" />
+          </th>
+          <th>
+            <p-columnFilter type="date" field="orderDate" matchMode="dateIs" [showMenu]="false">
+              <ng-template #filter let-value let-filterCallback="filterCallback">
+                <p-datepicker
+                  [ngModel]="value"
+                  (ngModelChange)="filterCallback($event)"
+                  dateFormat="dd/mm/yy"
+                  [showClear]="true"
+                  placeholder="dd/mm/aaaa"
+                  appendTo="body"
+                  [style]="{ 'width': '100%' }"
+                />
+              </ng-template>
+            </p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="clientName" matchMode="contains" placeholder="Filtrar" [showMenu]="false" />
+          </th>
+          <th>
+            <p-columnFilter type="text" field="sellerName" matchMode="contains" placeholder="Filtrar" [showMenu]="false" />
+          </th>
+          <th></th>
+          <th></th>
+          <th>
+            <p-columnFilter type="date" field="lastPaymentDate" matchMode="dateIs" [showMenu]="false">
+              <ng-template #filter let-value let-filterCallback="filterCallback">
+                <p-datepicker
+                  [ngModel]="value"
+                  (ngModelChange)="filterCallback($event)"
+                  dateFormat="dd/mm/yy"
+                  [showClear]="true"
+                  placeholder="dd/mm/aaaa"
+                  appendTo="body"
+                  [style]="{ 'width': '100%' }"
+                />
+              </ng-template>
+            </p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter field="paymentStatus" matchMode="equals" [showMenu]="false">
+              <ng-template #filter let-value let-filterCallback="filterCallback">
+                <p-select
+                  [options]="paymentStatusOptions"
+                  [ngModel]="value"
+                  (onChange)="filterCallback($event.value)"
+                  placeholder="Todos"
+                  [showClear]="true"
+                  appendTo="body"
+                  [style]="{ 'min-width': '8rem' }"
+                >
+                  <ng-template #selectedItem let-selected>
+                    <p-tag [value]="selected.label" [severity]="getPaymentStatusSeverity(selected.value)" />
+                  </ng-template>
+                  <ng-template #item let-option>
+                    <p-tag [value]="option.label" [severity]="getPaymentStatusSeverity(option.value)" />
+                  </ng-template>
+                </p-select>
+              </ng-template>
+            </p-columnFilter>
+          </th>
+          <th></th>
+          <th></th>
+        </tr>
+      </ng-template>
+
+      <!-- Corpo -->
+      <ng-template #body let-order>
+        <tr>
+          <td class="code-cell">{{ order.code }}</td>
+          <td>{{ order.orderDate | date:'dd/MM/yyyy' }}</td>
+          <td>{{ order.clientName }}</td>
+          <td>{{ order.sellerName }}</td>
+          <td>{{ order.totalAmount | currency:'BRL' }}</td>
+          <td>{{ order.paidAmount | currency:'BRL' }}</td>
+          <td>{{ order.lastPaymentDate ? (order.lastPaymentDate | date:'dd/MM/yyyy') : '—' }}</td>
+          <td>
+            <p-tag
+              [value]="order.paymentStatus"
+              [severity]="getPaymentStatusSeverity(order.paymentStatus)"
+            />
+          </td>
+          <td>
+            <p-tag [value]="order.executionStatus" severity="secondary" />
+          </td>
+          <td class="actions">
+            <p-button icon="pi pi-eye" [rounded]="true" [text]="true" severity="info" pTooltip="Visualizar" tooltipPosition="top" />
+            <p-button icon="pi pi-dollar" [rounded]="true" [text]="true" severity="success" pTooltip="Lançar Pagamento" tooltipPosition="top" />
+            <p-button icon="pi pi-wrench" [rounded]="true" [text]="true" severity="warn" pTooltip="Registrar Execução" tooltipPosition="top" />
+            <p-button icon="pi pi-print" [rounded]="true" [text]="true" severity="secondary" pTooltip="Imprimir" tooltipPosition="top" />
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Vazio -->
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="10" class="empty-message">Nenhuma ordem de serviço encontrada.</td>
+        </tr>
+      </ng-template>
+
+    </p-table>
+
+  </div>
 </div>

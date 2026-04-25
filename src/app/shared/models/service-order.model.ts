@@ -42,3 +42,19 @@ export interface ServiceOrder {
   totalAmount: number;
   observation: string | null;
 }
+
+export type PaymentStatus = 'PAGO' | 'PARCIAL' | 'ABERTO';
+
+/** Payload plano retornado pelo endpoint GET /service-orders (tabela geral). */
+export interface ServiceOrderListItem {
+  id: string;
+  code: string;
+  orderDate: string; // YYYY-MM-DD
+  clientName: string;
+  sellerName: string;
+  totalAmount: number;
+  paidAmount: number;
+  lastPaymentDate: string | null; // YYYY-MM-DD
+  paymentStatus: PaymentStatus;
+  executionStatus: string;
+}
