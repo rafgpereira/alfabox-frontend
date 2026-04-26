@@ -22,6 +22,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DatePickerModule } from 'primeng/datepicker';
+import { DividerModule } from 'primeng/divider';
 
 export const SHARED_CRUD_IMPORTS = [
   AutoCompleteModule,
@@ -30,6 +31,7 @@ export const SHARED_CRUD_IMPORTS = [
   ReactiveFormsModule,
   TooltipModule,
   InputTextModule,
+  DividerModule,
   FloatLabelModule,
   ButtonModule,
   TableModule,

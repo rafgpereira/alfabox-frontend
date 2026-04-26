@@ -1,0 +1,344 @@
+h1, h2, h3 {
+  color: var(--p-primary-500);
+  span { color: var(--p-red-500); }
+}
+
+.card-header > h3 {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+
+    .info, .actions{
+        display: flex;
+    }
+    .info {
+        gap: 3rem;
+        align-items: start;
+        flex-wrap: wrap;
+        div {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            span {
+                font-size: 0.7rem;
+                font-weight: 600;
+                color: var(--p-text-muted-color);
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                padding-left: 1px;
+            }
+            h2 {
+                font-family: monospace;
+                letter-spacing: 0.03rem;
+            }
+            p-tag {
+                font-size: 1rem;
+            }
+        }
+    }
+    .actions {
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        align-items: flex-start;
+
+        .actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+    }
+}
+
+.content {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
+.details {
+    width: 50%;
+    @media (max-width: 768px) {
+        width: 100%;
+    }
+}
+
+.payments-executions {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 50%;
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
+}
+
+.payments, .executions {
+    flex: 1;
+}
+
+// ── Seção de detalhes ────────────────────────────────────────────────────
+
+.section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 1rem;
+  color: var(--p-text-muted-color);
+}
+
+.field-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--p-text-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.field-value {
+  font-size: 1.05rem;
+  color: var(--p-text-color);
+  word-break: break-word;
+  line-height: 1.4;
+
+  &--muted {
+    color: var(--p-text-muted-color);
+    font-size: 0.95rem;
+  }
+
+  &--total {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--p-primary-500);
+    letter-spacing: -0.01em;
+  }
+}
+
+.detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem 3rem;
+  margin-bottom: 1.25rem;
+
+  &--bottom {
+    align-items: flex-start;
+  }
+}
+
+.detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+
+  &--grow {
+    flex: 1 1 0;
+    min-width: 8rem;
+  }
+
+  &--total {
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  &--phones {
+    flex: 1 1 100%;
+  }
+
+  &--addr-street,
+  &--addr-number,
+  &--addr-complement,
+  &--addr-neighborhood,
+  &--addr-city {
+    flex: 0 0 auto;
+  }
+}
+
+.phones-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+}
+
+.phone-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #25d366;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity 0.15s, transform 0.15s;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+// ── Tabela de itens ──────────────────────────────────────────────────────
+
+:host ::ng-deep .items-table {
+  .p-datatable-thead th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--p-text-muted-color);
+    background: var(--p-content-background);
+    padding: 0.65rem 0.85rem;
+  }
+
+  .p-datatable-tbody td {
+    font-size: 0.95rem;
+    padding: 0.65rem 0.85rem;
+    vertical-align: top;
+    word-break: break-word;
+  }
+}
+
+.col-qty    { width: 3.5rem; text-align: center; }
+.col-desc   { word-break: break-word; }
+.col-amount { width: 7rem; text-align: right; white-space: nowrap; }
+
+// ── Card header (título + botão de ação) ─────────────────────────────────
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+// ── KPI mini-grid (2 colunas) ────────────────────────────────────────────
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.kpi-card--full {
+  grid-column: 1 / -1;
+}
+
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--p-border-radius-lg, 0.75rem);
+  border: 1px solid var(--p-surface-200);
+  background: var(--p-surface-0);
+
+  .kpi-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .kpi-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .kpi-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--p-text-muted-color);
+    white-space: nowrap;
+  }
+
+  .kpi-icon {
+    font-size: 1rem;
+  }
+
+  .kpi-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .kpi-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .kpi-progress-label {
+    font-size: 0.68rem;
+    color: var(--p-text-muted-color);
+  }
+
+  &--pago .kpi-icon      { color: var(--p-green-500); }
+  &--devedor .kpi-icon   { color: var(--p-orange-500); }
+  &--executado .kpi-icon { color: var(--p-green-500); }
+  &--executar .kpi-icon  { color: var(--p-orange-500); }
+}
+
+::ng-deep {
+  .kpi-progressbar--success .p-progressbar-value { background: var(--p-green-500) !important; }
+  .kpi-progressbar--warn    .p-progressbar-value { background: var(--p-orange-500) !important; }
+  .kpi-progressbar { height: 5px !important; border-radius: 3px !important; }
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.1rem;
+}
+
+.empty-message {
+  text-align: center;
+  color: var(--p-text-muted-color);
+  font-size: 0.9rem;
+  padding: 1.25rem 0 !important;
+}

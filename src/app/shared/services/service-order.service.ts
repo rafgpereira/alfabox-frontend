@@ -7,6 +7,7 @@ import {
   CreateServiceOrder,
   ServiceOrder,
   ServiceOrderListItem,
+  ServiceOrderDetail,
 } from '../models/service-order.model';
 
 @Injectable({ providedIn: 'root' })
@@ -26,8 +27,16 @@ export class ServiceOrderService {
     return this.http.get<ServiceOrderListItem[]>(this.baseUrl, { params });
   }
 
+  findByCode(code: string): Observable<ServiceOrderDetail> {
+    return this.http.get<ServiceOrderDetail>(`${this.baseUrl}/code/${code}`);
+  }
+
   create(payload: CreateServiceOrder): Observable<ServiceOrder> {
     return this.http.post<ServiceOrder>(this.baseUrl, payload);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
   getAddressesByClient(clientId: string): Observable<ServiceOrderAddress[]> {

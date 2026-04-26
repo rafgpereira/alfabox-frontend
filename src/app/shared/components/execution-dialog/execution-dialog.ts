@@ -118,12 +118,14 @@ export class ExecutionDialogComponent implements OnChanges, OnInit {
         amount: this.execution.amount,
         assemblerIds: [], // não editável — ignorado no submit
       });
+      this.form.controls.assemblerIds.disable();
     } else {
       this.form.reset({
         executionDate: todayLocal(),
         amount: null,
         assemblerIds: [],
       });
+      this.form.controls.assemblerIds.enable();
     }
     this.form.controls.amount.setValidators([
       Validators.required,

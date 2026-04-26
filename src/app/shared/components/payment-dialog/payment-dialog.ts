@@ -65,7 +65,7 @@ export class PaymentDialogComponent implements OnChanges {
     { label: 'Dinheiro', value: 'DINHEIRO' },
     { label: 'Cartão de Crédito', value: 'CARTAO_CREDITO' },
     { label: 'Cartão de Débito', value: 'CARTAO_DEBITO' },
-    { label: 'Pix', value: 'PIX' },
+    { label: 'PIX', value: 'PIX' },
   ];
 
   selectedMethod: { label: string; value: PaymentMethod } | null = null;

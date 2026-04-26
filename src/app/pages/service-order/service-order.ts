@@ -110,6 +110,10 @@ export class ServiceOrder implements OnInit {
     this.router.navigate(['/os/criar']);
   }
 
+  navigateToDetail(code: string): void {
+    this.router.navigate(['/os', code]);
+  }
+
   resetAll(): void {
     window.location.reload();
   }

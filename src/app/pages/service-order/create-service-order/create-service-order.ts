@@ -111,7 +111,7 @@ export class CreateServiceOrder implements OnInit {
     { label: 'Dinheiro', value: 'DINHEIRO' },
     { label: 'Cartão de Crédito', value: 'CARTAO_CREDITO' },
     { label: 'Cartão de Débito', value: 'CARTAO_DEBITO' },
-    { label: 'Pix', value: 'PIX' },
+    { label: 'PIX', value: 'PIX' },
   ];
 
   selectedPaymentMethod: { label: string; value: string } | null = null;

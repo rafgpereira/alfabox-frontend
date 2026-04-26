@@ -60,3 +60,78 @@ export interface ServiceOrderListItem {
   paymentStatus: PaymentStatus;
   executionStatus: ExecutionStatus;
 }
+
+// ── Detalhe completo da OS (GET /service-orders/code/:code) ──────────────
+
+export interface ServiceOrderDetailPhone {
+  id: string;
+  number: string;
+}
+
+export interface ServiceOrderDetailClient {
+  id: string;
+  name: string;
+  personType: string;
+  document: string | null;
+  isActive: boolean;
+  phones: ServiceOrderDetailPhone[];
+}
+
+export interface ServiceOrderDetailSeller {
+  id: string;
+  name: string;
+}
+
+export interface ServiceOrderDetailItem {
+  id: string;
+  sequence: number;
+  quantity: number | null;
+  amount: number | null;
+  details: string | null;
+  product: { id: string; name: string } | null;
+}
+
+export interface ServiceOrderDetailPayment {
+  id: string;
+  amount: number;
+  paymentDate: string; // YYYY-MM-DD
+  method: string;
+  installments: number | null;
+}
+
+export interface ServiceOrderDetailAssembler {
+  id: string;
+  name: string;
+}
+
+export interface ServiceOrderDetailExecution {
+  id: string;
+  amount: number;
+  executionDate: string; // YYYY-MM-DD
+  splitAmount: number;
+  assemblers: ServiceOrderDetailAssembler[];
+}
+
+export interface ServiceOrderDetail {
+  id: string;
+  code: string;
+  orderDate: string; // YYYY-MM-DD
+  observation: string | null;
+  totalAmount: number;
+  address: {
+    street: string | null;
+    addressNumber: string | null;
+    complement: string | null;
+    neighborhood: string | null;
+    city: string | null;
+  };
+  client: ServiceOrderDetailClient;
+  seller: ServiceOrderDetailSeller;
+  items: ServiceOrderDetailItem[];
+  payments: ServiceOrderDetailPayment[];
+  executions: ServiceOrderDetailExecution[];
+  paidAmount: number;
+  executedAmount: number;
+  paymentStatus: PaymentStatus;
+  executionStatus: ExecutionStatus;
+}

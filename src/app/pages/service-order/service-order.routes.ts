@@ -10,4 +10,9 @@ export const SERVICE_ORDER_ROUTES: Routes = [
     loadComponent: () =>
       import('./create-service-order/create-service-order').then((m) => m.CreateServiceOrder),
   },
+  {
+    path: ':code',
+    loadComponent: () =>
+      import('./detail-service-order/detail-service-order').then((m) => m.DetailServiceOrder),
+  },
 ];

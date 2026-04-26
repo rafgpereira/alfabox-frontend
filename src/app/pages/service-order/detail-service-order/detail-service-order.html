@@ -1,0 +1,343 @@
+<div class="page">
+    <div class="header">
+        <h1><span>|</span> Ordem de Serviço</h1>
+        <p-button label="Voltar" icon="pi pi-arrow-left" [outlined]="true" (click)="return()"></p-button>
+    </div>
+
+    @if (loading) {
+      <div class="loading-state">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--p-primary-500)"></i>
+      </div>
+    }
+
+    @if (!loading && order) {
+    <div class="card toolbar">
+        <div class="info">
+            <div>
+                <span>Código</span>
+                <h2>{{ order.code }}</h2>
+            </div>
+            <div>
+                <span>Pagamento</span>
+                <p-tag [value]="order.paymentStatus" [severity]="getPaymentStatusSeverity(order.paymentStatus)" />
+            </div>
+            <div>
+                <span>Execução</span>
+                <p-tag [value]="getExecutionStatusLabel(order.executionStatus)" [severity]="getExecutionStatusSeverity(order.executionStatus)" />
+            </div>
+        </div>
+        <div class="actions">
+            <p-button label="Imprimir" outlined="true" icon="pi pi-print"></p-button>
+            <p-button label="Editar" icon="pi pi-pencil"></p-button>
+            <p-button label="Excluir" severity="danger" icon="pi pi-trash" (click)="confirmDeleteOrder($event)"></p-button>
+        </div>
+    </div>
+    <div class="content">
+        <!-- Detalhes da OS -->
+        <div class="details card">
+
+          <!-- ── Data + Vendedor ── -->
+          <div class="detail-row">
+            <div class="detail-field">
+              <span class="field-label">Data</span>
+              <span class="field-value">{{ toDate(order.orderDate) | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="detail-field">
+              <span class="field-label">Vendedor</span>
+              <span class="field-value">{{ order.seller.name }}</span>
+            </div>
+          </div>
+
+          <p-divider />
+
+          <!-- ── Cliente ── -->
+          <p class="section-title">Cliente</p>
+
+          <div class="detail-row">
+            <div class="detail-field detail-field--grow">
+              <span class="field-label">Nome</span>
+              <span class="field-value">{{ order.client.name }}</span>
+            </div>
+            <div class="detail-field">
+              <span class="field-label">Tipo</span>
+              <span class="field-value">{{ formatPersonType() }}</span>
+            </div>
+            <div class="detail-field">
+              <span class="field-label">{{ documentLabel }}</span>
+              <span class="field-value">{{ formatDocument() }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-field detail-field--phones">
+              <span class="field-label">Telefones</span>
+              <div class="phones-list">
+                @for (phone of order.client.phones; track phone.id) {
+                  <span class="phone-item">
+                    <span class="field-value">{{ phone.number | phoneFormat }}</span>
+                    <a [href]="whatsappUrl(phone.number)" target="_blank" rel="noopener noreferrer" class="whatsapp-btn" pTooltip="Abrir no WhatsApp" tooltipPosition="top">
+                      <i class="pi pi-whatsapp"></i>
+                    </a>
+                  </span>
+                }
+                @if (order.client.phones.length === 0) {
+                  <span class="field-value field-value--muted">—</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <p-divider />
+
+          <!-- ── Endereço ── -->
+          <p class="section-title">Endereço</p>
+
+          <div class="detail-row">
+            <div class="detail-field detail-field--addr-street">
+              <span class="field-label">Rua</span>
+              <span class="field-value">{{ order.address.street || '—' }}</span>
+            </div>
+            <div class="detail-field detail-field--addr-number">
+              <span class="field-label">Número</span>
+              <span class="field-value">{{ order.address.addressNumber || '—' }}</span>
+            </div>
+            <div class="detail-field detail-field--addr-complement">
+              <span class="field-label">Complemento</span>
+              <span class="field-value">{{ order.address.complement || '—' }}</span>
+            </div>
+            <div class="detail-field detail-field--addr-neighborhood">
+              <span class="field-label">Bairro</span>
+              <span class="field-value">{{ order.address.neighborhood || '—' }}</span>
+            </div>
+            <div class="detail-field detail-field--addr-city">
+              <span class="field-label">Cidade</span>
+              <span class="field-value">{{ order.address.city || '—' }}</span>
+            </div>
+          </div>
+
+          <p-divider />
+
+          <!-- ── Itens ── -->
+          <p class="section-title">Itens</p>
+
+          <p-table
+            [value]="order.items"
+            [showGridlines]="true"
+            [tableStyle]="{ 'width': '100%' }"
+            styleClass="items-table"
+          >
+            <ng-template #header>
+              <tr>
+                <th class="col-qty">Qtd</th>
+                <th class="col-desc">Descrição</th>
+                <th class="col-amount">Valor</th>
+              </tr>
+            </ng-template>
+            <ng-template #body let-item>
+              <tr>
+                <td class="col-qty">{{ item.quantity ?? '' }}</td>
+                <td class="col-desc">{{ itemDescription(item) }}</td>
+                <td class="col-amount">{{ item.amount !== null ? (item.amount | currency:'BRL') : '' }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+          <p-divider />
+
+          <!-- ── Observação + Valor Total ── -->
+          <div class="detail-row detail-row--bottom">
+            <div class="detail-field detail-field--grow">
+              <span class="field-label">Observação</span>
+              <span class="field-value field-value--muted">{{ order.observation || '—' }}</span>
+            </div>
+            <div class="detail-field detail-field--total">
+              <span class="field-label">Valor Total</span>
+              <span class="field-value field-value--total">{{ order.totalAmount | currency:'BRL' }}</span>
+            </div>
+          </div>
+
+        </div>
+        <!-- PAGAMENTOS + EXECUÇÕES-->
+        <div class="payments-executions">
+
+          <!-- ── Card de Pagamentos ── -->
+          <div class="payments card">
+            <div class="card-header">
+              <h3><span><i class="pi pi-dollar"></i></span> Pagamentos</h3>
+              @if(order.paymentStatus !== 'PAGO') {
+              <p-button
+                label="Lançar Pagamento"
+                icon="pi pi-plus"
+                size="small"
+                (click)="openCreatePaymentDialog()"
+              />
+              }
+            </div>
+
+            <div class="kpi-grid">
+              <div class="kpi-card kpi-card--pago" [class.kpi-card--full]="order.paymentStatus === 'PAGO'">
+                <div class="kpi-body">
+                  <div class="kpi-left">
+                    <i class="pi pi-check-circle kpi-icon"></i>
+                    <span class="kpi-label">Total Pago</span>
+                  </div>
+                  <span class="kpi-value">{{ order.paidAmount | currency:'BRL' }}</span>
+                </div>
+                <div class="kpi-progress">
+                  <p-progressbar [value]="paidPercentage" [showValue]="false" styleClass="kpi-progressbar kpi-progressbar--success" />
+                  <span class="kpi-progress-label">{{ paidPercentage }}% pago</span>
+                </div>
+              </div>
+              @if(order.paymentStatus !== 'PAGO') {
+              <div class="kpi-card kpi-card--devedor">
+                <div class="kpi-body">
+                  <div class="kpi-left">
+                    <i class="pi pi-clock kpi-icon"></i>
+                    <span class="kpi-label">Saldo Devedor</span>
+                  </div>
+                  <span class="kpi-value">{{ balance | currency:'BRL' }}</span>
+                </div>
+              </div>
+            }
+            </div>
+            @if(order.payments.length > 0){
+            <p-table
+              [value]="order.payments"
+              [tableStyle]="{ 'width': '100%' }"
+            >
+              <ng-template #header>
+                <tr>
+                  <th>Data</th>
+                  <th>Valor</th>
+                  <th>Método</th>
+                  <th>Parcelas</th>
+                  <th style="width: 6rem; text-align: center">Ações</th>
+                </tr>
+              </ng-template>
+              <ng-template #body let-p>
+                <tr>
+                  <td>{{ toDate(p.paymentDate) | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ p.amount | currency:'BRL' }}</td>
+                  <td>{{ formatPaymentMethod(p.method, null) }}</td>
+                  <td>{{ p.installments ?? '' }}</td>
+                  <td class="actions">
+                    <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" pTooltip="Editar" tooltipPosition="top" (click)="openEditPaymentDialog(p)" />
+                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" pTooltip="Excluir" tooltipPosition="top" (click)="confirmDeletePayment($event, p)" />
+                  </td>
+                </tr>
+              </ng-template>
+            <ng-template #emptymessage>
+                <tr>
+                  <td colspan="5" class="empty-message">Nenhum pagamento registrado.</td>
+                </tr>
+              </ng-template>
+            </p-table>
+        }
+          </div>
+
+          <!-- ── Card de Execuções ── -->
+          <div class="executions card">
+            <div class="card-header">
+              <h3><span><i class="pi pi-wrench"></i></span> Execuções</h3>
+              @if(order.executionStatus !== 'CONCLUIDO') {
+              <p-button
+                label="Registrar Execução"
+                icon="pi pi-plus"
+                size="small"
+                (click)="openCreateExecutionDialog()"
+              />
+              }
+            </div>
+
+            <div class="kpi-grid">
+              <div class="kpi-card kpi-card--executado" [class.kpi-card--full]="order.executionStatus === 'CONCLUIDO'">
+                <div class="kpi-body">
+                  <div class="kpi-left">
+                    <i class="pi pi-check-circle kpi-icon"></i>
+                    <span class="kpi-label">Total Executado</span>
+                  </div>
+                  <span class="kpi-value">{{ order.executedAmount | currency:'BRL' }}</span>
+                </div>
+                <div class="kpi-progress">
+                  <p-progressbar [value]="executedPercentage" [showValue]="false" styleClass="kpi-progressbar kpi-progressbar--success" />
+                  <span class="kpi-progress-label">{{ executedPercentage }}% executado</span>
+                </div>
+              </div>
+              @if(order.executionStatus !== 'CONCLUIDO') {
+              <div class="kpi-card kpi-card--executar">
+                <div class="kpi-body">
+                  <div class="kpi-left">
+                    <i class="pi pi-clock kpi-icon"></i>
+                    <span class="kpi-label">À Executar</span>
+                  </div>
+                  <span class="kpi-value">{{ toExecute | currency:'BRL' }}</span>
+                </div>
+              </div>
+            }
+            </div>
+            @if(order.executions.length > 0){
+            <p-table
+              [value]="order.executions"
+              [tableStyle]="{ 'width': '100%' }"
+            >
+              <ng-template #header>
+                <tr>
+                  <th>Data</th>
+                  <th>Valor</th>
+                  <th>Por Mont.</th>
+                  <th>Montadores</th>
+                  <th style="width: 6rem; text-align: center">Ações</th>
+                </tr>
+              </ng-template>
+              <ng-template #body let-e>
+                <tr>
+                  <td>{{ toDate(e.executionDate) | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ e.amount | currency:'BRL' }}</td>
+                  <td>{{ e.splitAmount | currency:'BRL' }}</td>
+                  <td>{{ formatAssemblers(e.assemblers) }}</td>
+                  <td class="actions">
+                    <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" pTooltip="Editar" tooltipPosition="top" (click)="openEditExecutionDialog(e)" />
+                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" pTooltip="Excluir" tooltipPosition="top" (click)="confirmDeleteExecution($event, e)" />
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template #emptymessage>
+                <tr>
+                  <td colspan="5" class="empty-message">Nenhuma execução registrada.</td>
+                </tr>
+              </ng-template>
+            </p-table>
+        }
+          </div>
+
+        </div>
+    </div>
+    } <!-- end @if order -->
+</div>
+
+<!-- ═══ Dialogs ═══ -->
+@if (order) {
+<app-payment-dialog
+  [(visible)]="paymentDialogVisible"
+  [orderId]="order.id"
+  [orderCode]="order.code"
+  [clientName]="order.client.name"
+  [orderTotal]="order.totalAmount"
+  [paidAmount]="order.paidAmount"
+  [mode]="paymentDialogMode"
+  [payment]="paymentDialogPayment"
+  (saved)="reload()"
+/>
+
+<app-execution-dialog
+  [(visible)]="executionDialogVisible"
+  [orderId]="order.id"
+  [orderCode]="order.code"
+  [clientName]="order.client.name"
+  [orderTotal]="order.totalAmount"
+  [executedAmount]="order.executedAmount"
+  [mode]="executionDialogMode"
+  [execution]="executionDialogExecution"
+  (saved)="reload()"
+/>
+}

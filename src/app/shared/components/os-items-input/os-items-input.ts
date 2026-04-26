@@ -20,6 +20,7 @@ import { Product } from '../../models/product.model';
 
 /** Valor emitido para o formulário pai por item */
 export interface OsItemValue {
+  id?: string | null;
   productId: string | null;
   quantity: number | null;
   amount: number | null;
@@ -253,6 +254,7 @@ export class OsItemsInputComponent implements ControlValueAccessor, Validator, O
   private pushGroup(value?: OsItemValue | null, emitEvent = true): void {
     const group = this.fb.group(
       {
+        id: [value?.id ?? null],
         productId: [value?.productId ?? null],
         quantity: [value?.quantity ?? null],
         amount: [value?.amount ?? null],
@@ -265,6 +267,7 @@ export class OsItemsInputComponent implements ControlValueAccessor, Validator, O
 
   private emitValue(): void {
     const raw: OsItemValue[] = this.formArray.getRawValue().map((item) => ({
+      id: item['id'] ?? null,
       productId: item['productId'] ?? null,
       quantity: item['quantity'] ?? null,
       amount: item['amount'] ?? null,
