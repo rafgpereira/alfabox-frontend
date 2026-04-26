@@ -13,6 +13,8 @@ import {
 import { fromApiDate, toApiDate } from '../../shared/utils/date.utils';
 import { sumField, subtractCurrency } from '../../shared/utils/money.utils';
 import { Router } from '@angular/router';
+import { PaymentDialogComponent } from '../../shared/components/payment-dialog/payment-dialog';
+import { ExecutionDialogComponent } from '../../shared/components/execution-dialog/execution-dialog';
 
 /** Linha da tabela — datas convertidas para Date para os filtros locais do PrimeNG. */
 export interface ServiceOrderRow extends Omit<
@@ -32,6 +34,8 @@ export interface ServiceOrderRow extends Omit<
     ProgressBarModule,
     IconFieldModule,
     InputIconModule,
+    PaymentDialogComponent,
+    ExecutionDialogComponent,
   ],
   templateUrl: './service-order.html',
   styleUrl: './service-order.scss',
@@ -76,6 +80,24 @@ export class ServiceOrder implements OnInit {
     { label: 'CONCLUÍDO', value: 'CONCLUIDO' },
   ];
 
+  // ── Dialog Pagamento ──────────────────────────────────────────────────
+
+  paymentDialogVisible = false;
+  paymentDialogOrderId = '';
+  paymentDialogOrderCode = '';
+  paymentDialogClientName = '';
+  paymentDialogOrderTotal = 0;
+  paymentDialogPaidAmount = 0;
+
+  // ── Dialog Execução ───────────────────────────────────────────────────
+
+  executionDialogVisible = false;
+  executionDialogOrderId = '';
+  executionDialogOrderCode = '';
+  executionDialogClientName = '';
+  executionDialogOrderTotal = 0;
+  executionDialogExecutedAmount = 0;
+
   // ── Lifecycle ─────────────────────────────────────────────────────────
 
   ngOnInit(): void {
@@ -86,6 +108,10 @@ export class ServiceOrder implements OnInit {
 
   createNewOS(): void {
     this.router.navigate(['/os/criar']);
+  }
+
+  resetAll(): void {
+    window.location.reload();
   }
 
   private loadCurrentMonth(): void {
@@ -193,5 +219,37 @@ export class ServiceOrder implements OnInit {
     if (status === 'CONCLUIDO') return 'CONCLUÍDO';
     if (status === 'EM_ANDAMENTO') return 'PARCIAL';
     return 'PENDENTE';
+  }
+
+  // ── Ações de dialog ───────────────────────────────────────────────────
+
+  openPaymentDialog(order: ServiceOrderRow): void {
+    this.paymentDialogOrderId = order.id;
+    this.paymentDialogOrderCode = order.code;
+    this.paymentDialogClientName = order.clientName;
+    this.paymentDialogOrderTotal = order.totalAmount;
+    this.paymentDialogPaidAmount = order.paidAmount;
+    this.paymentDialogVisible = true;
+  }
+
+  openExecutionDialog(order: ServiceOrderRow): void {
+    this.executionDialogOrderId = order.id;
+    this.executionDialogOrderCode = order.code;
+    this.executionDialogClientName = order.clientName;
+    this.executionDialogOrderTotal = order.totalAmount;
+    this.executionDialogExecutedAmount = order.executedAmount;
+    this.executionDialogVisible = true;
+  }
+
+  onDialogSaved(): void {
+    // Recarrega a lista para atualizar KPIs e status
+    const [start, end] = this.dateRange;
+    if (this.searchMode && this.searchText.trim()) {
+      this.load({ search: this.searchText.trim() });
+    } else if (start && end) {
+      this.load({ startDate: toApiDate(start), endDate: toApiDate(end) });
+    } else {
+      this.loadCurrentMonth();
+    }
   }
 }

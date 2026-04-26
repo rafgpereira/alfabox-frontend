@@ -1,0 +1,147 @@
+<p-dialog
+  [header]="header"
+  [modal]="true"
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [style]="{ width: '55rem' }"
+  [draggable]="false"
+  [resizable]="false"
+  [focusOnShow]="false"
+>
+  <form [formGroup]="form" class="dialog-form">
+
+    <!-- Seção: Contexto da OS -->
+    <div class="os-context card">
+      <div class="info-item">
+        <span class="info-label">Ordem de Serviço</span>
+        <p-tag [value]="orderCode" severity="secondary" />
+      </div>
+      <div class="info-item">
+        <span class="info-label">Cliente</span>
+        <p-tag [value]="clientName" severity="secondary" />
+      </div>
+      <div class="info-item">
+        <span class="info-label">Valor Total</span>
+        <p-tag [value]="formatBRL(orderTotal)" severity="info" />
+      </div>
+      <div class="info-item">
+        <span class="info-label">{{ mode === 'create' ? 'Disponível a Pagar' : 'Disponível neste Pagto.' }}</span>
+        <p-tag [value]="formatBRL(availableAmount)" severity="warn" />
+      </div>
+    </div>
+
+    <!-- Linha 1: Data + Valor -->
+    <div class="form-row">
+
+      <div class="form-field field-date">
+        <p-floatlabel variant="on" class="full-width-control">
+          <p-datepicker
+            inputId="pay_date"
+            formControlName="paymentDate"
+            dateFormat="dd/mm/yy"
+            showIcon
+            iconDisplay="input"
+            [fluid]="true"
+            [autofocus]="false"
+            appendTo="body"
+            [invalid]="isInvalid('paymentDate')"
+          />
+          <label for="pay_date">Data do Pagamento *</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('paymentDate')" />
+      </div>
+
+      <div class="form-field field-amount">
+        <p-floatlabel variant="on" class="full-width-control">
+          <p-inputnumber
+            inputId="pay_amount"
+            formControlName="amount"
+            mode="currency"
+            currency="BRL"
+            locale="pt-BR"
+            [fluid]="true"
+            [invalid]="isInvalid('amount')"
+          />
+          <label for="pay_amount">Valor *</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('amount')" />
+      </div>
+
+    </div>
+
+    <!-- Linha 2: Método + Parcelas -->
+    <div class="form-row">
+
+      <div class="form-field field-method">
+        <p-floatlabel variant="on" class="full-width-control">
+          <p-autocomplete
+            inputId="pay_method"
+            [(ngModel)]="selectedMethod"
+            [ngModelOptions]="{ standalone: true }"
+            [suggestions]="methodSuggestions"
+            (completeMethod)="searchMethods($event)"
+            (onSelect)="onMethodSelect($event)"
+            (onClear)="onMethodClear()"
+            [showClear]="true"
+            [forceSelection]="true"
+            [fluid]="true"
+            [minLength]="0"
+            [completeOnFocus]="true"
+            optionLabel="label"
+            dataKey="value"
+            emptyMessage="Nenhum método encontrado."
+            scrollHeight="220px"
+            appendTo="body"
+            [invalid]="isInvalid('method')"
+          >
+            <ng-template let-method #item>
+              <span>{{ method.label }}</span>
+            </ng-template>
+          </p-autocomplete>
+          <label for="pay_method">Método de Pagamento *</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('method')" />
+      </div>
+
+      @if (isCredit) {
+        <div class="form-field field-installments">
+          <p-floatlabel variant="on" class="full-width-control">
+            <p-inputnumber
+              inputId="pay_installments"
+              formControlName="installments"
+              [useGrouping]="false"
+              [showButtons]="true"
+              [min]="1"
+              [max]="12"
+              [fluid]="true"
+              [invalid]="isInvalid('installments')"
+            />
+            <label for="pay_installments">Parcelas *</label>
+          </p-floatlabel>
+          <app-error-message [control]="form.get('installments')" />
+        </div>
+      }
+
+    </div>
+
+  </form>
+
+  <ng-template #footer>
+    <div class="dialog-footer">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        [outlined]="true"
+        icon="pi pi-times"
+        (click)="close()"
+      />
+      <p-button
+        [label]="'Salvar'"
+        [disabled]="form.invalid"
+        icon="pi pi-save"
+        [loading]="saving"
+        (click)="save()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

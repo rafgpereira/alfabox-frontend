@@ -1,0 +1,136 @@
+<p-dialog
+  [header]="header"
+  [modal]="true"
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [style]="{ width: '55rem' }"
+  [draggable]="false"
+  [resizable]="false"
+  [focusOnShow]="false"
+>
+  <form [formGroup]="form" class="dialog-form">
+
+    <!-- Seção: Contexto da OS -->
+    <div class="os-context card">
+      <div class="info-item">
+        <span class="info-label">Ordem de Serviço</span>
+        <p-tag [value]="orderCode" severity="secondary" />
+      </div>
+      <div class="info-item">
+        <span class="info-label">Cliente</span>
+        <p-tag [value]="clientName" severity="secondary" />
+      </div>
+      <div class="info-item">
+        <span class="info-label">Valor Total</span>
+        <p-tag [value]="formatBRL(orderTotal)" severity="info" />
+      </div>
+      <div class="info-item">
+        <span class="info-label">{{ mode === 'create' ? 'Disponível a Executar' : 'Disponível nesta Execução' }}</span>
+        <p-tag [value]="formatBRL(availableAmount)" severity="warn" />
+      </div>
+    </div>
+
+    <!-- Linha 1: Data + Valor -->
+    <div class="form-row">
+
+      <div class="form-field field-date">
+        <p-floatlabel variant="on" class="full-width-control">
+          <p-datepicker
+            inputId="exec_date"
+            formControlName="executionDate"
+            dateFormat="dd/mm/yy"
+            showIcon
+            iconDisplay="input"
+            [fluid]="true"
+            [autofocus]="false"
+            appendTo="body"
+            [invalid]="isInvalid('executionDate')"
+          />
+          <label for="exec_date">Data da Execução *</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('executionDate')" />
+      </div>
+
+      <div class="form-field field-amount">
+        <p-floatlabel variant="on" class="full-width-control">
+          <p-inputnumber
+            inputId="exec_amount"
+            formControlName="amount"
+            mode="currency"
+            currency="BRL"
+            locale="pt-BR"
+            [fluid]="true"
+            [invalid]="isInvalid('amount')"
+          />
+          <label for="exec_amount">Valor *</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('amount')" />
+      </div>
+
+    </div>
+
+    <!-- Linha 2: Montadores -->
+    @if (mode === 'create') {
+      <div class="form-field">
+        <p-floatlabel variant="on" class="full-width-control">
+          <p-multiselect
+            inputId="exec_assemblers"
+            formControlName="assemblerIds"
+            [options]="assemblers"
+            optionLabel="name"
+            optionValue="id"
+            filter="false"
+            [fluid]="true"
+            appendTo="body"
+            [invalid]="isInvalid('assemblerIds')"
+            emptyMessage="Nenhum montador ativo encontrado."
+            display="chip"
+            [maxSelectedLabels]="99"
+          />
+          <label for="exec_assemblers">Montadores *</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('assemblerIds')" />
+      </div>
+    }
+
+    @if (mode === 'edit') {
+      <div class="assemblers-readonly">
+        <span class="assemblers-label">Montadores</span>
+        <div class="assemblers-tags">
+          @for (a of executionAssemblers; track a.id) {
+            <p-tag [value]="a.name" severity="secondary" />
+          }
+          @if (executionAssemblers.length === 0) {
+            <span class="assemblers-empty">—</span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Nota informativa -->
+    <p class="info-note">
+      <i class="pi pi-info-circle"></i>
+      O valor de uma execução é dividido igualmente entre os montadores dela.
+    </p>
+
+  </form>
+
+  <ng-template #footer>
+    <div class="dialog-footer">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        [outlined]="true"
+        icon="pi pi-times"
+        (click)="close()"
+      />
+      <p-button
+        [label]="'Salvar'"
+        [disabled]="form.invalid"
+        icon="pi pi-save"
+        [loading]="saving"
+        (click)="save()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

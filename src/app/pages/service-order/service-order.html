@@ -30,6 +30,14 @@
           />
           <label for="date_range">Período</label>
         </p-floatlabel>
+        <p-button
+          icon="pi pi-refresh"
+          severity="secondary"
+          [outlined]="true"
+          pTooltip="Restaurar filtros e período padrão"
+          tooltipPosition="top"
+          (click)="resetAll()"
+        />
       </div>
 
       <!-- Busca Global -->
@@ -273,8 +281,8 @@
           </td>
           <td class="actions">
             <p-button icon="pi pi-eye" [rounded]="true" [text]="true" severity="info" pTooltip="Visualizar" tooltipPosition="top" />
-            <p-button icon="pi pi-dollar" [rounded]="true" [text]="true" severity="success" pTooltip="Lançar Pagamento" tooltipPosition="top" />
-            <p-button icon="pi pi-wrench" [rounded]="true" [text]="true" severity="warn" pTooltip="Registrar Execução" tooltipPosition="top" />
+            <p-button icon="pi pi-dollar" [rounded]="true" [text]="true" severity="success" pTooltip="Lançar Pagamento" tooltipPosition="top" (click)="openPaymentDialog(order)" [disabled]="order.paymentStatus === 'PAGO'" />
+            <p-button icon="pi pi-wrench" [rounded]="true" [text]="true" severity="warn" pTooltip="Registrar Execução" tooltipPosition="top" (click)="openExecutionDialog(order)" [disabled]="order.executionStatus === 'CONCLUIDO'" />
             <p-button icon="pi pi-print" [rounded]="true" [text]="true" severity="secondary" pTooltip="Imprimir" tooltipPosition="top" />
           </td>
         </tr>
@@ -282,7 +290,7 @@
 
       <!-- Vazio -->
       <ng-template #emptymessage>
-        <tr>
+        <tr style="height: 60px;">
           <td colspan="10" class="empty-message">Nenhuma ordem de serviço encontrada.</td>
         </tr>
       </ng-template>
@@ -291,3 +299,27 @@
 
   </div>
 </div>
+
+<!-- ═══ Dialog de Pagamento ═══ -->
+<app-payment-dialog
+  [(visible)]="paymentDialogVisible"
+  [orderId]="paymentDialogOrderId"
+  [orderCode]="paymentDialogOrderCode"
+  [clientName]="paymentDialogClientName"
+  [orderTotal]="paymentDialogOrderTotal"
+  [paidAmount]="paymentDialogPaidAmount"
+  mode="create"
+  (saved)="onDialogSaved()"
+/>
+
+<!-- ═══ Dialog de Execução ═══ -->
+<app-execution-dialog
+  [(visible)]="executionDialogVisible"
+  [orderId]="executionDialogOrderId"
+  [orderCode]="executionDialogOrderCode"
+  [clientName]="executionDialogClientName"
+  [orderTotal]="executionDialogOrderTotal"
+  [executedAmount]="executionDialogExecutedAmount"
+  mode="create"
+  (saved)="onDialogSaved()"
+/>
