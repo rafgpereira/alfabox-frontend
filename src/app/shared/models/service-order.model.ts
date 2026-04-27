@@ -6,6 +6,14 @@ export interface ServiceOrderAddress {
   city: string | null;
 }
 
+export interface UpdateAddress {
+  street: string | null;
+  addressNumber: string | null;
+  complement: string | null;
+  neighborhood: string | null;
+  city: string | null;
+}
+
 export interface CreateServiceOrderItem {
   productId: string | null;
   quantity: number | null;

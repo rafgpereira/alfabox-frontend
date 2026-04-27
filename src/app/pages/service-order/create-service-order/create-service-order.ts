@@ -2,7 +2,6 @@ import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AutoCompleteCompleteEvent, AutoCompleteSelectEvent } from 'primeng/autocomplete';
-import { NgxMaskDirective } from 'ngx-mask';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subject, debounceTime, switchMap, of } from 'rxjs';
 import { ClientService } from '../../../shared/services/client.service';
@@ -12,8 +11,6 @@ import { ProductService } from '../../../shared/services/product.service';
 import { Client, ClientPhone } from '../../../shared/models/client.model';
 import { ServiceOrderAddress } from '../../../shared/models/service-order.model';
 import { Seller } from '../../../shared/models/seller.model';
-import { cpfValidator } from '../../../shared/validators/cpf.validator';
-import { cnpjValidator } from '../../../shared/validators/cnpj.validator';
 import { ClientDialogComponent } from '../../../shared/components/client-dialog/client-dialog';
 import { CpfFormatPipe } from '../../../shared/pipes/cpf-format.pipe';
 import { CnpjFormatPipe } from '../../../shared/pipes/cnpj-format.pipe';

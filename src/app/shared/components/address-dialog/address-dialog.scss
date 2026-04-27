@@ -1,0 +1,30 @@
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 0.25rem;
+}
+
+.address-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+// Linha 1: Rua 50% | Número 20% | Complemento 30%
+.field-street     { flex: 5; }
+.field-number     { flex: 2; }
+.field-complement { flex: 3; }
+
+// Linha 2: metade cada
+.field-half { flex: 1; }
+
+.full-width-control {
+  width: 100%;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}

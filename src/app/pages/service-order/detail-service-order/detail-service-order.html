@@ -257,7 +257,11 @@
           <p-divider />
 
           <!-- ── Endereço ── -->
-          <p class="section-title">Endereço</p>
+          <div class="section-title-row">
+            <p class="section-title">Endereço</p>
+            <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" size="small" severity="info"
+              pTooltip="Editar Endereço" tooltipPosition="top" (click)="openEditAddressDialog()" />
+          </div>
 
           <div class="detail-row">
             <div class="detail-field detail-field--addr-street">
@@ -514,5 +518,12 @@
   [client]="{ id: order.client.id, name: order.client.name, personType: order.client.personType, document: order.client.document ?? null, isActive: order.client.isActive, phones: order.client.phones }"
   [allowStatusToggle]="true"
   (saved)="onClientSaved($event)"
+/>
+
+<app-address-dialog
+  [(visible)]="addressDialogVisible"
+  [orderId]="order.id"
+  [address]="order.address"
+  (saved)="onAddressSaved($event)"
 />
 }

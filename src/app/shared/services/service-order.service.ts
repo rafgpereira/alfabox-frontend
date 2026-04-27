@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import {
   ServiceOrderAddress,
+  UpdateAddress,
   CreateServiceOrder,
   ServiceOrder,
   ServiceOrderListItem,
@@ -37,6 +38,10 @@ export class ServiceOrderService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  updateAddress(id: string, payload: UpdateAddress): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${id}/address`, payload);
   }
 
   getAddressesByClient(clientId: string): Observable<ServiceOrderAddress[]> {

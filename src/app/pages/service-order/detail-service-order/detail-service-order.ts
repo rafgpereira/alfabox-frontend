@@ -11,6 +11,7 @@ import { ServiceOrderExecutionService } from '../../../shared/services/service-o
 import { PaymentDialogComponent } from '../../../shared/components/payment-dialog/payment-dialog';
 import { ExecutionDialogComponent } from '../../../shared/components/execution-dialog/execution-dialog';
 import { ClientDialogComponent } from '../../../shared/components/client-dialog/client-dialog';
+import { AddressDialogComponent } from '../../../shared/components/address-dialog/address-dialog';
 import { Client } from '../../../shared/models/client.model';
 import {
   ServiceOrderDetail,
@@ -41,6 +42,7 @@ import { CnpjFormatPipe } from '../../../shared/pipes/cnpj-format.pipe';
     PaymentDialogComponent,
     ExecutionDialogComponent,
     ClientDialogComponent,
+    AddressDialogComponent,
   ],
   providers: [],
   templateUrl: './detail-service-order.html',
@@ -70,6 +72,9 @@ export class DetailServiceOrder implements OnInit {
 
   // ── Dialog Cliente ────────────────────────────────────────────────────
   clientDialogVisible = false;
+
+  // ── Dialog Endereço ───────────────────────────────────────────────────
+  addressDialogVisible = false;
 
   ngOnInit(): void {
     const code = this.route.snapshot.paramMap.get('code')!;
@@ -268,6 +273,27 @@ export class DetailServiceOrder implements OnInit {
 
   return(): void {
     this.router.navigate(['/os']);
+  }
+
+  // ── Ações: Endereço ───────────────────────────────────────────────────
+
+  openEditAddressDialog(): void {
+    this.addressDialogVisible = true;
+  }
+
+  onAddressSaved(updated: {
+    street: string | null;
+    addressNumber: string | null;
+    neighborhood: string | null;
+    complement: string | null;
+    city: string | null;
+  }): void {
+    if (this.order) {
+      this.order = {
+        ...this.order,
+        address: { ...updated },
+      };
+    }
   }
 
   // ── Ações: Cliente ────────────────────────────────────────────────────

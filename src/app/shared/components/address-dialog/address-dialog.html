@@ -1,0 +1,79 @@
+<p-dialog
+  header="Editar Endereço"
+  [modal]="true"
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [style]="{ width: '52rem' }"
+  [draggable]="false"
+  [resizable]="false"
+  [focusOnShow]="false"
+>
+  <form [formGroup]="form" class="dialog-form">
+
+    <!-- Linha 1: Rua (50%) | Número (20%) | Complemento (30%) -->
+    <div class="address-row">
+      <div class="form-field field-street">
+        <p-floatlabel variant="on" class="full-width-control">
+          <input pInputText fluid id="addr_street" formControlName="street" [invalid]="isInvalid('street')" />
+          <label for="addr_street">Rua</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('street')" />
+      </div>
+
+      <div class="form-field field-number">
+        <p-floatlabel variant="on" class="full-width-control">
+          <input pInputText fluid id="addr_number" formControlName="addressNumber" [invalid]="isInvalid('addressNumber')" />
+          <label for="addr_number">Número</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('addressNumber')" />
+      </div>
+
+      <div class="form-field field-complement">
+        <p-floatlabel variant="on" class="full-width-control">
+          <input pInputText fluid id="addr_complement" formControlName="complement" [invalid]="isInvalid('complement')" />
+          <label for="addr_complement">Complemento</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('complement')" />
+      </div>
+    </div>
+
+    <!-- Linha 2: Bairro (50%) | Cidade (50%) -->
+    <div class="address-row">
+      <div class="form-field field-half">
+        <p-floatlabel variant="on" class="full-width-control">
+          <input pInputText fluid id="addr_neighborhood" formControlName="neighborhood" [invalid]="isInvalid('neighborhood')" />
+          <label for="addr_neighborhood">Bairro</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('neighborhood')" />
+      </div>
+
+      <div class="form-field field-half">
+        <p-floatlabel variant="on" class="full-width-control">
+          <input pInputText fluid id="addr_city" formControlName="city" [invalid]="isInvalid('city')" />
+          <label for="addr_city">Cidade</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('city')" />
+      </div>
+    </div>
+
+  </form>
+
+  <ng-template #footer>
+    <div class="dialog-footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        severity="secondary"
+        [outlined]="true"
+        (click)="close()"
+      />
+      <p-button
+        label="Salvar"
+        icon="pi pi-save"
+        [loading]="saving"
+        [disabled]="form.invalid"
+        (click)="save()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
