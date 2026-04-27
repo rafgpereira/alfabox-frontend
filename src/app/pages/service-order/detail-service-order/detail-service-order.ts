@@ -9,6 +9,8 @@ import { ServiceOrderPaymentService } from '../../../shared/services/service-ord
 import { ServiceOrderExecutionService } from '../../../shared/services/service-order-execution.service';
 import { PaymentDialogComponent } from '../../../shared/components/payment-dialog/payment-dialog';
 import { ExecutionDialogComponent } from '../../../shared/components/execution-dialog/execution-dialog';
+import { ClientDialogComponent } from '../../../shared/components/client-dialog/client-dialog';
+import { Client } from '../../../shared/models/client.model';
 import {
   ServiceOrderDetail,
   ServiceOrderDetailItem,
@@ -36,6 +38,7 @@ import { CnpjFormatPipe } from '../../../shared/pipes/cnpj-format.pipe';
     PhoneFormatPipe,
     PaymentDialogComponent,
     ExecutionDialogComponent,
+    ClientDialogComponent,
   ],
   providers: [],
   templateUrl: './detail-service-order.html',
@@ -62,6 +65,9 @@ export class DetailServiceOrder implements OnInit {
   executionDialogVisible = false;
   executionDialogMode: 'create' | 'edit' = 'create';
   executionDialogExecution: ServiceOrderExecution | null = null;
+
+  // ── Dialog Cliente ────────────────────────────────────────────────────
+  clientDialogVisible = false;
 
   ngOnInit(): void {
     const code = this.route.snapshot.paramMap.get('code')!;
@@ -260,6 +266,29 @@ export class DetailServiceOrder implements OnInit {
 
   return(): void {
     this.router.navigate(['/os']);
+  }
+
+  // ── Ações: Cliente ────────────────────────────────────────────────────
+
+  openEditClientDialog(): void {
+    this.clientDialogVisible = true;
+  }
+
+  onClientSaved(updated: Client): void {
+    // Atualiza os dados do cliente na OS sem recarregar tudo da API
+    if (this.order) {
+      this.order = {
+        ...this.order,
+        client: {
+          ...this.order.client,
+          name: updated.name,
+          personType: updated.personType,
+          document: updated.document,
+          isActive: updated.isActive,
+          phones: updated.phones,
+        },
+      };
+    }
   }
 
   confirmDeleteOrder(event: Event): void {

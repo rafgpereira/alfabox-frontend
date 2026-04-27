@@ -51,7 +51,11 @@
           <p-divider />
 
           <!-- ── Cliente ── -->
-          <p class="section-title">Cliente</p>
+          <div class="section-title-row">
+            <p class="section-title">Cliente</p>
+            <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" size="small" severity="info"
+              pTooltip="Editar Cliente" tooltipPosition="top" (click)="openEditClientDialog()" />
+          </div>
 
           <div class="detail-row">
             <div class="detail-field detail-field--grow">
@@ -339,5 +343,13 @@
   [mode]="executionDialogMode"
   [execution]="executionDialogExecution"
   (saved)="reload()"
+/>
+
+<app-client-dialog
+  mode="edit"
+  [(visible)]="clientDialogVisible"
+  [client]="{ id: order.client.id, name: order.client.name, personType: order.client.personType, document: order.client.document ?? null, isActive: order.client.isActive, phones: order.client.phones }"
+  [allowStatusToggle]="true"
+  (saved)="onClientSaved($event)"
 />
 }

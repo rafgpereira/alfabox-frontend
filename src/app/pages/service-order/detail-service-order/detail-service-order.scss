@@ -119,6 +119,17 @@ h1, h2, h3 {
   color: var(--p-text-muted-color);
 }
 
+.section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 1rem;
+
+  .section-title {
+    margin: 0;
+  }
+}
+
 .field-label {
   font-size: 0.72rem;
   font-weight: 700;

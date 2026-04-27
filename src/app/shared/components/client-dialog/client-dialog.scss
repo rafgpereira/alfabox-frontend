@@ -1,0 +1,38 @@
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 0.25rem;
+}
+
+.person-doc-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.doc-field {
+  flex: 1;
+}
+
+.phones-field {
+  // reservado para ajustes futuros no multi-input de telefones
+  display: block;
+}
+
+.toggle-field {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  label {
+    font-size: 0.9rem;
+    color: var(--p-text-color);
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

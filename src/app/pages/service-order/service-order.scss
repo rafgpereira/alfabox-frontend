@@ -15,6 +15,16 @@ h1, h2, h3 {
   align-items: center;
 }
 
+.code-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .code-search-input {
+    width: 14rem;
+  }
+}
+
 // ── Card ──────────────────────────────────────────────────────────────
 .card {
   display: flex;

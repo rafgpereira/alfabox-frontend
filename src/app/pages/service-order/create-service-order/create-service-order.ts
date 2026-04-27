@@ -14,6 +14,7 @@ import { ServiceOrderAddress } from '../../../shared/models/service-order.model'
 import { Seller } from '../../../shared/models/seller.model';
 import { cpfValidator } from '../../../shared/validators/cpf.validator';
 import { cnpjValidator } from '../../../shared/validators/cnpj.validator';
+import { ClientDialogComponent } from '../../../shared/components/client-dialog/client-dialog';
 import { CpfFormatPipe } from '../../../shared/pipes/cpf-format.pipe';
 import { CnpjFormatPipe } from '../../../shared/pipes/cnpj-format.pipe';
 import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
@@ -28,10 +29,10 @@ import { todayLocal, toApiDate } from '../../../shared/utils/date.utils';
   selector: 'app-create-service-order',
   imports: [
     ...SHARED_CRUD_IMPORTS,
-    NgxMaskDirective,
     OsItemsInputComponent,
     InputNumberModule,
     TextareaModule,
+    ClientDialogComponent,
   ],
   templateUrl: './create-service-order.html',
   styleUrl: './create-service-order.scss',
@@ -121,7 +122,6 @@ export class CreateServiceOrder implements OnInit {
 
   clientDialogVisible = false;
   clientDialogMode: 'create' | 'edit' = 'create';
-  clientDialogLoading = false;
 
   // ── Dialog cadastrar produto ──────────────────────────────────────────
 
@@ -137,13 +137,6 @@ export class CreateServiceOrder implements OnInit {
     { label: 'PJ', value: 'J' },
   ];
 
-  clientForm = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
-    personType: ['F'],
-    document: ['', [cpfValidator]],
-    phones: [[] as { id?: string; number: string }[]],
-  });
-
   // ── Lifecycle ─────────────────────────────────────────────────────────
 
   ngOnInit(): void {
@@ -158,12 +151,6 @@ export class CreateServiceOrder implements OnInit {
       )
       .subscribe((clients) => {
         this.clientSuggestions = clients;
-      });
-
-    this.clientForm.controls.personType.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.updateDocumentValidator();
       });
 
     // Carrega vendedores ativos uma única vez ao iniciar
@@ -419,138 +406,22 @@ export class CreateServiceOrder implements OnInit {
 
   openCreateClientDialog(): void {
     this.clientDialogMode = 'create';
-    this.clientForm.reset({
-      name: this.clientSearchQuery,
-      personType: 'F',
-      document: '',
-      phones: [],
-    });
-    this.clientForm.controls.document.setValidators([cpfValidator]);
-    this.clientForm.controls.document.updateValueAndValidity();
-    this.clientForm.markAsPristine();
-    this.clientForm.markAsUntouched();
     this.clientDialogVisible = true;
   }
 
   openEditClientDialog(): void {
     if (!this.selectedClient) return;
     this.clientDialogMode = 'edit';
-
-    const validator = this.selectedClient.personType === 'F' ? cpfValidator : cnpjValidator;
-    this.clientForm.controls.document.setValidators([validator]);
-
-    this.clientForm.patchValue({
-      name: this.selectedClient.name,
-      personType: this.selectedClient.personType,
-      document: this.selectedClient.document ?? '',
-      phones: this.selectedClient.phones.map((p) => ({ id: p.id, number: p.number })),
-    });
-    this.clientForm.markAsPristine();
-    this.clientForm.markAsUntouched();
     this.clientDialogVisible = true;
   }
 
-  saveClient(event?: Event): void {
-    if (this.clientForm.invalid) return;
-
-    if (this.clientDialogMode === 'edit') {
-      this.confirmationService.confirm({
-        target: event?.target as EventTarget,
-        message:
-          'Ao editar este cliente, a alteração será refletida em todas as Ordens de Serviço vinculadas a ele. Deseja continuar?',
-        icon: 'pi pi-exclamation-triangle',
-        acceptLabel: 'Confirmar',
-        rejectLabel: 'Cancelar',
-        acceptIcon: 'pi pi-check',
-        rejectIcon: 'pi pi-times',
-        acceptButtonProps: { severity: 'primary' },
-        rejectButtonProps: { severity: 'secondary', outlined: true },
-        accept: () => this.executeSaveClient(),
-      });
-    } else {
-      this.executeSaveClient();
-    }
-  }
-
-  private executeSaveClient(): void {
-    this.clientDialogLoading = true;
-
-    const raw = this.clientForm.getRawValue();
-    const payload = {
-      name: raw.name,
-      personType: raw.personType,
-      document: raw.document ? raw.document.toUpperCase() : null,
-      phones: raw.phones,
-    };
-
-    if (this.clientDialogMode === 'create') {
-      this.clientService.create(payload).subscribe({
-        next: (created) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Cliente criado com sucesso!',
-          });
-          this.selectedClient = created;
-          this.clientDialogVisible = false;
-          this.clientDialogLoading = false;
-        },
-        error: () => {
-          this.clientDialogLoading = false;
-        },
-      });
-    } else {
-      this.clientService.update(this.selectedClient!.id, payload).subscribe({
-        next: (updated) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Cliente atualizado com sucesso!',
-          });
-          this.selectedClient = updated;
-          this.clientDialogVisible = false;
-          this.clientDialogLoading = false;
-        },
-        error: () => {
-          this.clientDialogLoading = false;
-        },
-      });
-    }
+  onClientSaved(client: Client): void {
+    this.selectedClient = client;
+    this.form.controls.clientId.setValue(client.id);
+    this.loadClientAddresses(client.id);
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────
-
-  get clientDialogHeader(): string {
-    return this.clientDialogMode === 'create' ? 'Cadastrar Cliente' : 'Editar Cliente';
-  }
-
-  get dialogPersonType(): string {
-    return this.clientForm.controls.personType.value;
-  }
-
-  get dialogDocumentMask(): string {
-    return this.dialogPersonType === 'F' ? '000.000.000-00' : 'AA.AAA.AAA/AAAA-00';
-  }
-
-  get dialogDocumentLabel(): string {
-    return this.dialogPersonType === 'F' ? 'CPF' : 'CNPJ';
-  }
-
-  isDialogInvalid(field: string): boolean {
-    const control = this.clientForm.get(field);
-    return control ? control.invalid && (control.touched || control.dirty) : false;
-  }
-
-  private updateDocumentValidator(): void {
-    const docControl = this.clientForm.controls.document;
-    const pt = this.clientForm.controls.personType.value;
-    docControl.setValidators(pt === 'F' ? [cpfValidator] : [cnpjValidator]);
-    if (docControl.value) {
-      docControl.setValue('', { emitEvent: false });
-    }
-    docControl.markAsUntouched();
-    docControl.updateValueAndValidity();
-  }
 
   getPersonTypeLabel(type: string): string {
     return type === 'F' ? 'Física' : 'Jurídica';

@@ -3,6 +3,23 @@
   <!-- ═══ Título ═══ -->
   <div class="title">
     <h1><span>|</span> Ordens de Serviço</h1>
+
+    <div class="code-search">
+      <p-floatlabel variant="on">
+        <p-iconfield>
+          <p-inputicon class="pi pi-search" />
+          <input
+            pInputText
+            id="code_search"
+            [(ngModel)]="codeSearchText"
+            (keydown)="onCodeSearchKeydown($event)"
+            class="code-search-input"
+          />
+        </p-iconfield>
+        <label for="code_search">Código OS</label>
+      </p-floatlabel>
+    </div>
+
     <p-button label="Nova Ordem de Serviço" size="large" icon="pi pi-plus-circle" (onClick)="createNewOS()"></p-button>
   </div>
 

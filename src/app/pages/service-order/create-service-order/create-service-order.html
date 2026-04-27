@@ -407,79 +407,14 @@
 </div>
 
 <!-- ═══ Dialog Criar/Editar Cliente ═══ -->
-<p-dialog
-  [header]="clientDialogHeader"
-  [modal]="true"
+<app-client-dialog
+  [mode]="clientDialogMode"
   [(visible)]="clientDialogVisible"
-  [style]="{ width: '36rem' }"
-  [draggable]="false"
-  [resizable]="false"
->
-  <form [formGroup]="clientForm" class="edit-form">
-    <!-- Nome -->
-    <div class="form-field">
-      <p-floatlabel variant="on" class="full-width-control">
-        <input pInputText fluid id="dialog_client_name" formControlName="name" [invalid]="isDialogInvalid('name')" />
-        <label for="dialog_client_name">Nome do Cliente</label>
-      </p-floatlabel>
-      <app-error-message [control]="clientForm.get('name')"></app-error-message>
-    </div>
-
-    <!-- Tipo de Pessoa + Documento -->
-    <div class="edit-person-doc-row">
-      <div>
-        <p-selectbutton
-          [options]="personTypeOptions"
-          formControlName="personType"
-          optionLabel="label"
-          optionValue="value"
-          [allowEmpty]="false"
-        />
-      </div>
-      <div class="form-field doc-field">
-        <p-floatlabel variant="on" class="full-width-control">
-          <input
-            pInputText
-            fluid
-            id="dialog_client_document"
-            formControlName="document"
-            [mask]="dialogDocumentMask"
-            [dropSpecialCharacters]="true"
-            [invalid]="isDialogInvalid('document')"
-            style="text-transform: uppercase"
-          />
-          <label for="dialog_client_document">{{ dialogDocumentLabel }}</label>
-        </p-floatlabel>
-        <app-error-message [control]="clientForm.get('document')"></app-error-message>
-      </div>
-    </div>
-
-    <!-- Telefones -->
-    <div class="phones-dialog">
-        <app-multi-input
-          formControlName="phones"
-          label="Telefone"
-          [min]="1"
-          [max]="3"
-          masks="(00) 0000-0000||(00) 00000-0000"
-          scrollHeight="149px"
-        />
-    </div>
-  </form>
-
-  <ng-template #footer>
-    <div class="dialog-footer">
-      <p-button label="Cancelar" icon="pi pi-times" severity="secondary" [outlined]="true" (click)="clientDialogVisible = false" />
-      <p-button
-        label="Salvar"
-        icon="pi pi-save"
-        [disabled]="clientForm.invalid || clientDialogLoading"
-        [loading]="clientDialogLoading"
-        (click)="saveClient($event)"
-      />
-    </div>
-  </ng-template>
-</p-dialog>
+  [client]="clientDialogMode === 'edit' ? selectedClient : null"
+  [initialName]="clientDialogMode === 'create' ? clientSearchQuery : ''"
+  [allowStatusToggle]="false"
+  (saved)="onClientSaved($event)"
+/>
 
 <!-- ═══ Dialog Cadastrar Produto ═══ -->
 <p-dialog

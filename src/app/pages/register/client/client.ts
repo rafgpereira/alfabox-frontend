@@ -11,10 +11,17 @@ import { CpfFormatPipe } from '../../../shared/pipes/cpf-format.pipe';
 import { CnpjFormatPipe } from '../../../shared/pipes/cnpj-format.pipe';
 import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
 import { SHARED_CRUD_IMPORTS } from '../../../shared/constants/shared-crud-imports';
+import { ClientDialogComponent } from '../../../shared/components/client-dialog/client-dialog';
 
 @Component({
   selector: 'app-client',
-  imports: [...SHARED_CRUD_IMPORTS, SelectButtonModule, NgxMaskDirective, PhoneFormatPipe],
+  imports: [
+    ...SHARED_CRUD_IMPORTS,
+    SelectButtonModule,
+    NgxMaskDirective,
+    PhoneFormatPipe,
+    ClientDialogComponent,
+  ],
   templateUrl: './client.html',
   styleUrl: './client.scss',
 })
@@ -33,7 +40,6 @@ export class Client implements OnInit {
 
   // Dialog de edição
   editDialogVisible = false;
-  editLoading = false;
   editClient: ClientModel | null = null;
 
   personTypeOptions = [
@@ -59,15 +65,6 @@ export class Client implements OnInit {
     phones: [[] as { id?: string; number: string }[]],
   });
 
-  // Formulário de edição
-  editForm = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
-    personType: ['F'],
-    document: [''],
-    phones: [[] as { id?: string; number: string }[]],
-    isActive: [true],
-  });
-
   // ── Lifecycle ─────────────────────────────────────────────────────────
 
   ngOnInit(): void {
@@ -82,11 +79,7 @@ export class Client implements OnInit {
     this.loadClients();
 
     this.form.controls.personType.valueChanges.subscribe(() => {
-      this.updateDocumentValidator(this.form);
-    });
-
-    this.editForm.controls.personType.valueChanges.subscribe(() => {
-      this.updateDocumentValidator(this.editForm);
+      this.updateDocumentValidator();
     });
   }
 
@@ -96,28 +89,12 @@ export class Client implements OnInit {
     return this.form.controls.personType.value;
   }
 
-  get editPersonType(): string {
-    return this.editForm.controls.personType.value;
-  }
-
-  getDocumentMask(type: string): string {
-    return type === 'F' ? '000.000.000-00' : 'AA.AAA.AAA/AAAA-00';
-  }
-
   get documentMask(): string {
-    return this.getDocumentMask(this.personType);
-  }
-
-  get editDocumentMask(): string {
-    return this.getDocumentMask(this.editPersonType);
+    return this.personType === 'F' ? '000.000.000-00' : 'AA.AAA.AAA/AAAA-00';
   }
 
   get documentLabel(): string {
     return this.personType === 'F' ? 'CPF' : 'CNPJ';
-  }
-
-  get editDocumentLabel(): string {
-    return this.editPersonType === 'F' ? 'CPF' : 'CNPJ';
   }
 
   isInvalid(field: string): boolean {
@@ -125,17 +102,10 @@ export class Client implements OnInit {
     return control ? control.invalid && (control.touched || control.dirty) : false;
   }
 
-  isEditInvalid(field: string): boolean {
-    const control = this.editForm.get(field);
-    return control ? control.invalid && (control.touched || control.dirty) : false;
-  }
-
-  private updateDocumentValidator(formGroup: typeof this.form | typeof this.editForm): void {
-    const docControl = formGroup.controls.document;
-    const pt = formGroup.controls.personType.value;
-
+  private updateDocumentValidator(): void {
+    const docControl = this.form.controls.document;
+    const pt = this.form.controls.personType.value;
     docControl.setValidators(pt === 'F' ? [cpfValidator] : [cnpjValidator]);
-
     if (docControl.value) {
       docControl.setValue('', { emitEvent: false });
     }
@@ -224,68 +194,11 @@ export class Client implements OnInit {
 
   openEditDialog(client: ClientModel): void {
     this.editClient = client;
-
-    // Seta o validador correto antes de patchValue
-    const validator = client.personType === 'F' ? cpfValidator : cnpjValidator;
-    this.editForm.controls.document.setValidators([validator]);
-
-    this.editForm.patchValue({
-      name: client.name,
-      personType: client.personType,
-      document: client.document ?? '',
-      isActive: client.isActive,
-      phones: client.phones.map((p) => ({ id: p.id, number: p.number })),
-    });
-    this.editForm.markAsPristine();
-    this.editForm.markAsUntouched();
     this.editDialogVisible = true;
   }
 
-  confirmEdit(event: Event): void {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message:
-        'Ao editar este cliente, a alteração será refletida em todas as Ordens de Serviço vinculadas a ele. Deseja continuar?',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Confirmar',
-      rejectLabel: 'Cancelar',
-      acceptIcon: 'pi pi-check',
-      rejectIcon: 'pi pi-times',
-      acceptButtonProps: { severity: 'primary' },
-      rejectButtonProps: { severity: 'secondary', outlined: true },
-      accept: () => this.saveEdit(),
-    });
-  }
-
-  private saveEdit(): void {
-    if (!this.editClient || this.editForm.invalid) return;
-
-    this.editLoading = true;
-    const raw = this.editForm.getRawValue();
-
-    const payload = {
-      name: raw.name,
-      personType: raw.personType,
-      document: raw.document ? raw.document.toUpperCase() : null,
-      isActive: raw.isActive,
-      phones: raw.phones,
-    };
-
-    this.clientService.update(this.editClient.id, payload).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Cliente atualizado com sucesso!',
-        });
-        this.editDialogVisible = false;
-        this.editLoading = false;
-        this.loadClients();
-      },
-      error: () => {
-        this.editLoading = false;
-      },
-    });
+  onClientSaved(): void {
+    this.loadClients();
   }
 
   // ── Deleção ───────────────────────────────────────────────────────────

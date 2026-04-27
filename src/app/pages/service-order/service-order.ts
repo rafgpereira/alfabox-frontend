@@ -60,6 +60,14 @@ export class ServiceOrder implements OnInit {
   /** Quando true, o datepicker fica desabilitado e a API é chamada apenas com search. */
   searchMode = false;
 
+  // ── Busca rápida por código ───────────────────────────────────────────
+
+  /** Código digitado no atalho de busca do cabeçalho. */
+  codeSearchText = '';
+
+  /** Regex de validação: 4 dígitos, traço, 1+ dígitos (ex.: 2504-1). */
+  private readonly OS_CODE_PATTERN = /^\d{4}-\d+$/;
+
   // ── KPIs ──────────────────────────────────────────────────────────────
 
   totalVendido = 0;
@@ -112,6 +120,20 @@ export class ServiceOrder implements OnInit {
 
   navigateToDetail(code: string): void {
     this.router.navigate(['/os', code]);
+  }
+
+  navigateByCode(): void {
+    const code = this.codeSearchText.trim().toUpperCase();
+    if (!code) return;
+    if (!this.OS_CODE_PATTERN.test(code)) {
+      // Feedback visual: limpa o campo sem navegar — formato inválido
+      return;
+    }
+    this.router.navigate(['/os', code]);
+  }
+
+  onCodeSearchKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') this.navigateByCode();
   }
 
   resetAll(): void {
