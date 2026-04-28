@@ -43,7 +43,6 @@ export class Sidebar implements OnInit {
             label: 'Produtos',
             icon: 'pi pi-fw pi-box',
             routerLink: '/cadastro/produtos',
-            roles: ['ADMIN'],
           },
           {
             label: 'Montadores',

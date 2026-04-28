@@ -18,6 +18,7 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
 import { SelectModule } from 'primeng/select';
 import { ErrorMessageComponent } from '../components/error-message/error-message';
 import { MultiInputComponent } from '../components/multi-input/multi-input';
+import { HasRoleDirective } from '../directives/has-role.directive';
 import { TooltipModule } from 'primeng/tooltip';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SelectButtonModule } from 'primeng/selectbutton';
@@ -42,4 +43,5 @@ export const SHARED_CRUD_IMPORTS = [
   SelectButtonModule,
   ErrorMessageComponent,
   MultiInputComponent,
+  HasRoleDirective,
 ] as const;

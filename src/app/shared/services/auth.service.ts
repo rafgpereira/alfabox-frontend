@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthUser, LoginRequest, LoginResponse } from '../models/auth.model';
+import { Role } from '../models/role.enum';
 
 const TOKEN_KEY = 'access_token';
 
@@ -55,5 +56,21 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  /** Retorna true se o usuário logado for ADMIN. */
+  isAdmin(): boolean {
+    return this.getUser()?.role === Role.ADMIN;
+  }
+
+  /** Retorna true se o usuário logado for EMPLOYEE. */
+  isEmployee(): boolean {
+    return this.getUser()?.role === Role.EMPLOYEE;
+  }
+
+  /** Retorna true se o usuário logado possuir pelo menos uma das roles informadas. */
+  hasRole(...roles: Role[]): boolean {
+    const user = this.getUser();
+    return !!user && roles.includes(user.role as Role);
   }
 }

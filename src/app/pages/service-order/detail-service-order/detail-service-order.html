@@ -191,7 +191,7 @@
         </div>
         <div class="actions">
             <p-button label="Imprimir" outlined="true" icon="pi pi-print"></p-button>
-            <p-button label="Excluir" severity="danger" icon="pi pi-trash" (click)="confirmDeleteOrder($event)"></p-button>
+            <p-button *hasRole="'ADMIN'" label="Excluir" severity="danger" icon="pi pi-trash" (click)="confirmDeleteOrder($event)"></p-button>
         </div>
     </div>
     <div class="content">
@@ -337,7 +337,7 @@
             <div class="card-header">
               <h3><span><i class="pi pi-dollar"></i></span> Pagamentos</h3>
               @if(order.paymentStatus !== 'PAGO') {
-              <p-button
+              <p-button *hasRole="'ADMIN'"
                 label="Lançar Pagamento"
                 icon="pi pi-plus"
                 size="small"
@@ -383,7 +383,7 @@
                   <th>Valor</th>
                   <th>Método</th>
                   <th>Parcelas</th>
-                  <th style="width: 6rem; text-align: center">Ações</th>
+                  <th  *hasRole="'ADMIN'" style="width: 6rem; text-align: center">Ações</th>
                 </tr>
               </ng-template>
               <ng-template #body let-p>
@@ -392,7 +392,7 @@
                   <td>{{ p.amount | currency:'BRL' }}</td>
                   <td>{{ formatPaymentMethod(p.method, null) }}</td>
                   <td>{{ p.installments ?? '' }}</td>
-                  <td class="actions">
+                  <td *hasRole="'ADMIN'" class="actions">
                     <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" pTooltip="Editar" tooltipPosition="top" (click)="openEditPaymentDialog(p)" />
                     <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" pTooltip="Excluir" tooltipPosition="top" (click)="confirmDeletePayment($event, p)" />
                   </td>
@@ -413,6 +413,7 @@
               <h3><span><i class="pi pi-wrench"></i></span> Execuções</h3>
               @if(order.executionStatus !== 'CONCLUIDO') {
               <p-button
+                *hasRole="'ADMIN'"
                 label="Registrar Execução"
                 icon="pi pi-plus"
                 size="small"
@@ -458,7 +459,7 @@
                   <th>Valor</th>
                   <th>Por Mont.</th>
                   <th>Montadores</th>
-                  <th style="width: 6rem; text-align: center">Ações</th>
+                  <th *hasRole="'ADMIN'" style="width: 6rem; text-align: center">Ações</th>
                 </tr>
               </ng-template>
               <ng-template #body let-e>
@@ -467,7 +468,7 @@
                   <td>{{ e.amount | currency:'BRL' }}</td>
                   <td>{{ e.splitAmount | currency:'BRL' }}</td>
                   <td>{{ formatAssemblers(e.assemblers) }}</td>
-                  <td class="actions">
+                  <td *hasRole="'ADMIN'" class="actions">
                     <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" pTooltip="Editar" tooltipPosition="top" (click)="openEditExecutionDialog(e)" />
                     <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" pTooltip="Excluir" tooltipPosition="top" (click)="confirmDeleteExecution($event, e)" />
                   </td>

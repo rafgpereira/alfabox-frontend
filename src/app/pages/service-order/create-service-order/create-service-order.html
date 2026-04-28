@@ -299,7 +299,7 @@
   </div>
 
   <!-- ═══ Toggle: Pagamento de Entrada ═══ -->
-  <div class="payment-toggle-row">
+  <div *hasRole="'ADMIN'" class="payment-toggle-row">
     <span class="payment-toggle-label">Deseja cadastrar pagamento de entrada?</span>
     <p-toggleswitch
       [(ngModel)]="addInitialPayment"
@@ -308,9 +308,13 @@
     />
   </div>
 
+  <div *hasRole="'EMPLOYEE'" class="payment-toggle-row">
+    <span class="payment-toggle-label">Caso haja pagamento de entrada, peça a um administrador para lançar o pagamento.</span>
+  </div>
+
   <!-- ═══ Card: Pagamento de Entrada (condicional) ═══ -->
   @if (addInitialPayment) {
-    <div class="cards-row">
+    <div *hasRole="'ADMIN'" class="cards-row">
       <div class="card card--payment">
         <h3><span><i class="pi pi-wallet"></i></span> Pagamento de Entrada</h3>
 

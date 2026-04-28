@@ -91,7 +91,7 @@
     </div>
 
     <!-- ── KPIs ── -->
-    <div class="kpi-grid">
+    <div *hasRole="'ADMIN'" class="kpi-grid">
 
       <!-- Total Vendido -->
       <div class="kpi-card kpi-card--vendido">
@@ -298,8 +298,8 @@
           </td>
           <td class="actions">
             <p-button icon="pi pi-eye" [rounded]="true" [text]="true" severity="info" pTooltip="Visualizar" tooltipPosition="top" (click)="navigateToDetail(order.code)" />
-            <p-button icon="pi pi-dollar" [rounded]="true" [text]="true" severity="success" pTooltip="Lançar Pagamento" tooltipPosition="top" (click)="openPaymentDialog(order)" [disabled]="order.paymentStatus === 'PAGO'" />
-            <p-button icon="pi pi-wrench" [rounded]="true" [text]="true" severity="warn" pTooltip="Registrar Execução" tooltipPosition="top" (click)="openExecutionDialog(order)" [disabled]="order.executionStatus === 'CONCLUIDO'" />
+            <p-button  *hasRole="'ADMIN'" icon="pi pi-dollar" [rounded]="true" [text]="true" severity="success" pTooltip="Lançar Pagamento" tooltipPosition="top" (click)="openPaymentDialog(order)" [disabled]="order.paymentStatus === 'PAGO'" />
+            <p-button  *hasRole="'ADMIN'" icon="pi pi-wrench" [rounded]="true" [text]="true" severity="warn" pTooltip="Registrar Execução" tooltipPosition="top" (click)="openExecutionDialog(order)" [disabled]="order.executionStatus === 'CONCLUIDO'" />
             <p-button icon="pi pi-print" [rounded]="true" [text]="true" severity="secondary" pTooltip="Imprimir" tooltipPosition="top" />
           </td>
         </tr>

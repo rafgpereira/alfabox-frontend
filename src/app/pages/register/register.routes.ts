@@ -14,7 +14,6 @@ export const REGISTER_ROUTES: Routes = [
   {
     path: 'produtos',
     loadComponent: () => import('./product/product').then((m) => m.Product),
-    canActivate: [roleGuard('ADMIN')],
   },
   {
     path: 'montadores',
