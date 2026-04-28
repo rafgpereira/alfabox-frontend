@@ -22,7 +22,7 @@ export class Login {
   loading = false;
 
   form = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
+    username: ['', [Validators.required]],
     password: ['', [Validators.required]],
   });
 
@@ -30,9 +30,9 @@ export class Login {
     if (this.form.invalid) return;
 
     this.loading = true;
-    const { email, password } = this.form.getRawValue();
+    const { username, password } = this.form.getRawValue();
 
-    this.authService.login({ email, password }).subscribe({
+    this.authService.login({ username, password }).subscribe({
       next: () => {
         this.router.navigate(['/']);
       },

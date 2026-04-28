@@ -8,8 +8,8 @@
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
       <p-floatlabel variant="on">
-        <input pInputText fluid id="email" formControlName="email" />
-        <label for="email">E-mail</label>
+        <input pInputText fluid id="username" formControlName="username" autocomplete="username" />
+        <label for="username">Usuário</label>
       </p-floatlabel>
 
       <p-floatlabel variant="on">
