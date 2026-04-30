@@ -51,8 +51,20 @@ export class ServiceOrder implements OnInit {
 
   // ── Filtros ───────────────────────────────────────────────────────────
 
-  /** Range de datas selecionado no p-datepicker. */
-  dateRange: Date[] = [];
+  // ── Filtros de data ───────────────────────────────────────────────────
+
+  /** Data de início do filtro. */
+  startDate: Date | null = null;
+
+  /** Data de fim do filtro. */
+  endDate: Date | null = null;
+
+  /**
+   * Mês selecionado no atalho de mês.
+   * Reflete o mês do range apenas quando o range for exatamente um mês cheio;
+   * caso contrário é null (range customizado).
+   */
+  selectedMonth: Date | null = null;
 
   /** Texto digitado na busca global. */
   searchText = '';
@@ -142,9 +154,19 @@ export class ServiceOrder implements OnInit {
 
   private loadCurrentMonth(): void {
     const now = new Date();
-    const start = new Date(now.getFullYear(), now.getMonth(), 1);
-    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    this.dateRange = [start, end];
+    this.applyMonth(now);
+  }
+
+  /**
+   * Aplica um mês completo: seta startDate, endDate e selectedMonth,
+   * depois dispara o load.
+   */
+  applyMonth(ref: Date): void {
+    const start = new Date(ref.getFullYear(), ref.getMonth(), 1);
+    const end = new Date(ref.getFullYear(), ref.getMonth() + 1, 0);
+    this.startDate = start;
+    this.endDate = end;
+    this.selectedMonth = start;
     this.load({ startDate: toApiDate(start), endDate: toApiDate(end) });
   }
 
@@ -168,12 +190,42 @@ export class ServiceOrder implements OnInit {
 
   // ── Handlers de filtro ────────────────────────────────────────────────
 
-  onDateRangeChange(dates: Date[] | null): void {
-    this.dateRange = dates ?? [];
-    const [start, end] = this.dateRange;
-    if (start && end) {
-      this.load({ startDate: toApiDate(start), endDate: toApiDate(end) });
+  /** Chamado quando o usuário seleciona um mês no atalho. */
+  onMonthSelect(date: Date): void {
+    this.applyMonth(date);
+  }
+
+  /** Chamado quando o usuário altera a data de início manualmente. */
+  onStartDateChange(date: Date | null): void {
+    this.startDate = date;
+    this.selectedMonth = this.resolveSelectedMonth();
+    if (this.startDate && this.endDate) {
+      this.load({ startDate: toApiDate(this.startDate), endDate: toApiDate(this.endDate) });
     }
+  }
+
+  /** Chamado quando o usuário altera a data de fim manualmente. */
+  onEndDateChange(date: Date | null): void {
+    this.endDate = date;
+    this.selectedMonth = this.resolveSelectedMonth();
+    if (this.startDate && this.endDate) {
+      this.load({ startDate: toApiDate(this.startDate), endDate: toApiDate(this.endDate) });
+    }
+  }
+
+  /**
+   * Verifica se o range atual coincide exatamente com um mês cheio.
+   * Se sim, retorna o primeiro dia desse mês (para o month-picker mostrar ativo).
+   * Caso contrário, retorna null.
+   */
+  private resolveSelectedMonth(): Date | null {
+    if (!this.startDate || !this.endDate) return null;
+    const s = this.startDate;
+    const e = this.endDate;
+    const isFirstDay = s.getDate() === 1;
+    const isLastDay = e.getDate() === new Date(e.getFullYear(), e.getMonth() + 1, 0).getDate();
+    const sameMonth = s.getFullYear() === e.getFullYear() && s.getMonth() === e.getMonth();
+    return isFirstDay && isLastDay && sameMonth ? new Date(s.getFullYear(), s.getMonth(), 1) : null;
   }
 
   submitSearch(): void {
@@ -189,9 +241,8 @@ export class ServiceOrder implements OnInit {
   clearSearch(): void {
     this.searchText = '';
     this.searchMode = false;
-    const [start, end] = this.dateRange;
-    if (start && end) {
-      this.load({ startDate: toApiDate(start), endDate: toApiDate(end) });
+    if (this.startDate && this.endDate) {
+      this.load({ startDate: toApiDate(this.startDate), endDate: toApiDate(this.endDate) });
     } else {
       this.loadCurrentMonth();
     }
@@ -269,11 +320,10 @@ export class ServiceOrder implements OnInit {
 
   onDialogSaved(): void {
     // Recarrega a lista para atualizar KPIs e status
-    const [start, end] = this.dateRange;
     if (this.searchMode && this.searchText.trim()) {
       this.load({ search: this.searchText.trim() });
-    } else if (start && end) {
-      this.load({ startDate: toApiDate(start), endDate: toApiDate(end) });
+    } else if (this.startDate && this.endDate) {
+      this.load({ startDate: toApiDate(this.startDate), endDate: toApiDate(this.endDate) });
     } else {
       this.loadCurrentMonth();
     }

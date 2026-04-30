@@ -29,24 +29,61 @@
     <!-- ── Toolbar de Filtros ── -->
     <div class="toolbar">
 
-      <!-- Filtro por Data -->
+      <!-- Filtros de Data -->
       <div class="toolbar-left">
+
+        <!-- Atalho: seletor de mês -->
         <p-floatlabel variant="on">
           <p-datepicker
-            inputId="date_range"
-            iconDisplay="input"
-            [(ngModel)]="dateRange"
-            (ngModelChange)="onDateRangeChange($event)"
-            selectionMode="range"
-            showIcon
+            inputId="month_picker"
+            [(ngModel)]="selectedMonth"
+            (ngModelChange)="onMonthSelect($event)"
+            view="month"
+            dateFormat="MM/yy"
             [disabled]="searchMode"
             [readonlyInput]="true"
-            fluid="true"
-            dateFormat="dd/mm/yy"
-            [style]="{ 'min-width': '17rem' }"
+            showIcon
+            iconDisplay="input"
+            appendTo="body"
+            [inputStyle]="{ width: '12rem' }"
           />
-          <label for="date_range">Período</label>
+          <label for="month_picker">Mês</label>
         </p-floatlabel>
+
+        <!-- Data início -->
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="start_date"
+            [(ngModel)]="startDate"
+            (ngModelChange)="onStartDateChange($event)"
+            dateFormat="dd/mm/yy"
+            showIcon
+            iconDisplay="input"
+            [disabled]="searchMode"
+            [readonlyInput]="true"
+            appendTo="body"
+            [inputStyle]="{ width: '10rem' }"
+          />
+          <label for="start_date">Início</label>
+        </p-floatlabel>
+
+        <!-- Data fim -->
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="end_date"
+            [(ngModel)]="endDate"
+            (ngModelChange)="onEndDateChange($event)"
+            dateFormat="dd/mm/yy"
+            showIcon
+            iconDisplay="input"
+            [disabled]="searchMode"
+            [readonlyInput]="true"
+            appendTo="body"
+            [inputStyle]="{ width: '10rem' }"
+          />
+          <label for="end_date">Fim</label>
+        </p-floatlabel>
+
         <p-button
           icon="pi pi-refresh"
           severity="secondary"
