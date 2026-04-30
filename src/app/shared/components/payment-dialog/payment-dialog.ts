@@ -2,7 +2,6 @@ import { Component, EventEmitter, inject, Input, OnChanges, Output } from '@angu
 import { FormBuilder, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { AutoCompleteCompleteEvent, AutoCompleteSelectEvent } from 'primeng/autocomplete';
 import { SHARED_CRUD_IMPORTS } from '../../constants/shared-crud-imports';
 import { ServiceOrderPaymentService } from '../../services/service-order-payment.service';
 import {
@@ -68,9 +67,6 @@ export class PaymentDialogComponent implements OnChanges {
     { label: 'PIX', value: 'PIX' },
   ];
 
-  selectedMethod: { label: string; value: PaymentMethod } | null = null;
-  methodSuggestions: { label: string; value: PaymentMethod }[] = [];
-
   form = this.fb.nonNullable.group({
     paymentDate: [todayLocal() as Date, Validators.required],
     amount: [null as number | null, [Validators.required, Validators.min(0.01)]],
@@ -112,8 +108,6 @@ export class PaymentDialogComponent implements OnChanges {
     const maxAmount = this.availableAmount;
     if (this.mode === 'edit' && this.payment) {
       const p = this.payment;
-      const method = this.paymentMethodOptions.find((o) => o.value === p.method) ?? null;
-      this.selectedMethod = method;
       this.form.reset({
         paymentDate: fromApiDate(p.paymentDate),
         amount: p.amount,
@@ -121,7 +115,6 @@ export class PaymentDialogComponent implements OnChanges {
         installments: p.installments,
       });
     } else {
-      this.selectedMethod = null;
       this.form.reset({
         paymentDate: todayLocal(),
         amount: null,
@@ -140,24 +133,9 @@ export class PaymentDialogComponent implements OnChanges {
     this.form.markAsUntouched();
   }
 
-  // ── Autocomplete de método ────────────────────────────────────────────
+  // ── Select de método ──────────────────────────────────────────────────
 
-  searchMethods(event: AutoCompleteCompleteEvent): void {
-    const q = event.query.toLowerCase();
-    this.methodSuggestions = this.paymentMethodOptions.filter((o) =>
-      o.label.toLowerCase().includes(q),
-    );
-  }
-
-  onMethodSelect(event: AutoCompleteSelectEvent): void {
-    const selected = event.value as { label: string; value: PaymentMethod };
-    this.form.controls.method.setValue(selected.value);
-    this.updateInstallmentsValidator();
-  }
-
-  onMethodClear(): void {
-    this.form.controls.method.setValue(null);
-    this.form.controls.installments.setValue(null);
+  onMethodChange(): void {
     this.updateInstallmentsValidator();
   }
 

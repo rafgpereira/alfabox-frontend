@@ -75,30 +75,18 @@
 
       <div class="form-field field-method">
         <p-floatlabel variant="on" class="full-width-control">
-          <p-autocomplete
+          <p-select
             inputId="pay_method"
-            [(ngModel)]="selectedMethod"
-            [ngModelOptions]="{ standalone: true }"
-            [suggestions]="methodSuggestions"
-            (completeMethod)="searchMethods($event)"
-            (onSelect)="onMethodSelect($event)"
-            (onClear)="onMethodClear()"
-            [showClear]="true"
-            [forceSelection]="true"
-            [fluid]="true"
-            [minLength]="0"
-            [completeOnFocus]="true"
+            formControlName="method"
+            [options]="paymentMethodOptions"
             optionLabel="label"
-            dataKey="value"
-            emptyMessage="Nenhum método encontrado."
-            scrollHeight="220px"
+            optionValue="value"
+            placeholder=" "
+            [fluid]="true"
             appendTo="body"
             [invalid]="isInvalid('method')"
-          >
-            <ng-template let-method #item>
-              <span>{{ method.label }}</span>
-            </ng-template>
-          </p-autocomplete>
+            (onChange)="onMethodChange()"
+          />
           <label for="pay_method">Método de Pagamento *</label>
         </p-floatlabel>
         <app-error-message [control]="form.get('method')" />

@@ -48,24 +48,17 @@
   width: 100%;
 }
 
-.field-date {
-  flex: 1 1 10rem;
-}
-
-.field-amount {
-  flex: 1 1 10rem;
-}
-
-.field-method {
-  flex: 1 1 11rem;
-}
-
+/* Todos os campos ocupam sempre metade */
+.field-date,
+.field-amount,
+.field-method,
 .field-installments {
-  flex: 0 0 10rem;
+  flex: 0 0 calc(50% - 0.5rem);
+  min-width: 0; /* evita overflow estranho */
+}
 
-  app-error-message {
-    white-space: nowrap;
-  }
+.field-installments app-error-message {
+  white-space: nowrap;
 }
 
 .dialog-footer {

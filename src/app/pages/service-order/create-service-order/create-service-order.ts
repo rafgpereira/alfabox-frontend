@@ -112,9 +112,6 @@ export class CreateServiceOrder implements OnInit {
     { label: 'PIX', value: 'PIX' },
   ];
 
-  selectedPaymentMethod: { label: string; value: string } | null = null;
-  paymentMethodSuggestions: { label: string; value: string }[] = [];
-
   // ── Dialog criar/editar cliente ───────────────────────────────────────
 
   clientDialogVisible = false;
@@ -275,7 +272,6 @@ export class CreateServiceOrder implements OnInit {
       paymentMethod.clearValidators();
       installments.clearValidators();
       // Limpa seleção visual
-      this.selectedPaymentMethod = null;
       this.form.patchValue({
         paymentDate: todayLocal(),
         paymentAmount: null,
@@ -289,31 +285,16 @@ export class CreateServiceOrder implements OnInit {
     installments.updateValueAndValidity();
   }
 
-  searchPaymentMethods(event: AutoCompleteCompleteEvent): void {
-    const query = event.query.toLowerCase().trim();
-    this.paymentMethodSuggestions = query
-      ? this.paymentMethodOptions.filter((m) => m.label.toLowerCase().includes(query))
-      : [...this.paymentMethodOptions];
-  }
-
-  onPaymentMethodSelect(event: AutoCompleteSelectEvent): void {
-    const method = event.value as { label: string; value: string };
-    this.form.controls.paymentMethod.setValue(method.value);
+  onPaymentMethodChange(value: string | null): void {
+    this.form.controls.paymentMethod.setValue(value);
     const installmentsCtrl = this.form.controls.installments;
-    if (method.value === 'CARTAO_CREDITO') {
+    if (value === 'CARTAO_CREDITO') {
       installmentsCtrl.setValidators([Validators.required, Validators.min(1), Validators.max(12)]);
     } else {
       installmentsCtrl.clearValidators();
       installmentsCtrl.setValue(null);
     }
     installmentsCtrl.updateValueAndValidity();
-  }
-
-  onPaymentMethodClear(): void {
-    this.form.controls.paymentMethod.setValue(null);
-    this.form.controls.installments.clearValidators();
-    this.form.controls.installments.setValue(null);
-    this.form.controls.installments.updateValueAndValidity();
   }
 
   isSubmitting = false;
