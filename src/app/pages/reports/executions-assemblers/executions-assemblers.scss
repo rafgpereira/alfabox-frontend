@@ -1,0 +1,143 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+h1, h2, h3 {
+  color: var(--p-primary-500);
+  span { color: var(--p-red-500); }
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// ── Card ──────────────────────────────────────────────────────────────
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// ── Toolbar ───────────────────────────────────────────────────────────
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+}
+
+.toolbar-separator {
+  width: 1px;
+  height: 2rem;
+  background: var(--p-surface-200);
+  margin: 0 0.25rem;
+}
+
+// ── KPI Grid ──────────────────────────────────────────────────────────
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  &--single {
+    grid-template-columns: 1fr;
+    max-width: 49%;
+  }
+}
+
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--p-border-radius-lg, 0.75rem);
+  border: 1px solid var(--p-surface-200);
+  background: var(--p-surface-0);
+
+  .kpi-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .kpi-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .kpi-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .kpi-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--p-text-muted-color);
+  }
+
+  .kpi-sublabel {
+    font-size: 0.7rem;
+    color: var(--p-text-muted-color);
+    opacity: 0.75;
+  }
+
+  .kpi-icon {
+    font-size: 1.4rem;
+  }
+
+  .kpi-value {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  &--periodo .kpi-icon { color: var(--p-primary-500); }
+  &--montador .kpi-icon { color: var(--p-green-500); }
+}
+
+// ── Tabela ────────────────────────────────────────────────────────────
+.column-header {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.os-code-link {
+  font-family: monospace;
+  font-size: 0.9em;
+  letter-spacing: 0.03em;
+  color: var(--p-primary-500);
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--p-primary-600);
+  }
+}
+
+.empty-message {
+  text-align: center;
+  color: var(--p-text-muted-color);
+  padding: 2rem 0;
+}

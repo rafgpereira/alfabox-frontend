@@ -1,0 +1,186 @@
+<div class="page">
+
+  <!-- ═══ Título ═══ -->
+  <div class="title">
+    <h1><span>|</span> Execuções por Montadores</h1>
+  </div>
+
+  <!-- ═══ Card Principal ═══ -->
+  <div class="card">
+
+    <!-- ── Toolbar de Filtros ── -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+
+        <!-- Atalho: seletor de mês -->
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="month_picker"
+            [(ngModel)]="selectedMonth"
+            (ngModelChange)="onMonthSelect($event)"
+            view="month"
+            dateFormat="MM/yy"
+            [readonlyInput]="true"
+            showIcon
+            iconDisplay="input"
+            appendTo="body"
+            [inputStyle]="{ width: '12rem' }"
+          />
+          <label for="month_picker">Mês</label>
+        </p-floatlabel>
+
+        <!-- Data início -->
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="start_date"
+            [(ngModel)]="startDate"
+            (ngModelChange)="onStartDateChange($event)"
+            dateFormat="dd/mm/yy"
+            showIcon
+            iconDisplay="input"
+            [readonlyInput]="true"
+            appendTo="body"
+            [inputStyle]="{ width: '10rem' }"
+          />
+          <label for="start_date">Início</label>
+        </p-floatlabel>
+
+        <!-- Data fim -->
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="end_date"
+            [(ngModel)]="endDate"
+            (ngModelChange)="onEndDateChange($event)"
+            dateFormat="dd/mm/yy"
+            showIcon
+            iconDisplay="input"
+            [readonlyInput]="true"
+            appendTo="body"
+            [inputStyle]="{ width: '10rem' }"
+          />
+          <label for="end_date">Fim</label>
+        </p-floatlabel>
+
+        <!-- Separador visual -->
+        <div class="toolbar-separator"></div>
+
+        <!-- Seletor de montador -->
+        <p-floatlabel variant="on">
+          <p-select
+            inputId="assembler_select"
+            [(ngModel)]="selectedAssemblerId"
+            (ngModelChange)="onAssemblerChange()"
+            [options]="assemblers"
+            optionLabel="name"
+            optionValue="id"
+            [showClear]="true"
+            placeholder=" "
+            appendTo="body"
+            [style]="{ 'min-width': '20rem' }"
+          />
+          <label for="assembler_select">Montador</label>
+        </p-floatlabel>
+
+      </div>
+    </div>
+
+    <!-- ── KPIs ── -->
+    <div class="kpi-grid" [class.kpi-grid--single]="!selectedAssemblerId">
+
+      <!-- Total Período -->
+      <div class="kpi-card kpi-card--periodo">
+        <div class="kpi-body">
+          <div class="kpi-left">
+            <i class="pi pi-calendar kpi-icon"></i>
+            <div class="kpi-info">
+              <span class="kpi-label">Total das Execuções no Período</span>
+              @if (selectedAssemblerId) {
+                <span class="kpi-sublabel">Soma de todas as execuções filtradas</span>
+              }
+            </div>
+          </div>
+          <span class="kpi-value">{{ (report?.totalPeriodAmount ?? 0) | currency:'BRL' }}</span>
+        </div>
+      </div>
+
+      <!-- Total Montador (só exibe se montador selecionado) -->
+      @if (selectedAssemblerId) {
+        <div class="kpi-card kpi-card--montador">
+          <div class="kpi-body">
+            <div class="kpi-left">
+              <i class="pi pi-user kpi-icon"></i>
+              <div class="kpi-info">
+                <span class="kpi-label">Total do Montador Selecionado</span>
+                <span class="kpi-sublabel">Soma da parte proporcional nas execuções</span>
+              </div>
+            </div>
+            <span class="kpi-value">{{ (report?.totalAssemblerAmount ?? 0) | currency:'BRL' }}</span>
+          </div>
+        </div>
+      }
+
+    </div>
+
+    <!-- ── Tabela ── -->
+    <p-table
+      stripedRows
+        [size]="'large'"
+      [scrollable]="true"
+      scrollHeight="calc(100vh - 25rem)"
+      [value]="executions"
+      [loading]="loading"
+      [tableStyle]="{ 'min-width': '55rem', 'table-layout': 'fixed' }"
+      dataKey="id"
+    >
+
+      <!-- Cabeçalho -->
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="executionDate" style="width: 9rem">
+            <div class="column-header">Data <p-sortIcon field="executionDate" /></div>
+          </th>
+          <th pSortableColumn="totalAmount" style="width: 12rem">
+            <div class="column-header">Valor Total <p-sortIcon field="totalAmount" /></div>
+          </th>
+          <th pSortableColumn="splitAmount" style="width: 12rem">
+            <div class="column-header">Valor por Montador <p-sortIcon field="splitAmount" /></div>
+          </th>
+          <th style="width: 6rem; text-align: center">
+            <div class="column-header" style="justify-content: center">Qtd.</div>
+          </th>
+          <th style="width: auto">
+            <div class="column-header">Montadores</div>
+          </th>
+          <th style="width: 8rem">
+            <div class="column-header">Código OS</div>
+          </th>
+        </tr>
+      </ng-template>
+
+      <!-- Corpo -->
+      <ng-template #body let-item>
+        <tr>
+          <td>{{ item.executionDate | date:'dd/MM/yyyy' }}</td>
+          <td>{{ item.totalAmount | currency:'BRL' }}</td>
+          <td>{{ item.splitAmount | currency:'BRL' }}</td>
+          <td style="text-align: center">{{ item.assemblerCount }}</td>
+          <td>{{ item.assemblers }}</td>
+          <td>
+            <span class="os-code-link" (click)="navigateToOrder(item.osCode)">
+              {{ item.osCode }}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Vazio -->
+      <ng-template #emptymessage>
+        <tr style="height: 60px;">
+          <td colspan="6" class="empty-message">Nenhuma execução encontrada para o período.</td>
+        </tr>
+      </ng-template>
+
+    </p-table>
+
+  </div>
+</div>

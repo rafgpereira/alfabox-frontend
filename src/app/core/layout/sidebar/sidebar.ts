@@ -58,6 +58,18 @@ export class Sidebar implements OnInit {
           },
         ],
       },
+      {
+        label: 'Relatórios',
+        icon: 'pi pi-fw pi-chart-bar',
+        roles: ['ADMIN'],
+        items: [
+          {
+            label: 'Montadores',
+            icon: 'pi pi-fw pi-wrench',
+            routerLink: '/relatorios/montadores',
+          },
+        ],
+      },
     ];
 
     this.items = this.filterMenuByRole(menu, user?.role);

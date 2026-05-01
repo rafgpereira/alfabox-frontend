@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,11 @@ export const routes: Routes = [
         path: 'cadastro',
         loadChildren: () =>
           import('./pages/register/register.routes').then((m) => m.REGISTER_ROUTES),
+      },
+      {
+        path: 'relatorios',
+        loadChildren: () => import('./pages/reports/reports.routes').then((m) => m.REPORTS_ROUTES),
+        canActivate: [roleGuard('ADMIN')],
       },
     ],
   },
