@@ -39,13 +39,17 @@ export class OsPrint implements OnInit {
   }
 
   /** Payments sorted ascending, padded to PAYMENT_ROWS */
-  get paymentRows(): (ServiceOrderDetailPayment | null)[] {
+get paymentRows(): (ServiceOrderDetailPayment | null)[] {
     if (!this.order) return Array(PAYMENT_ROWS).fill(null);
-    const sorted = [...this.order.payments].sort((a, b) =>
-      a.paymentDate.localeCompare(b.paymentDate),
-    );
-    const rows: (ServiceOrderDetailPayment | null)[] = sorted;
-    while (rows.length < PAYMENT_ROWS) rows.push(null);
+
+    // Clona o array e apenas inverte a ordem de DESC para ASC
+    const rows: (ServiceOrderDetailPayment | null)[] = [...this.order.payments].reverse();
+
+    // Preenche com linhas em branco até atingir o limite da página
+    while (rows.length < PAYMENT_ROWS) {
+      rows.push(null);
+    }
+    
     return rows;
   }
 
