@@ -184,6 +184,8 @@
       [loading]="loading"
       [tableStyle]="{ 'min-width': '60rem', 'table-layout': 'fixed' }"
       dataKey="id"
+      stateStorage="session"
+      stateKey="so-list-filters"
       (onFilter)="onTableFilter($event)"
     >
 

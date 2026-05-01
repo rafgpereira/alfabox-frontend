@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -15,6 +15,7 @@ import { sumField, subtractCurrency } from '../../shared/utils/money.utils';
 import { Router } from '@angular/router';
 import { PaymentDialogComponent } from '../../shared/components/payment-dialog/payment-dialog';
 import { ExecutionDialogComponent } from '../../shared/components/execution-dialog/execution-dialog';
+import { ServiceOrderFilterStateService } from '../../shared/services/service-order-filter-state.service';
 
 /** Linha da tabela — datas convertidas para Date para os filtros locais do PrimeNG. */
 export interface ServiceOrderRow extends Omit<
@@ -40,9 +41,10 @@ export interface ServiceOrderRow extends Omit<
   templateUrl: './service-order.html',
   styleUrl: './service-order.scss',
 })
-export class ServiceOrder implements OnInit {
+export class ServiceOrder implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly serviceOrderService = inject(ServiceOrderService);
+  private readonly filterState = inject(ServiceOrderFilterStateService);
 
   // ── Estado ────────────────────────────────────────────────────────────
 
@@ -121,7 +123,34 @@ export class ServiceOrder implements OnInit {
   // ── Lifecycle ─────────────────────────────────────────────────────────
 
   ngOnInit(): void {
-    this.loadCurrentMonth();
+    const saved = this.filterState.restore();
+    if (saved) {
+      this.startDate = saved.startDate;
+      this.endDate = saved.endDate;
+      this.selectedMonth = saved.selectedMonth;
+      this.searchText = saved.searchText;
+      this.searchMode = saved.searchMode;
+
+      if (this.searchMode && this.searchText.trim()) {
+        this.load({ search: this.searchText.trim() });
+      } else if (this.startDate && this.endDate) {
+        this.load({ startDate: toApiDate(this.startDate), endDate: toApiDate(this.endDate) });
+      } else {
+        this.loadCurrentMonth();
+      }
+    } else {
+      this.loadCurrentMonth();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.filterState.save({
+      startDate: this.startDate,
+      endDate: this.endDate,
+      selectedMonth: this.selectedMonth,
+      searchText: this.searchText,
+      searchMode: this.searchMode,
+    });
   }
 
   // ── Carregamento ──────────────────────────────────────────────────────
@@ -153,6 +182,8 @@ export class ServiceOrder implements OnInit {
   }
 
   resetAll(): void {
+    this.filterState.clear();
+    sessionStorage.removeItem('so-list-filters');
     window.location.reload();
   }
 
