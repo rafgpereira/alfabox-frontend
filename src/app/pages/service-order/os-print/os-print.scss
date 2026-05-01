@@ -1,0 +1,482 @@
+// ═══════════════════════════════════════════════════════════════════
+// OS Print — Layout exclusivo para impressão A4 Retrato
+// ═══════════════════════════════════════════════════════════════════
+
+$blue:   #003399;
+$red:    #cc0000;
+$black:  #111111;
+$border: #003399;
+
+// ── Forçar cores de impressão em TODOS os elementos ──────────────────
+// Correção principal para bordas que somem na impressão.
+* {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  box-sizing: border-box;
+}
+
+:host {
+  display: block;
+}
+
+.print-page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 6mm 6mm 6mm 6mm;
+  background: #fff;
+  color: $black;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// A. CABEÇALHO
+// ═══════════════════════════════════════════════════════════════════
+
+.header {
+  width: 100%;
+  margin-bottom: 3mm;
+}
+
+.header-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.header-address-row {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid $border;
+  margin-top: 2mm;
+}
+
+.header-address {
+  flex: 0 0 80%;
+  padding: 1mm 3mm;
+  color: $blue;
+  font-weight: bold;
+  font-size: 8pt;
+  text-align: center;
+  border-right: 1.5px solid $border;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-code {
+  flex: 0 0 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1mm 2mm;
+  color: $red;
+  font-weight: bold;
+  font-size: 11pt;
+  letter-spacing: 0.05em;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// B. DADOS DA OS
+// ═══════════════════════════════════════════════════════════════════
+
+.dados-box {
+  border: 1.5px solid $border;
+  margin-top: 3mm;
+}
+
+.dados-row {
+  display: flex;
+
+  &--center {
+    justify-content: center;
+  }
+
+  &--city {
+    padding: 1mm 3mm;
+    border-bottom: 1.5px solid $border;
+  }
+}
+
+.field-value--blue {
+  color: $blue;
+  font-weight: bold;
+  font-size: 8.5pt;
+}
+
+.dados-field {
+  display: flex;
+  align-items: baseline;
+  padding: 1.5mm 3mm;
+  min-height: 6.5mm;
+
+  &--grow     { flex: 1 1 auto; }
+  &--doc      { flex: 0 0 26%; }
+  &--street   { flex: 0 0 70%; }
+  &--num      { flex: 0 0 30%; }
+  &--comp     { flex: 0 0 40%; }
+  &--third    { flex: 0 0 30%; }
+  &--seller   { flex: 0 0 38%; }
+  &--contacts { flex: 1 1 auto; }
+}
+
+.field-label {
+  color: $blue;
+  font-weight: bold;
+  font-size: 7.5pt;
+  white-space: nowrap;
+  margin-right: 2mm;
+  flex-shrink: 0;
+}
+
+.field-value {
+  color: $black;
+  font-size: 8.5pt;
+  border-bottom: 1px solid $border !important;
+  flex: 1;
+  min-width: 6mm;
+  min-height: 4mm;
+  line-height: 1.4;
+}
+
+// Lista de telefones (sem pipe, com espaçamento entre itens)
+.phones-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10mm;
+  flex: 1;
+  border-bottom: 1px solid $border !important;
+  min-height: 4mm;
+  align-items: flex-end;
+}
+
+.phone-item {
+  color: $black;
+  font-size: 8.5pt;
+  white-space: nowrap;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// C. TABELA DE ITENS
+// ═══════════════════════════════════════════════════════════════════
+
+.items-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1.5px solid $border;
+  margin-top: 3mm;
+
+  thead tr th {
+    background-color: $blue !important;
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 8pt;
+    text-align: center;
+    padding: 1.2mm 2mm;
+    border-right: 1px solid #fff !important;
+    border-bottom: 1px solid #fff !important;
+    &:last-child { border-right: none !important; }
+  }
+
+  tbody tr td {
+    border-right: 1px solid $border !important;
+    border-bottom: 1px solid $border !important;
+    padding: 0.8mm 2mm;
+    font-size: 8.5pt;
+    color: $black;
+    height: 6.5mm;
+    vertical-align: top;
+    &:last-child { border-right: none !important; }
+  }
+
+  tfoot tr td {
+    border-right: 1px solid $border !important;
+    border-top: 1.5px solid $border !important;
+    padding: 1.5mm 2mm;
+    &:last-child { border-right: none !important; }
+  }
+
+  .col-qty {
+    width: 5%;
+    text-align: center;
+  }
+
+  .col-desc {
+    width: 80%;
+  }
+
+  .col-val {
+    width: 15%;
+    text-align: right;
+  }
+}
+
+.item-name {
+  display: block;
+  font-size: 8.5pt;
+  color: $black;
+}
+
+.item-details {
+  display: block;
+  font-size: 7.5pt;
+  color: #444;
+  margin-top: 0.3mm;
+}
+
+.total-row {
+  border-top: 1.5px solid $border;
+}
+
+.obs-cell {
+  vertical-align: middle;
+}
+
+.obs-label {
+  color: $blue;
+  font-weight: bold;
+  font-size: 8pt;
+  margin-right: 2mm;
+}
+
+.obs-value {
+  color: $black;
+  font-size: 8pt;
+}
+
+.total-cell {
+  vertical-align: middle;
+}
+
+.total-label {
+  display: block;
+  color: $blue;
+  font-weight: bold;
+  font-size: 8pt;
+  text-align: center;
+}
+
+.total-value {
+  display: block;
+  color: $black;
+  font-weight: bold;
+  font-size: 10pt;
+  text-align: center;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// D. TABELA DE PAGAMENTOS
+// ═══════════════════════════════════════════════════════════════════
+
+.payments-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1.5px solid $border;
+  margin-top: 3mm;
+
+  th.pay-title {
+    background-color: $blue !important;
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 9pt;
+    text-align: center;
+    padding: 1mm 2mm;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid #fff !important;
+  }
+
+  th {
+    background-color: $blue !important;
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 8pt;
+    text-align: center;
+    padding: 1mm 2mm;
+    border-right: 1px solid #fff !important;
+    border-bottom: 1px solid #fff !important;
+    &:last-child { border-right: none !important; }
+  }
+
+  td {
+    border-right: 1px solid $border !important;
+    border-bottom: 1px solid $border !important;
+    padding: 0mm 2mm;
+    font-size: 8pt;
+    height: 6mm;
+    color: $black;
+    &:last-child { border-right: none !important; }
+  }
+
+  tr:last-child td {
+    border-bottom: none !important;
+  }
+
+  .pay-date {
+    text-align: center;
+  }
+
+  .pay-val {
+    text-align: right;
+  }
+
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// E. TERMOS E ASSINATURA
+// ═══════════════════════════════════════════════════════════════════
+
+.terms {
+  margin-top: 2mm;
+
+  p {
+    font-size: 6.5pt;
+    color: $blue;
+    font-weight: bold;
+    margin: 0.8mm 0;
+    line-height: 1.3;
+  }
+}
+
+.signature-area {
+  margin-top: 8mm;
+  display: flex;
+  justify-content: center;
+}
+
+.signature-line {
+  width: 55%;
+  border-top: 1px solid $border;
+  text-align: center;
+  padding-top: 1mm;
+}
+
+.signature-label {
+  font-size: 7.5pt;
+  color: $blue;
+  font-style: italic;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// F. CANHOTOS
+// ═══════════════════════════════════════════════════════════════════
+
+.canhotos {
+  display: flex;
+  gap: 3mm;
+  margin-top: 4mm;
+}
+
+.canhoto {
+  flex: 1;
+  border: 1.5px solid $border;
+  display: flex;
+  flex-direction: column;
+  padding: 2mm 3mm;
+  gap: 1.5mm;
+}
+
+.canhoto-header {
+  text-align: center;
+  border-bottom: 1px solid $border;
+  padding-bottom: 1.5mm;
+  margin-bottom: 0.5mm;
+}
+
+.canhoto-code {
+  color: $red;
+  font-weight: bold;
+  font-size: 11pt;
+}
+
+.canhoto-field {
+  display: flex;
+  align-items: baseline;
+  font-size: 8pt;
+}
+
+.canhoto-label {
+  color: $blue;
+  font-weight: bold;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.canhoto-value {
+  color: $black;
+}
+
+// Nome do cliente no canhoto — sublinhado em toda a extensão
+.canhoto-underline-text {
+  color: $black;
+  flex: 1;
+  border-bottom: 1.5px solid $border !important;
+  min-width: 10mm;
+  min-height: 3.5mm;
+  line-height: 1.4;
+}
+
+.canhoto-underline {
+  flex: 1;
+  border-bottom: 1.5px solid $border !important;
+  min-width: 10mm;
+  min-height: 3.5mm;
+}
+
+// Barras divisórias da data no canhoto
+.canhoto-date-slots {
+  color: $blue;
+  font-size: 8pt;
+  letter-spacing: 0.05em;
+}
+
+.canhoto-footer {
+  margin-top: auto;
+  padding-top: 4mm;
+}
+
+.canhoto-footer-line {
+  border-top: 1px solid $border;
+  text-align: center;
+  padding-top: 1mm;
+  font-size: 7.5pt;
+  color: $blue;
+  font-weight: bold;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// @media print
+// ═══════════════════════════════════════════════════════════════════
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  :host {
+    display: block;
+  }
+
+  .print-page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    padding: 8mm 10mm;
+  }
+
+  .dados-box,
+  .items-table,
+  .payments-table,
+  .canhotos {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}

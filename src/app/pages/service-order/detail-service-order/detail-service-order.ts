@@ -296,6 +296,10 @@ export class DetailServiceOrder implements OnInit {
     this.router.navigate(['/os']);
   }
 
+  printOrder(): void {
+    window.open(`/os/${this.order!.code}/imprimir`, '_blank');
+  }
+
   // ── Ações: Itens ──────────────────────────────────────────────────────
 
   openEditItemsDialog(): void {

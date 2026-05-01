@@ -190,7 +190,7 @@
             </div>
         </div>
         <div class="actions">
-            <p-button label="Imprimir" outlined="true" icon="pi pi-print"></p-button>
+            <p-button label="Imprimir" outlined="true" icon="pi pi-print" (click)="printOrder()"></p-button>
             <p-button *hasRole="'ADMIN'" label="Excluir" severity="danger" icon="pi pi-trash" (click)="confirmDeleteOrder($event)"></p-button>
         </div>
     </div>

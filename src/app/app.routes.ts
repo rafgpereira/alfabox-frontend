@@ -7,6 +7,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login').then((m) => m.Login),
   },
   {
+    path: 'os/:code/imprimir',
+    loadComponent: () => import('./pages/service-order/os-print/os-print').then((m) => m.OsPrint),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
     loadComponent: () => import('./core/layout/layout').then((m) => m.Layout),
     canActivate: [authGuard],

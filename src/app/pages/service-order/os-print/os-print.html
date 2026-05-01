@@ -1,0 +1,195 @@
+@if (order) {
+<div class="print-page">
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- A. CABEÇALHO                                               -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="header">
+    <img src="assets/logo-print.png" alt="Alfabox Vidraçaria" class="header-logo" />
+    <div class="header-address-row">
+      <span class="header-address">
+        AV. BRASIL, 855 - CENTRO - PATOS DE MINAS - MG - CEP 38700-188
+      </span>
+      <span class="header-code">
+        N&ordm;&nbsp;&nbsp;{{ order.code }}
+      </span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- B. DADOS DA OS                                             -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="dados-box">
+
+    <!-- Linha 0: Cidade + Data -->
+    <div class="dados-row dados-row--center dados-row--city">
+      <span class="field-value--blue">Patos de Minas, {{ longDate }}.</span>
+    </div>
+
+    <!-- Linha 1: Nome | CPF/CNPJ -->
+    <div class="dados-row">
+      <div class="dados-field dados-field--grow">
+        <span class="field-label">Nome:</span>
+        <span class="field-value">{{ order.client.name }}</span>
+      </div>
+      <div class="dados-field dados-field--doc">
+        <span class="field-label">{{ documentLabel }}:</span>
+        <span class="field-value">{{ formatDocument() }}</span>
+      </div>
+    </div>
+
+    <!-- Linha 2: Rua | Nº -->
+    <div class="dados-row">
+      <div class="dados-field dados-field--street">
+        <span class="field-label">Rua/Av.:</span>
+        <span class="field-value">{{ order.address.street }}</span>
+      </div>
+      <div class="dados-field dados-field--num">
+        <span class="field-label">Número:</span>
+        <span class="field-value">{{ order.address.addressNumber }}</span>
+      </div>
+    </div>
+
+    <!-- Linha 3: Complemento | Bairro | Cidade -->
+    <div class="dados-row">
+      <div class="dados-field dados-field--comp">
+        <span class="field-label">Complemento:</span>
+        <span class="field-value">{{ order.address.complement }}</span>
+      </div>
+      <div class="dados-field dados-field--third">
+        <span class="field-label">Bairro:</span>
+        <span class="field-value">{{ order.address.neighborhood }}</span>
+      </div>
+      <div class="dados-field dados-field--third">
+        <span class="field-label">Cidade:</span>
+        <span class="field-value">{{ order.address.city }}</span>
+      </div>
+    </div>
+
+    <!-- Linha 4: Vendedor | Contatos -->
+    <div class="dados-row dados-row--last">
+      <div class="dados-field dados-field--seller">
+        <span class="field-label">Vendedor:</span>
+        <span class="field-value">{{ order.seller.name }}</span>
+      </div>
+      <div class="dados-field dados-field--contacts">
+        <span class="field-label">Contato(s):</span>
+        <div class="phones-list">
+          @for (phone of order.client.phones; track phone.id) {
+            <span class="phone-item">{{ phone.number | phoneFormat }}</span>
+          }
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- C. TABELA DE ITENS                                         -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th class="col-qty">Quant.</th>
+        <th class="col-desc">Descrição</th>
+        <th class="col-val">Valor</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of itemRows; track $index) {
+        <tr>
+          <td class="col-qty">{{ row?.quantity ?? '' }}</td>
+          <td class="col-desc">{{ row ? itemDescription(row) : '' }}</td>
+          <td class="col-val">
+            {{ row?.amount != null ? (row!.amount | currency:'BRL') : '' }}
+          </td>
+        </tr>
+      }
+    </tbody>
+    <tfoot>
+      <tr class="total-row">
+        <td colspan="2" class="obs-cell">
+          <span class="obs-label">Observações:</span>
+          <span class="obs-value">{{ order.observation }}</span>
+        </td>
+        <td class="col-val total-cell">
+          <span class="total-label">TOTAL</span>
+          <span class="total-value">{{ order.totalAmount | currency:'BRL' }}</span>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- D. TABELA DE PAGAMENTOS                                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+
+  <table class="payments-table">
+    <thead>
+      <tr>
+        <th class="pay-title" colspan="3">Pagamentos</th>
+      </tr>
+      <tr>
+        <th class="pay-date">Data</th>
+        <th>Valor</th>
+        <th class="pay-method">Método</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (p of paymentRows; track $index) {
+        <tr>
+          <td class="pay-date">{{ p ? (toDate(p.paymentDate) | date:'dd/MM/yyyy') : '' }}</td>
+          <td class="pay-val">{{ p?.amount != null ? (p!.amount | currency:'BRL') : '' }}</td>
+          <td class="pay-method">{{ p ? formatMethod(p.method, p.installments) : '' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- E. TERMOS E ASSINATURA                                     -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="terms">
+    <p>&#9674; Solicitamos a gentileza de conferir o serviço na presença do funcionário, a fim de evitar eventuais constrangimentos posteriores.</p>
+    <p>&#9674; Pagamentos efetuados após o vencimento por período superior a 30 (trinta) dias poderão implicar inclusão no SPC.</p>
+  </div>
+
+  <div class="signature-area">
+    <div class="signature-line">
+      <span class="signature-label">Assinatura Cliente</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- F. CANHOTOS                                                -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="canhotos">
+    @for (stub of [1, 2]; track stub) {
+      <div class="canhoto">
+        <div class="canhoto-header">
+          <span class="canhoto-code">N&ordm;&nbsp;{{ order.code }}</span>
+        </div>
+        <div class="canhoto-field">
+          <span class="canhoto-label">Cliente:&nbsp;</span>
+          <span class="canhoto-value canhoto-underline-text">{{ order.client.name }}</span>
+        </div>
+        <div class="canhoto-field">
+          <span class="canhoto-label">Valor:&nbsp;</span>
+          <span class="canhoto-label">R$&nbsp;</span>
+          <span class="canhoto-underline"></span>
+        </div>
+        <div class="canhoto-field">
+          <span class="canhoto-label">Data:&nbsp;</span>
+          <span class="canhoto-date-slots">_____&nbsp;/&nbsp;_____&nbsp;/&nbsp;__________</span>
+        </div>
+        <div class="canhoto-footer">
+          <div class="canhoto-footer-line">
+            <span>Funcionário Responsável</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>
+}

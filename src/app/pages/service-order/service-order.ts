@@ -134,6 +134,10 @@ export class ServiceOrder implements OnInit {
     this.router.navigate(['/os', code]);
   }
 
+  printOrder(code: string): void {
+    window.open(`/os/${code}/imprimir`, '_blank');
+  }
+
   navigateByCode(): void {
     const code = this.codeSearchText.trim().toUpperCase();
     if (!code) return;
