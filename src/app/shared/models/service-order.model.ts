@@ -134,6 +134,14 @@ export interface ServiceOrderDetailExecution {
   assemblers: ServiceOrderDetailAssembler[];
 }
 
+export interface ServiceOrderDetailEvent {
+  id: string;
+  eventDate: string; // YYYY-MM-DD
+  description: string;
+  creatorName: string;
+  createdAt: string;
+}
+
 export interface ServiceOrderDetail {
   id: string;
   code: string;
@@ -152,6 +160,7 @@ export interface ServiceOrderDetail {
   items: ServiceOrderDetailItem[];
   payments: ServiceOrderDetailPayment[];
   executions: ServiceOrderDetailExecution[];
+  events: ServiceOrderDetailEvent[];
   paidAmount: number;
   executedAmount: number;
   paymentStatus: PaymentStatus;

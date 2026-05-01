@@ -28,7 +28,6 @@ import { todayLocal, toApiDate } from '../../../shared/utils/date.utils';
     ...SHARED_CRUD_IMPORTS,
     OsItemsInputComponent,
     InputNumberModule,
-    TextareaModule,
     ClientDialogComponent,
   ],
   templateUrl: './create-service-order.html',

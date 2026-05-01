@@ -483,6 +483,45 @@
         }
           </div>
 
+          <!-- ── Card de Ocorrências ── -->
+          <div class="events card">
+            <div class="card-header">
+              <h3><span><i class="pi pi-list"></i></span> Ocorrências</h3>
+              <p-button
+                label="Registrar Ocorrência"
+                icon="pi pi-plus"
+                size="small"
+                (click)="openEventDialog()"
+              />
+            </div>
+
+            @if(order.events.length > 0){
+            <p-table
+              [value]="order.events"
+              [tableStyle]="{ 'width': '100%' }"
+            >
+              <ng-template #header>
+                <tr>
+                  <th style="width: 7rem">Data</th>
+                  <th>Descrição</th>
+                  <th>Autor</th>
+                  <th *hasRole="'ADMIN'" style="width: 5rem; text-align: center">Ações</th>
+                </tr>
+              </ng-template>
+              <ng-template #body let-e>
+                <tr>
+                  <td>{{ toDate(e.eventDate) | date:'dd/MM/yyyy' }}</td>
+                  <td class="col-event-desc">{{ e.description }}</td>
+                  <td>{{ e.creatorName }}</td>
+                  <td *hasRole="'ADMIN'" class="actions">
+                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" pTooltip="Excluir" tooltipPosition="top" (click)="confirmDeleteEvent($event, e)" />
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+            }
+          </div>
+
         </div>
     </div>
     } <!-- end @if order -->
@@ -538,3 +577,49 @@
   (saved)="onItemsSaved($event)"
 />
 }
+
+<!-- ═══ Dialog Ocorrência ═══ -->
+<p-dialog
+  [(visible)]="eventDialogVisible"
+  [modal]="true"
+  [draggable]="false"
+  [focusOnShow]="false"
+  header="Registrar Ocorrência"
+  styleClass="event-dialog"
+  [style]="{ width: '35rem' }"
+  (onHide)="closeEventDialog()"
+>
+  <form [formGroup]="eventForm" class="event-form">
+    <p-floatlabel variant="on">
+      <p-datepicker
+        formControlName="eventDate"
+        inputId="eventDate"
+        dateFormat="dd/mm/yy"
+        showIcon
+        iconDisplay="input"
+        [fluid]="true"
+        [autofocus]="false"
+        appendTo="body"
+      />
+      <label for="eventDate">Data da Ocorrência</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="on">
+      <textarea
+        pTextarea
+        formControlName="description"
+        id="description"
+        autoResize="true"
+        rows="4"
+        [maxlength]="300"
+        class="description-textarea"
+      ></textarea>
+      <label for="description">Descrição</label>
+    </p-floatlabel>
+  </form>
+
+  <ng-template #footer>
+    <p-button label="Cancelar" icon="pi pi-times" severity="secondary" [outlined]="true" (click)="closeEventDialog()" [disabled]="savingEvent" />
+    <p-button label="Salvar" icon="pi pi-save" (click)="saveEvent()" [loading]="savingEvent" [disabled]="eventForm.invalid" />
+  </ng-template>
+</p-dialog>

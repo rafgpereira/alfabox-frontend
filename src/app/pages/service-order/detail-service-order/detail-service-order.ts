@@ -5,9 +5,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ServiceOrderService } from '../../../shared/services/service-order.service';
 import { ServiceOrderPaymentService } from '../../../shared/services/service-order-payment.service';
 import { ServiceOrderExecutionService } from '../../../shared/services/service-order-execution.service';
+import { ServiceOrderEventService } from '../../../shared/services/service-order-event.service';
 import { PaymentDialogComponent } from '../../../shared/components/payment-dialog/payment-dialog';
 import { ExecutionDialogComponent } from '../../../shared/components/execution-dialog/execution-dialog';
 import { ClientDialogComponent } from '../../../shared/components/client-dialog/client-dialog';
@@ -22,12 +24,13 @@ import {
   ServiceOrderDetailItem,
   ServiceOrderDetailPayment,
   ServiceOrderDetailExecution,
+  ServiceOrderDetailEvent,
   PaymentStatus,
   ExecutionStatus,
 } from '../../../shared/models/service-order.model';
 import { ServiceOrderPayment } from '../../../shared/models/service-order-payment.model';
 import { ServiceOrderExecution } from '../../../shared/models/service-order-execution.model';
-import { fromApiDate } from '../../../shared/utils/date.utils';
+import { fromApiDate, todayLocal, toApiDate } from '../../../shared/utils/date.utils';
 import { toCents, fromCents } from '../../../shared/utils/money.utils';
 import { whatsappUrl } from '../../../shared/utils/whatsapp.utils';
 import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
@@ -60,7 +63,9 @@ export class DetailServiceOrder implements OnInit {
   private readonly messageService = inject(MessageService);
   private readonly paymentService = inject(ServiceOrderPaymentService);
   private readonly executionService = inject(ServiceOrderExecutionService);
+  private readonly eventService = inject(ServiceOrderEventService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly fb = inject(FormBuilder);
 
   order: ServiceOrderDetail | null = null;
   loading = true;
@@ -83,6 +88,14 @@ export class DetailServiceOrder implements OnInit {
 
   // ── Dialog Itens ──────────────────────────────────────────────────────
   editItemsDialogVisible = false;
+
+  // ── Dialog Ocorrência ─────────────────────────────────────────────────
+  eventDialogVisible = false;
+  savingEvent = false;
+  eventForm = this.fb.group({
+    eventDate: [todayLocal(), Validators.required],
+    description: ['', [Validators.required, Validators.maxLength(300)]],
+  });
 
   ngOnInit(): void {
     const code = this.route.snapshot.paramMap.get('code')!;
@@ -340,10 +353,66 @@ export class DetailServiceOrder implements OnInit {
     }
   }
 
+  // ── Ações: Ocorrências ────────────────────────────────────────────────
+
+  openEventDialog(): void {
+    this.eventForm.reset({ eventDate: todayLocal(), description: '' });
+    this.eventDialogVisible = true;
+  }
+
+  closeEventDialog(): void {
+    this.eventDialogVisible = false;
+  }
+
+  saveEvent(): void {
+    if (this.eventForm.invalid || !this.order) return;
+    this.savingEvent = true;
+    const raw = this.eventForm.getRawValue();
+    this.eventService
+      .create(this.order.id, {
+        eventDate: toApiDate(raw.eventDate as Date),
+        description: raw.description as string,
+      })
+      .subscribe({
+        next: () => {
+          this.savingEvent = false;
+          this.eventDialogVisible = false;
+          this.reload();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Ocorrência registrada!',
+          });
+        },
+        error: () => {
+          this.savingEvent = false;
+        },
+      });
+  }
+
+  confirmDeleteEvent(domEvent: Event, e: ServiceOrderDetailEvent): void {
+    this.confirmationService.confirm({
+      target: domEvent.target as EventTarget,
+      message: `Excluir ocorrência de ${this.toDate(e.eventDate).toLocaleDateString('pt-BR')}?`,
+      icon: 'pi pi-trash',
+      acceptLabel: 'Excluir',
+      rejectLabel: 'Cancelar',
+      acceptIcon: 'pi pi-trash',
+      rejectIcon: 'pi pi-times',
+      acceptButtonProps: { severity: 'danger' },
+      rejectButtonProps: { severity: 'secondary', outlined: true },
+      accept: () => {
+        this.eventService.delete(this.order!.id, e.id).subscribe({
+          next: () => this.reload(),
+        });
+      },
+    });
+  }
+
   confirmDeleteOrder(event: Event): void {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `Tem certeza que deseja excluir a OS ${this.order!.code}? Esta ação é irreversível e todos os dados da ordem (pagamentos e execuções) serão permanentemente deletados.`,
+      message: `Tem certeza que deseja excluir a OS ${this.order!.code}? Esta ação é irreversível e todos os dados da ordem (pagamentos, execuções e ocorrências) serão permanentemente deletados.`,
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Excluir definitivamente',
       rejectLabel: 'Cancelar',

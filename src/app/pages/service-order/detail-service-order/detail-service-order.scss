@@ -8,6 +8,12 @@ h1, h2, h3 {
   gap: 0.75rem;
 }
 
+  textarea.description-textarea {
+    width: 100%;
+    resize: none;
+    flex: 1;
+  }
+
 // ── Skeleton ────────────────────────────────────────────────────────────
 
 .skeleton-toolbar {
@@ -428,4 +434,23 @@ h1, h2, h3 {
   color: var(--p-text-muted-color);
   font-size: 0.9rem;
   padding: 1.25rem 0 !important;
+}
+.col-event-desc {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 20rem;
+}
+
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+.char-count {
+  color: var(--p-text-muted-color);
+  font-size: 0.78rem;
+  text-align: right;
+  margin-top: -1rem;
 }
