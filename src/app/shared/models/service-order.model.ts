@@ -6,6 +6,19 @@ export interface ServiceOrderAddress {
   city: string | null;
 }
 
+export interface ServiceOrderLookup {
+  id: string;
+  code: string;
+  orderDate: string | null;
+  street: string | null;
+  addressNumber: string | null;
+  neighborhood: string | null;
+  complement: string | null;
+  city: string | null;
+  clientId: string;
+  clientName: string;
+}
+
 export interface UpdateAddress {
   street: string | null;
   addressNumber: string | null;

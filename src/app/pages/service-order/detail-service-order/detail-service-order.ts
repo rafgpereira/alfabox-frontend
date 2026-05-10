@@ -422,7 +422,7 @@ export class DetailServiceOrder implements OnInit {
   confirmDeleteOrder(event: Event): void {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `Tem certeza que deseja excluir a OS ${this.order!.code}? Esta ação é irreversível e todos os dados da ordem (pagamentos, execuções e ocorrências) serão permanentemente deletados.`,
+      message: `Tem certeza que deseja excluir a OS ${this.order!.code}? Esta ação é irreversível e todos os dados da ordem (pagamentos, execuções, ocorrências e manutenções vinculadas) serão permanentemente deletados.`,
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Excluir definitivamente',
       rejectLabel: 'Cancelar',

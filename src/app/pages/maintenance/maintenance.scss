@@ -1,0 +1,16 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+h1, h2, h3 {
+  color: var(--p-primary-500);
+  span { color: var(--p-red-500); }
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

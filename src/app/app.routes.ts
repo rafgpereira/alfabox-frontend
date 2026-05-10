@@ -28,6 +28,11 @@ export const routes: Routes = [
           import('./pages/service-order/service-order.routes').then((m) => m.SERVICE_ORDER_ROUTES),
       },
       {
+        path: 'manutencao',
+        loadChildren: () =>
+          import('./pages/maintenance/maintenance.routes').then((m) => m.MAINTENANCE_ROUTES),
+      },
+      {
         path: 'cadastro',
         loadChildren: () =>
           import('./pages/register/register.routes').then((m) => m.REGISTER_ROUTES),

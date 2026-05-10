@@ -31,6 +31,11 @@ export class Sidebar implements OnInit {
         routerLink: '/os',
       },
       {
+        label: 'Manutenção',
+        icon: 'pi pi-fw pi-hammer',
+        routerLink: '/manutencao',
+      },
+      {
         label: 'Cadastro',
         icon: 'pi pi-fw pi-file-edit',
         items: [

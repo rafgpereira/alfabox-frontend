@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import {
   ServiceOrderAddress,
+  ServiceOrderLookup,
   UpdateAddress,
   UpdateItems,
   CreateServiceOrder,
@@ -51,5 +52,12 @@ export class ServiceOrderService {
 
   getAddressesByClient(clientId: string): Observable<ServiceOrderAddress[]> {
     return this.http.get<ServiceOrderAddress[]>(`${this.baseUrl}/addresses/by-client/${clientId}`);
+  }
+
+  lookup(clientId?: string, search?: string): Observable<ServiceOrderLookup[]> {
+    let params = new HttpParams();
+    if (clientId) params = params.set('clientId', clientId);
+    if (search) params = params.set('search', search);
+    return this.http.get<ServiceOrderLookup[]>(`${this.baseUrl}/lookup`, { params });
   }
 }

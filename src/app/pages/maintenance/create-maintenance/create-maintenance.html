@@ -1,0 +1,393 @@
+<div class="page">
+
+  <!-- ═══ Título ═══ -->
+  <div class="title">
+      <h1><span>|</span> Nova Manutenção</h1>
+      <p-button label="Voltar" icon="pi pi-arrow-left" [outlined]="true" (onClick)="return()" />
+  </div>
+
+  <!-- ═══ Tipo de Manutenção ═══ -->
+  <div class="type-banner">
+    <span class="type-banner__label">Tipo de manutenção</span>
+    <p-selectbutton
+      [options]="typeOptions"
+      [(ngModel)]="selectedType"
+      optionLabel="label"
+      optionValue="value"
+      size="large"
+      [allowEmpty]="false"
+      (onChange)="onTypeChange($event.value)"
+    />
+  </div>
+
+  <!-- ═══ Linha: Cliente + OS ═══ -->
+  <div class="cards-row">
+
+    <!-- ── Card Cliente ── -->
+    <div class="card card--client">
+      <h3><span><i class="pi pi-user"></i></span> Cliente</h3>
+
+      @if (!selectedClient) {
+        <p-floatlabel variant="on" class="client-autocomplete">
+          <p-autocomplete
+            inputId="client_search"
+            [suggestions]="clientSuggestions"
+            (completeMethod)="searchClients($event)"
+            (onSelect)="onClientSelect($event)"
+            (onClear)="onClientClear()"
+            optionLabel="name"
+            [forceSelection]="true"
+            [showClear]="true"
+            [minLength]="1"
+            [delay]="300"
+            [fluid]="true"
+            dataKey="id"
+            emptyMessage="Nenhum cliente encontrado."
+            [completeOnFocus]="false"
+            scrollHeight="250px"
+            [invalid]="form.controls.clientId.invalid && form.controls.clientId.touched"
+          >
+            <ng-template let-client #item>
+              <div class="autocomplete-item">
+                <p-tag
+                  [value]="client.personType === 'F' ? 'PF' : 'PJ'"
+                  [severity]="getPersonTypeSeverity(client.personType)"
+                />
+                <span class="autocomplete-item-name">{{ client.name }}</span>
+              </div>
+            </ng-template>
+            <ng-template #footer>
+              <div class="autocomplete-footer">
+                <p-button
+                  [label]="'Criar &quot;' + clientSearchQuery + '&quot;'"
+                  [text]="true"
+                  severity="secondary"
+                  size="small"
+                  icon="pi pi-plus"
+                  [fluid]="true"
+                  (click)="openCreateClientDialog()"
+                />
+              </div>
+            </ng-template>
+          </p-autocomplete>
+          <label for="client_search">Buscar Cliente *</label>
+        </p-floatlabel>
+      } @else {
+        <div class="selected-client">
+          <div class="selected-client-info">
+            <div class="info-item">
+              <span class="info-label">Nome:</span>
+              <p-tag [value]="selectedClient.name" severity="secondary" />
+            </div>
+            <div class="info-item">
+              <span class="info-label">Pessoa:</span>
+              <p-tag
+                [value]="getPersonTypeLabel(selectedClient.personType)"
+                severity="secondary"
+              />
+            </div>
+            <div class="info-item">
+              <span class="info-label">{{ selectedClient.personType === 'F' ? 'CPF' : 'CNPJ' }}:</span>
+              <p-tag [value]="formatDocument(selectedClient)" [severity]="getDocumentSeverity(selectedClient)" />
+            </div>
+            <div class="info-item">
+              <span class="info-label">Telefones:</span>
+              <span class="info-phones">
+                @for (phone of selectedClient.phones; track phone.id) {
+                  <p-tag [value]="formatPhone(phone)" severity="secondary" />
+                }
+                @if (selectedClient.phones.length === 0) {
+                  <span class="selected-client-doc">Nenhum</span>
+                }
+              </span>
+            </div>
+          </div>
+          <div class="selected-client-actions">
+            <p-button
+              icon="pi pi-pencil"
+              [rounded]="true"
+              [text]="true"
+              severity="info"
+              pTooltip="Editar"
+              tooltipPosition="top"
+              (click)="openEditClientDialog()"
+            />
+            <p-button
+              icon="pi pi-times"
+              [rounded]="true"
+              [text]="true"
+              severity="danger"
+              pTooltip="Remover"
+              tooltipPosition="top"
+              (click)="removeClient()"
+            />
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- ── Card OS Vinculada ── -->
+    <div class="card card--service-order">
+      <h3><span><i class="pi pi-file"></i></span> OS Vinculada</h3>
+
+      <p-floatlabel variant="on">
+        <p-autocomplete
+          inputId="service_order_search"
+          [(ngModel)]="selectedServiceOrder"
+          [suggestions]="serviceOrderSuggestions"
+          (completeMethod)="searchServiceOrders($event)"
+          (onSelect)="onServiceOrderSelect($event)"
+          (onClear)="onServiceOrderClear()"
+          [optionLabel]="serviceOrderLabel"
+          [dropdown]="!!selectedClient"
+          [forceSelection]="true"
+          [showClear]="true"
+          [minLength]="selectedClient ? 0 : 2"
+          [delay]="selectedClient ? 0 : 300"
+          [fluid]="true"
+          dataKey="id"
+          emptyMessage="Nenhuma OS encontrada."
+          [completeOnFocus]="!!selectedClient"
+          scrollHeight="250px"
+        >
+          <ng-template let-so #item>
+            <div class="autocomplete-item">
+              <span class="autocomplete-item-name">{{ so.code }}</span>
+              @if (so.clientName) {
+                <span class="autocomplete-item-sub">{{ so.clientName }}</span>
+              }
+            </div>
+          </ng-template>
+        </p-autocomplete>
+        <label for="service_order_search">Buscar OS (opcional)</label>
+      </p-floatlabel>
+    </div>
+
+  </div><!-- /.cards-row -->
+
+  <!-- ═══ Linha: Endereço + Data ═══ -->
+  <div class="cards-row">
+    <div class="card card--address">
+      <h3><span><i class="pi pi-map-marker"></i></span> Endereço</h3>
+
+      <div class="address-row">
+
+        <p-floatlabel variant="on" class="address-field address-field--street">
+          <p-autocomplete
+            inputId="addr_street"
+            [formControl]="form.controls.street"
+            [suggestions]="addressSuggestions"
+            (completeMethod)="searchAddresses($event)"
+            (onSelect)="onAddressSelect($event)"
+            [forceSelection]="false"
+            [fluid]="true"
+            [minLength]="0"
+            [delay]="0"
+            [completeOnFocus]="true"
+            scrollHeight="250px"
+            emptyMessage="Nenhum endereço anterior encontrado."
+            [maxlength]="255"
+          >
+            <ng-template let-addr #item>
+              <span>{{ addressSuggestionLabel(addr) }}</span>
+            </ng-template>
+          </p-autocomplete>
+          <label for="addr_street">Rua</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" class="address-field address-field--number">
+          <input
+            pInputText
+            [fluid]="true"
+            id="addr_number"
+            [formControl]="form.controls.addressNumber"
+            maxlength="50"
+          />
+          <label for="addr_number">Número</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" class="address-field address-field--complement">
+          <input
+            pInputText
+            [fluid]="true"
+            id="addr_complement"
+            [formControl]="form.controls.complement"
+            maxlength="100"
+          />
+          <label for="addr_complement">Complemento</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" class="address-field address-field--neighborhood">
+          <input
+            pInputText
+            [fluid]="true"
+            id="addr_neighborhood"
+            [formControl]="form.controls.neighborhood"
+            maxlength="100"
+          />
+          <label for="addr_neighborhood">Bairro</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" class="address-field address-field--city">
+          <input
+            pInputText
+            [fluid]="true"
+            id="addr_city"
+            [formControl]="form.controls.city"
+            maxlength="100"
+          />
+          <label for="addr_city">Cidade</label>
+        </p-floatlabel>
+
+      </div>
+    </div>
+
+    <!-- ── Card Data ── -->
+    <div class="card card--date">
+      <h3><span><i class="pi pi-calendar"></i></span> Data</h3>
+
+      <p-floatlabel variant="on">
+        <p-datepicker
+          inputId="maintenance_date"
+          [formControl]="form.controls.maintenanceDate"
+          showIcon
+          iconDisplay="input"
+          [fluid]="true"
+          [invalid]="form.controls.maintenanceDate.invalid && form.controls.maintenanceDate.touched"
+        />
+        <label for="maintenance_date">Data *</label>
+      </p-floatlabel>
+    </div>
+
+  </div>
+
+  <!-- ═══ Card: Produto ═══ -->
+  <div class="cards-row">
+    <div class="card card--product">
+      <h3><span><i class="pi pi-box"></i></span> Produto</h3>
+
+      <div class="product-toggle-row">
+        <span class="product-toggle-label">Esta manutenção possui produtos?</span>
+        <p-toggleswitch
+          [(ngModel)]="hasProduct"
+          (onChange)="onToggleProduct($event.checked)"
+          inputId="toggle_product"
+        />
+      </div>
+
+      @if (hasProduct) {
+        <div class="product-fields-row">
+
+          <!-- Descrição do Produto -->
+          <p-floatlabel variant="on" class="product-field product-field--description">
+            <input
+              pInputText
+              [fluid]="true"
+              id="product_description"
+              [formControl]="form.controls.productDescription"
+              maxlength="500"
+              [invalid]="form.controls.productDescription.invalid && form.controls.productDescription.touched"
+            />
+            <label for="product_description">Descrição do Produto *</label>
+          </p-floatlabel>
+
+          <!-- Valor do Produto (apenas tipo NORMAL) -->
+          @if (selectedType === 'NORMAL') {
+            <p-floatlabel variant="on" class="product-field product-field--amount">
+              <p-inputnumber
+                inputId="product_amount"
+                [formControl]="form.controls.productAmount"
+                mode="currency"
+                currency="BRL"
+                locale="pt-BR"
+                [fluid]="true"
+                [invalid]="form.controls.productAmount.invalid && form.controls.productAmount.touched"
+              />
+              <label for="product_amount">Valor do Produto *</label>
+            </p-floatlabel>
+          }
+
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ═══ Linha: Observação + Mão de Obra + Valor Total ═══ -->
+  <div class="cards-row">
+
+    <!-- ── Card Observação ── -->
+    <div class="card card--observation">
+      <h3><span><i class="pi pi-comment"></i></span> Observação</h3>
+      <p-floatlabel variant="on" class="full-height-field">
+        <textarea
+          pTextarea
+          id="observation"
+          [formControl]="form.controls.observation"
+          [autoResize]="false"
+          [rows]="3"
+          maxlength="500"
+          class="observation-textarea"
+        ></textarea>
+        <label for="observation">Observação</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- ── Card Mão de Obra (apenas tipo NORMAL) ── -->
+    @if (selectedType === 'NORMAL') {
+      <div class="card card--labor">
+        <h3><span><i class="pi pi-wrench"></i></span> Mão de Obra</h3>
+        <p-floatlabel variant="on">
+          <p-inputnumber
+            inputId="labor_amount"
+            [formControl]="form.controls.laborAmount"
+            mode="currency"
+            currency="BRL"
+            locale="pt-BR"
+            [fluid]="true"
+            [invalid]="form.controls.laborAmount.invalid && form.controls.laborAmount.touched"
+          />
+          <label for="labor_amount">Valor da Mão de Obra *</label>
+        </p-floatlabel>
+      </div>
+    }
+
+    <!-- ── Card Valor Total ── -->
+    <div class="card card--total">
+      <h3><span><i class="pi pi-money-bill"></i></span> Valor Total</h3>
+      @if (selectedType === 'NORMAL') {
+        <span class="total-amount">
+          {{ computedTotal | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+        </span>
+      } @else {
+        <p class="total-warranty-msg">
+          <i class="pi pi-info-circle"></i>
+          Manutenções de garantia não possuem valor cobrado.
+        </p>
+      }
+    </div>
+
+  </div>
+
+  <!-- ═══ Ações ═══ -->
+  <div class="form-actions">
+    <p-button
+      size="large"
+      label="Salvar"
+      icon="pi pi-save"
+      [disabled]="form.invalid"
+      [loading]="isSubmitting"
+      (click)="submit()"
+    />
+  </div>
+
+</div>
+
+<!-- ═══ Dialog Criar/Editar Cliente ═══ -->
+<app-client-dialog
+  [mode]="clientDialogMode"
+  [(visible)]="clientDialogVisible"
+  [client]="clientDialogMode === 'edit' ? selectedClient : null"
+  [initialName]="clientDialogMode === 'create' ? clientSearchQuery : ''"
+  [allowStatusToggle]="false"
+  (saved)="onClientSaved($event)"
+/>
