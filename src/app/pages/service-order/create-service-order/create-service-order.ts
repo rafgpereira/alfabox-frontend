@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AutoCompleteCompleteEvent, AutoCompleteSelectEvent } from 'primeng/autocomplete';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { Subject, debounceTime, switchMap, of } from 'rxjs';
 import { ClientService } from '../../../shared/services/client.service';
 import { ServiceOrderService } from '../../../shared/services/service-order.service';
@@ -40,7 +40,6 @@ export class CreateServiceOrder implements OnInit {
   private serviceOrderService = inject(ServiceOrderService);
   private productService = inject(ProductService);
   private messageService = inject(MessageService);
-  private confirmationService = inject(ConfirmationService);
   private router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -70,7 +69,7 @@ export class CreateServiceOrder implements OnInit {
       }[],
     ],
     observation: [null as string | null, Validators.maxLength(500)],
-    totalAmount: [null as number | null, [Validators.required, Validators.min(0)]],
+    totalAmount: [null as number | null, [Validators.required, Validators.min(0.01)]],
     // ── Pagamento inicial (campos opcionais, ativados pelo toggle) ──────
     paymentDate: [todayLocal()],
     paymentAmount: [null as number | null],

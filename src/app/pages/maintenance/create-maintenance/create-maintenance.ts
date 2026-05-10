@@ -192,7 +192,7 @@ export class CreateMaintenance implements OnInit {
   private _syncLaborValidator(): void {
     const { laborAmount } = this.form.controls;
     if (this.selectedType === 'NORMAL') {
-      laborAmount.setValidators([Validators.required, Validators.min(0)]);
+      laborAmount.setValidators([Validators.required, Validators.min(0.01)]);
     } else {
       laborAmount.clearValidators();
       laborAmount.setValue(null);
