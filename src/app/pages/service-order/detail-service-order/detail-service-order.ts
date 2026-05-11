@@ -26,6 +26,7 @@ import {
   ServiceOrderDetailPayment,
   ServiceOrderDetailExecution,
   ServiceOrderDetailEvent,
+  ServiceOrderLookup,
   PaymentStatus,
   ExecutionStatus,
 } from '../../../shared/models/service-order.model';
@@ -437,6 +438,29 @@ export class DetailServiceOrder implements OnInit {
           },
         });
       },
+    });
+  }
+
+  // ── Ações: Manutenções ────────────────────────────────────────────────
+
+  navigateToCreateMaintenance(): void {
+    if (!this.order) return;
+
+    const serviceOrder: ServiceOrderLookup = {
+      id: this.order.id,
+      code: this.order.code,
+      orderDate: this.order.orderDate,
+      street: this.order.address.street,
+      addressNumber: this.order.address.addressNumber,
+      neighborhood: this.order.address.neighborhood,
+      complement: this.order.address.complement,
+      city: this.order.address.city,
+      clientId: this.order.client.id,
+      clientName: this.order.client.name,
+    };
+
+    this.router.navigate(['/manutencao/criar'], {
+      state: { serviceOrder, client: this.order.client },
     });
   }
 

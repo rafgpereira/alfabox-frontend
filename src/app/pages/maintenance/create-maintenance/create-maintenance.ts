@@ -45,7 +45,13 @@ export class CreateMaintenance implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   return(): void {
-    this.location.back();
+    if (window.history.length > 1) {
+      this.location.back();
+    } else if (this._originServiceOrderCode) {
+      this.router.navigate(['/os', this._originServiceOrderCode]);
+    } else {
+      this.router.navigate(['/manutencao']);
+    }
   }
 
   // ── Tipo de manutenção ────────────────────────────────────────────────
@@ -56,6 +62,9 @@ export class CreateMaintenance implements OnInit {
   ];
 
   selectedType: MaintenanceType = 'NORMAL';
+
+  // Código da OS de origem (preenchido pelo router state — usado no return e no redirect pós-salvar)
+  private _originServiceOrderCode: string | null = null;
 
   onTypeChange(value: MaintenanceType): void {
     this.selectedType = value;
@@ -231,6 +240,49 @@ export class CreateMaintenance implements OnInit {
       });
 
     // Inicializa validadores conforme o tipo padrão (NORMAL)
+    this._syncLaborValidator();
+
+    // Pré-carrega dados vindos da tela de detalhes de OS (router state)
+    this._prefillFromRouterState();
+  }
+
+  private _prefillFromRouterState(): void {
+    const state = history.state as {
+      serviceOrder?: ServiceOrderLookup;
+      client?: Client;
+    } | null;
+
+    if (!state?.serviceOrder) return;
+
+    const so = state.serviceOrder;
+    const client = state.client ?? null;
+
+    // Seta OS
+    this.selectedServiceOrder = so;
+    this.form.controls.serviceOrderId.setValue(so.id, { emitEvent: false });
+
+    // Seta endereço
+    this.form.patchValue(
+      {
+        street: so.street ?? '',
+        addressNumber: so.addressNumber ?? '',
+        neighborhood: so.neighborhood ?? '',
+        complement: so.complement ?? '',
+        city: so.city ?? '',
+      },
+      { emitEvent: false },
+    );
+
+    // Seta cliente
+    if (client) {
+      this.selectedClient = client;
+      this.form.controls.clientId.setValue(client.id, { emitEvent: false });
+      this.loadClientAddresses(client.id);
+    }
+
+    // Quando vem de uma OS, pré-seleciona Garantia e guarda o código de origem
+    this._originServiceOrderCode = so.code;
+    this.selectedType = 'WARRANTY';
     this._syncLaborValidator();
   }
 
