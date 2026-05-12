@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
@@ -27,10 +27,41 @@ export interface MaintenanceResponse {
   totalAmount: number;
 }
 
+export type MaintenanceType = 'NORMAL' | 'WARRANTY';
+export type MaintenancePaymentStatus = 'PAGO' | 'PARCIAL' | 'ABERTO';
+export type MaintenanceExecutionStatus = 'PENDENTE' | 'CONCLUIDO';
+
+export interface MaintenanceListItem {
+  id: string;
+  code: string;
+  maintenanceDate: string;
+  clientName: string;
+  type: MaintenanceType;
+  totalAmount: number;
+  laborAmount: number;
+  productAmount: number;
+  paidAmount: number;
+  paymentStatus: MaintenancePaymentStatus;
+  executionStatus: MaintenanceExecutionStatus;
+  assemblerNames: string | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class MaintenanceService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/maintenances`;
+
+  findAll(filters: {
+    startDate?: string;
+    endDate?: string;
+    search?: string;
+  }): Observable<MaintenanceListItem[]> {
+    let params = new HttpParams();
+    if (filters.startDate) params = params.set('startDate', filters.startDate);
+    if (filters.endDate) params = params.set('endDate', filters.endDate);
+    if (filters.search) params = params.set('search', filters.search);
+    return this.http.get<MaintenanceListItem[]>(this.baseUrl, { params });
+  }
 
   create(payload: CreateMaintenancePayload): Observable<MaintenanceResponse> {
     return this.http.post<MaintenanceResponse>(this.baseUrl, payload);
