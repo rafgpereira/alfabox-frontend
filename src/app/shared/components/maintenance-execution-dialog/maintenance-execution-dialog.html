@@ -1,0 +1,97 @@
+<p-dialog
+  *hasRole="'ADMIN'"
+  [header]="header"
+  [modal]="true"
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [style]="{ width: '55rem' }"
+  [draggable]="false"
+  [resizable]="false"
+  [focusOnShow]="false"
+>
+  <form [formGroup]="form" class="dialog-form">
+
+    <!-- Seção: Contexto da Manutenção -->
+    <div class="context-card card">
+      <div class="info-item">
+        <span class="info-label">Manutenção</span>
+        <p-tag [value]="maintenanceCode" severity="secondary" />
+      </div>
+      <div class="info-item">
+        <span class="info-label">Cliente</span>
+        <p-tag [value]="clientName" severity="secondary" />
+      </div>
+    </div>
+
+    <!-- Data da Execução -->
+    <div class="form-field">
+      <p-floatlabel variant="on" class="full-width-control">
+        <p-datepicker
+          inputId="exec_date"
+          formControlName="executionDate"
+          dateFormat="dd/mm/yy"
+          showIcon
+          iconDisplay="input"
+          [fluid]="true"
+          [autofocus]="false"
+          appendTo="body"
+          [invalid]="isInvalid('executionDate')"
+        />
+        <label for="exec_date">Data da Execução *</label>
+      </p-floatlabel>
+      <app-error-message [control]="form.get('executionDate')" />
+    </div>
+
+    <!-- Montadores -->
+    <div class="form-field">
+      <p-floatlabel variant="on" class="full-width-control">
+        <p-multiselect
+          inputId="exec_assemblers"
+          formControlName="assemblerIds"
+          [options]="assemblers"
+          optionLabel="name"
+          optionValue="id"
+          filter="false"
+          [fluid]="true"
+          appendTo="body"
+          [invalid]="isInvalid('assemblerIds')"
+          emptyMessage="Nenhum montador ativo encontrado."
+          display="chip"
+          [maxSelectedLabels]="99"
+        />
+        <label for="exec_assemblers">Montadores *</label>
+      </p-floatlabel>
+      <app-error-message [control]="form.get('assemblerIds')" />
+    </div>
+
+    <!-- Nota informativa -->
+    <p class="info-note">
+      <i class="pi pi-info-circle"></i>
+      @if (isWarranty) {
+        Esta manutenção é de garantia e não possui valor a dividir entre os montadores.
+      } @else {
+        Metade do valor da mão de obra é dividida igualmente entre os montadores desta manutenção.
+      }
+    </p>
+
+  </form>
+
+  <ng-template #footer>
+    <div class="dialog-footer">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        [outlined]="true"
+        icon="pi pi-times"
+        (click)="close()"
+      />
+      <p-button
+        [label]="'Salvar'"
+        [disabled]="form.invalid"
+        icon="pi pi-save"
+        [loading]="saving"
+        (click)="save()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

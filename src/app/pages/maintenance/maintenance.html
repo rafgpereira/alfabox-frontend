@@ -367,14 +367,15 @@
           </td>
           <td class="assemblers-cell">{{ m.assemblerNames || '—' }}</td>
           <td class="actions">
-            <p-button icon="pi pi-eye" [rounded]="true" [text]="true" severity="info" pTooltip="Visualizar" tooltipPosition="top" [disabled]="true" />
+            <p-button icon="pi pi-eye" [rounded]="true" [text]="true" severity="info" pTooltip="Visualizar" tooltipPosition="top" />
             @if (m.type !== 'WARRANTY') {
               <p-button *hasRole="'ADMIN'" icon="pi pi-dollar" [rounded]="true" [text]="true" severity="success" pTooltip="Lançar Pagamento" tooltipPosition="top"
                 [disabled]="m.type === 'WARRANTY' || m.paymentStatus === 'PAGO'"
                 (onClick)="openPaymentDialog(m)" />
             }
-            <p-button *hasRole="'ADMIN'" icon="pi pi-wrench" [rounded]="true" [text]="true" severity="warn" pTooltip="Registrar Execução" tooltipPosition="top" [disabled]="true" />
-            <p-button icon="pi pi-print" [rounded]="true" [text]="true" severity="secondary" pTooltip="Imprimir" tooltipPosition="top" [disabled]="true" />
+            <p-button *hasRole="'ADMIN'" icon="pi pi-wrench" [rounded]="true" [text]="true" severity="warn" pTooltip="Registrar Execução" tooltipPosition="top" [disabled]="m.executionStatus === 'CONCLUIDO'"
+              (onClick)="openExecutionDialog(m)" />
+            <p-button icon="pi pi-print" [rounded]="true" [text]="true" severity="secondary" pTooltip="Imprimir" tooltipPosition="top" />
           </td>
         </tr>
       </ng-template>
@@ -400,4 +401,14 @@
   [paidAmount]="paymentDialogPaidAmount"
   [entityType]="'maintenance'"
   (saved)="onPaymentSaved()"
+/>
+
+<app-maintenance-execution-dialog
+  [(visible)]="executionDialogVisible"
+  [maintenanceId]="executionDialogMaintenanceId"
+  [maintenanceCode]="executionDialogCode"
+  [clientName]="executionDialogClientName"
+  [type]="executionDialogType"
+  [hasExecution]="executionDialogHasExecution"
+  (saved)="onExecutionSaved()"
 />

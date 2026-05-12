@@ -17,6 +17,7 @@ import { fromApiDate, toApiDate } from '../../shared/utils/date.utils';
 import { sumField, subtractCurrency, fromCents, toCents } from '../../shared/utils/money.utils';
 import { Router } from '@angular/router';
 import { PaymentDialogComponent } from '../../shared/components/payment-dialog/payment-dialog';
+import { MaintenanceExecutionDialogComponent } from '../../shared/components/maintenance-execution-dialog/maintenance-execution-dialog';
 
 /** Linha da tabela — maintenanceDate convertido para Date para filtros locais do PrimeNG.
  *  totalAmount e paymentStatus são null para manutenções de GARANTIA (não exibidos na tabela). */
@@ -41,6 +42,7 @@ export interface MaintenanceRow extends Omit<
     IconFieldModule,
     InputIconModule,
     PaymentDialogComponent,
+    MaintenanceExecutionDialogComponent,
   ],
   templateUrl: './maintenance.html',
   styleUrl: './maintenance.scss',
@@ -297,6 +299,34 @@ export class Maintenance implements OnInit, OnDestroy {
   }
 
   onPaymentSaved(): void {
+    const filters =
+      this.searchMode && this.searchText.trim()
+        ? { search: this.searchText.trim() }
+        : this.startDate && this.endDate
+          ? { startDate: toApiDate(this.startDate), endDate: toApiDate(this.endDate) }
+          : {};
+    this.load(filters);
+  }
+
+  // ── Dialog de execução ────────────────────────────────────────────────
+
+  executionDialogVisible = false;
+  executionDialogMaintenanceId = '';
+  executionDialogCode = '';
+  executionDialogClientName = '';
+  executionDialogType: MaintenanceType = 'NORMAL';
+  executionDialogHasExecution = false;
+
+  openExecutionDialog(m: MaintenanceRow): void {
+    this.executionDialogMaintenanceId = m.id;
+    this.executionDialogCode = m.code;
+    this.executionDialogClientName = m.clientName;
+    this.executionDialogType = m.type;
+    this.executionDialogHasExecution = m.executionStatus === 'CONCLUIDO';
+    this.executionDialogVisible = true;
+  }
+
+  onExecutionSaved(): void {
     const filters =
       this.searchMode && this.searchText.trim()
         ? { search: this.searchText.trim() }

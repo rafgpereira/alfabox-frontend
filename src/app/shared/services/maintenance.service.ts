@@ -67,6 +67,13 @@ export class MaintenanceService {
     return this.http.post<MaintenanceResponse>(this.baseUrl, payload);
   }
 
+  registerExecution(
+    maintenanceId: string,
+    payload: { executionDate: string; assemblerIds: string[] },
+  ): Observable<unknown> {
+    return this.http.patch(`${this.baseUrl}/${maintenanceId}/execution`, payload);
+  }
+
   createPayment(maintenanceId: string, payload: object): Observable<unknown> {
     return this.http.post(`${this.baseUrl}/${maintenanceId}/payments`, payload);
   }
