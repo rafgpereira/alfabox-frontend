@@ -28,6 +28,8 @@ import { MaintenanceExecutionDialogComponent } from '../../../shared/components/
 import { ClientDialogComponent } from '../../../shared/components/client-dialog/client-dialog';
 import { Client } from '../../../shared/models/client.model';
 import { AddressDialogComponent } from '../../../shared/components/address-dialog/address-dialog';
+import { MaintenanceServiceOrderDialogComponent } from '../../../shared/components/maintenance-service-order-dialog/maintenance-service-order-dialog';
+import { ServiceOrderLookup } from '../../../shared/models/service-order.model';
 
 @Component({
   selector: 'app-detail-maintenance',
@@ -42,6 +44,7 @@ import { AddressDialogComponent } from '../../../shared/components/address-dialo
     MaintenanceExecutionDialogComponent,
     ClientDialogComponent,
     AddressDialogComponent,
+    MaintenanceServiceOrderDialogComponent,
   ],
   templateUrl: './detail-maintenance.html',
   styleUrl: './detail-maintenance.scss',
@@ -71,6 +74,9 @@ export class DetailMaintenance implements OnInit {
 
   // ── Dialog Endereço ───────────────────────────────────────────────────
   addressDialogVisible = false;
+
+  // ── Dialog OS de Origem ───────────────────────────────────────────────
+  serviceOrderDialogVisible = false;
 
   ngOnInit(): void {
     const code = this.route.snapshot.paramMap.get('code')!;
@@ -203,6 +209,38 @@ export class DetailMaintenance implements OnInit {
           complement: updated.complement,
           city: updated.city,
         },
+      };
+    }
+  }
+
+  // ── Ações: OS de Origem ───────────────────────────────────────────────
+
+  openEditServiceOrderDialog(): void {
+    this.serviceOrderDialogVisible = true;
+  }
+
+  get currentServiceOrderLookup(): ServiceOrderLookup | null {
+    if (!this.maintenance?.serviceOrderCode || !this.maintenance?.serviceOrderId) return null;
+    return {
+      id: this.maintenance.serviceOrderId,
+      code: this.maintenance.serviceOrderCode,
+      orderDate: null,
+      street: null,
+      addressNumber: null,
+      neighborhood: null,
+      complement: null,
+      city: null,
+      clientId: this.maintenance.client.id,
+      clientName: this.maintenance.client.name,
+    };
+  }
+
+  onServiceOrderSaved(so: ServiceOrderLookup | null): void {
+    if (this.maintenance) {
+      this.maintenance = {
+        ...this.maintenance,
+        serviceOrderCode: so?.code ?? null,
+        serviceOrderId: so?.id ?? null,
       };
     }
   }

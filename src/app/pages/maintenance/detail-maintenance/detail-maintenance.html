@@ -50,7 +50,7 @@
     <div class="details card">
 
       <!-- Data + Código OS -->
-      <div class="detail-row">
+      <div class="detail-row detail-row--with-action">
         <div class="detail-field">
           <span class="field-label">Data</span>
           <span class="field-value">{{ toDate(maintenance.maintenanceDate) | date:'dd/MM/yyyy' }}</span>
@@ -67,6 +67,17 @@
             <span class="field-value field-value--muted">—</span>
           }
         </div>
+        <p-button
+          class="row-action-btn"
+          icon="pi pi-pencil"
+          [text]="true"
+          [rounded]="true"
+          size="small"
+          severity="info"
+          pTooltip="Editar OS de Origem"
+          tooltipPosition="top"
+          (click)="openEditServiceOrderDialog()"
+        />
       </div>
 
       <p-divider />
@@ -431,5 +442,13 @@
     [maintenanceId]="maintenance.id"
     [address]="maintenance.address"
     (saved)="onAddressSaved($event)"
+  />
+
+  <app-maintenance-service-order-dialog
+    [(visible)]="serviceOrderDialogVisible"
+    [maintenanceId]="maintenance.id"
+    [clientId]="maintenance.client.id"
+    [currentServiceOrder]="currentServiceOrderLookup"
+    (saved)="onServiceOrderSaved($event)"
   />
 }

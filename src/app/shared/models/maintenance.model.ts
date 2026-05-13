@@ -30,6 +30,12 @@ export interface UpdateMaintenanceAddress {
   city: string | null;
 }
 
+// ── Payload de atualização de OS de origem ──────────────────────────────
+
+export interface UpdateMaintenanceServiceOrder {
+  serviceOrderId: string | null;
+}
+
 // ── Resposta resumida (create / register-execution) ──────────────────────
 
 export interface MaintenanceResponse {
@@ -100,6 +106,7 @@ export interface MaintenanceDetail {
   code: string;
   type: MaintenanceType;
   serviceOrderCode: string | null;
+  serviceOrderId: string | null;
   client: MaintenanceDetailClient;
   address: MaintenanceDetailAddress;
   maintenanceDate: string; // YYYY-MM-DD

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import {
   CreateMaintenance,
   UpdateMaintenanceAddress,
+  UpdateMaintenanceServiceOrder,
   MaintenanceResponse,
   MaintenanceListItem,
   MaintenanceDetail,
@@ -41,6 +42,10 @@ export class MaintenanceService {
 
   updateAddress(id: string, payload: UpdateMaintenanceAddress): Observable<void> {
     return this.http.patch<void>(`${this.baseUrl}/${id}/address`, payload);
+  }
+
+  updateServiceOrder(id: string, payload: UpdateMaintenanceServiceOrder): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${id}/service-order`, payload);
   }
 
   registerExecution(

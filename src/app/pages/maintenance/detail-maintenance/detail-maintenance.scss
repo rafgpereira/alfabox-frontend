@@ -196,6 +196,23 @@ h1, h2, h3 {
     margin-bottom: 0;
     padding-top: 0.5rem;
   }
+
+  &--with-action {
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+
+    // Keep the fields together on the left
+    > .detail-field {
+      flex: 0 0 auto;
+    }
+
+    // Push button to far right
+    > .row-action-btn {
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+  }
 }
 
 .detail-field {

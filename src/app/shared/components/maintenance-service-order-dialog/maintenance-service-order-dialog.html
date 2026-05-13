@@ -1,0 +1,59 @@
+<p-dialog
+  header="Editar Ordem de Serviço de Origem"
+  [modal]="true"
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [style]="{ width: '40rem' }"
+  [draggable]="false"
+  [resizable]="false"
+  [focusOnShow]="false"
+>
+  <div class="dialog-body">
+    <div class="field-row">
+      <div class="so-field">
+        <p-floatlabel variant="on" class="full-width-control">
+          <p-autocomplete
+            inputId="so_lookup"
+            [(ngModel)]="selectedServiceOrder"
+            [suggestions]="suggestions"
+            (completeMethod)="search($event)"
+            [optionLabel]="serviceOrderLabel"
+            [dropdown]="true"
+            [forceSelection]="true"
+            [showClear]="true"
+            [minLength]="0"
+            appendTo="body"
+            [delay]="0"
+            [completeOnFocus]="true"
+            [fluid]="true"
+            scrollHeight="250px"
+            emptyMessage="Nenhuma OS encontrada para este cliente."
+            dataKey="id"
+          >
+            <ng-template let-so #item>
+              <span class="so-item">{{ so.code }}</span>
+            </ng-template>
+          </p-autocomplete>
+          <label for="so_lookup">OS de Origem</label>
+        </p-floatlabel>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #footer>
+    <p-button
+      label="Cancelar"
+      icon="pi pi-times"
+      [outlined]="true"
+      severity="secondary"
+      (click)="close()"
+      [disabled]="saving"
+    />
+    <p-button
+      label="Salvar"
+      icon="pi pi-save"
+      [loading]="saving"
+      (click)="save()"
+    />
+  </ng-template>
+</p-dialog>
