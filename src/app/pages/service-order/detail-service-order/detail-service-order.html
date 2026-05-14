@@ -564,7 +564,9 @@
                         [severity]="m.executionStatus === 'CONCLUIDO' ? 'success' : 'warn'"
                       />
                     </td>
-                    <td class="col-code-mono">{{ m.code }}</td>
+                    <td class="col-code-mono">
+                      <span class="maintenance-code-link" (click)="navigateToMaintenance(m.code)">{{ m.code }}</span>
+                    </td>
                   </tr>
                 </ng-template>
               </p-table>

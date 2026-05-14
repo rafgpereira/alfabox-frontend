@@ -464,6 +464,10 @@ export class DetailServiceOrder implements OnInit {
     });
   }
 
+  navigateToMaintenance(code: string): void {
+    this.router.navigate(['/manutencao', code]);
+  }
+
   confirmDeleteOrder(event: Event): void {
     this.confirmationService.confirm({
       target: event.target as EventTarget,

@@ -447,6 +447,19 @@ h1, h2, h3 {
   letter-spacing: 0.03em;
 }
 
+.maintenance-code-link {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  color: var(--p-primary-500);
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--p-primary-600);
+  }
+}
+
 .event-form {
   display: flex;
   flex-direction: column;
