@@ -1,5 +1,5 @@
 <p-dialog
-  [header]="isWarranty ? 'Editar Observação' : 'Editar Observação e Serviço'"
+  [header]="'Editar Serviço'"
   [modal]="true"
   [(visible)]="visible"
   (visibleChange)="visibleChange.emit($event)"
@@ -24,7 +24,7 @@
             maxlength="500"
             class="observation-textarea"
           ></textarea>
-          <label for="labor_observation">Observação</label>
+          <label for="labor_observation">Descrição</label>
         </p-floatlabel>
         <app-error-message [control]="form.get('observation')" />
       </div>

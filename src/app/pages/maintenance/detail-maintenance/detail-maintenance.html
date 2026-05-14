@@ -421,14 +421,14 @@
 
       <!-- Observação + Mão de obra + Total -->
       <div class="section-title-row">
-        <p class="section-title">{{ maintenance.type !== 'WARRANTY' ? 'Observação e Serviço' : 'Observação' }}</p>
+        <p class="section-title">Serviço</p>
         <p-button
           icon="pi pi-pencil"
           [text]="true"
           [rounded]="true"
           size="small"
           severity="info"
-          pTooltip="Editar Observação e Serviço"
+          pTooltip="Editar Serviço"
           tooltipPosition="top"
           (click)="openEditLaborDialog()"
         />
@@ -436,7 +436,7 @@
 
       <div class="detail-row">
         <div class="detail-field detail-field--grow">
-          <span class="field-label">Observação</span>
+          <span class="field-label">Descrição</span>
           <span class="field-value field-value--muted">{{ maintenance.observation || '—' }}</span>
         </div>
         @if (maintenance.type !== 'WARRANTY') {
