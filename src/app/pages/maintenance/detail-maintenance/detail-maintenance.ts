@@ -31,6 +31,7 @@ import { AddressDialogComponent } from '../../../shared/components/address-dialo
 import { MaintenanceServiceOrderDialogComponent } from '../../../shared/components/maintenance-service-order-dialog/maintenance-service-order-dialog';
 import { ServiceOrderLookup } from '../../../shared/models/service-order.model';
 import { MaintenanceProductDialogComponent } from '../../../shared/components/maintenance-product-dialog/maintenance-product-dialog';
+import { MaintenanceLaborDialogComponent } from '../../../shared/components/maintenance-labor-dialog/maintenance-labor-dialog';
 
 @Component({
   selector: 'app-detail-maintenance',
@@ -47,6 +48,7 @@ import { MaintenanceProductDialogComponent } from '../../../shared/components/ma
     AddressDialogComponent,
     MaintenanceServiceOrderDialogComponent,
     MaintenanceProductDialogComponent,
+    MaintenanceLaborDialogComponent,
   ],
   templateUrl: './detail-maintenance.html',
   styleUrl: './detail-maintenance.scss',
@@ -82,6 +84,9 @@ export class DetailMaintenance implements OnInit {
 
   // ── Dialog Produto ────────────────────────────────────────────────────
   productDialogVisible = false;
+
+  // ── Dialog Observação + Mão de Obra ──────────────────────────────────
+  laborDialogVisible = false;
 
   ngOnInit(): void {
     const code = this.route.snapshot.paramMap.get('code')!;
@@ -287,6 +292,12 @@ export class DetailMaintenance implements OnInit {
     });
   }
 
+  // ── Ações: Observação + Mão de Obra ──────────────────────────────────
+
+  openEditLaborDialog(): void {
+    this.laborDialogVisible = true;
+  }
+
   // ── Ações: Cliente ────────────────────────────────────────────────────
 
   openEditClientDialog(): void {
@@ -400,6 +411,34 @@ export class DetailMaintenance implements OnInit {
               detail: 'Execução excluída com sucesso!',
             });
             this.reload();
+          },
+        });
+      },
+    });
+  }
+
+  // ── Excluir manutenção ────────────────────────────────────────────────
+
+  confirmDeleteMaintenance(event: Event): void {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Tem certeza que deseja excluir a ${this.maintenance!.code}? Esta ação é irreversível e todos os seus dados (pagamentos e execução) serão permanentemente deletados.`,
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Excluir definitivamente',
+      rejectLabel: 'Cancelar',
+      acceptIcon: 'pi pi-trash',
+      rejectIcon: 'pi pi-times',
+      acceptButtonProps: { severity: 'danger' },
+      rejectButtonProps: { severity: 'secondary', outlined: true },
+      accept: () => {
+        this.maintenanceService.delete(this.maintenance!.id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Manutenção excluída com sucesso!',
+            });
+            this.router.navigate(['/manutencao']);
           },
         });
       },

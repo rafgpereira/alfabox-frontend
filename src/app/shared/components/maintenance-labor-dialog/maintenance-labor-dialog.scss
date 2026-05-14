@@ -1,0 +1,33 @@
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 0.25rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field-observation {
+  flex: 1;
+
+  textarea.observation-textarea {
+    width: 100%;
+    resize: none;
+    max-height: 33px;
+    flex: 1;
+  }
+}
+
+.field-amount {
+  flex: 0 0 10rem;
+}

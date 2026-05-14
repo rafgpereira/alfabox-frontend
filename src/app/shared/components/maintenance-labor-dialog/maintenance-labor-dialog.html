@@ -1,0 +1,72 @@
+<p-dialog
+  [header]="isWarranty ? 'Editar Observação' : 'Editar Observação e Serviço'"
+  [modal]="true"
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [style]="{ width: '50rem' }"
+  [draggable]="false"
+  [resizable]="false"
+  [focusOnShow]="false"
+>
+  <form [formGroup]="form" class="dialog-form">
+
+    <div class="form-row">
+
+      <!-- Observação (sempre presente; 80% com mão de obra, 100% em garantia) -->
+      <div class="form-field field-observation">
+        <p-floatlabel variant="on" class="full-width-control">
+          <textarea
+            pTextarea
+            inputId="labor_observation"
+            formControlName="observation"
+            [autoResize]="false"
+            [rows]="3"
+            maxlength="500"
+            class="observation-textarea"
+          ></textarea>
+          <label for="labor_observation">Observação</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('observation')" />
+      </div>
+
+      <!-- Mão de Obra (20%) — oculto em garantia -->
+      @if (!isWarranty) {
+        <div class="form-field field-amount">
+          <p-floatlabel variant="on" class="full-width-control">
+            <p-inputnumber
+              inputId="labor_amount"
+              formControlName="laborAmount"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              [fluid]="true"
+              [invalid]="isInvalid('laborAmount')"
+            />
+            <label for="labor_amount">Mão de Obra *</label>
+          </p-floatlabel>
+          <app-error-message [control]="form.get('laborAmount')" />
+        </div>
+      }
+
+    </div>
+
+  </form>
+
+  <ng-template #footer>
+    <p-button
+      label="Cancelar"
+      icon="pi pi-times"
+      [outlined]="true"
+      severity="secondary"
+      (click)="close()"
+      [disabled]="saving"
+    />
+    <p-button
+      label="Salvar"
+      icon="pi pi-save"
+      [loading]="saving"
+      [disabled]="form.invalid"
+      (click)="save()"
+    />
+  </ng-template>
+</p-dialog>

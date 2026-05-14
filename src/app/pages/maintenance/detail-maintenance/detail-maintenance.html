@@ -39,7 +39,7 @@
     </div>
     <div class="actions">
       <p-button label="Imprimir" outlined="true" icon="pi pi-print"></p-button>
-      <p-button *hasRole="'ADMIN'" label="Excluir" severity="danger" icon="pi pi-trash"></p-button>
+      <p-button *hasRole="'ADMIN'" label="Excluir" severity="danger" icon="pi pi-trash" (click)="confirmDeleteMaintenance($event)"></p-button>
     </div>
   </div>
 
@@ -240,6 +240,20 @@
       <p-divider />
 
       <!-- Observação + Mão de obra + Total -->
+      <div class="section-title-row">
+        <p class="section-title">{{ maintenance.type !== 'WARRANTY' ? 'Observação e Serviço' : 'Observação' }}</p>
+        <p-button
+          icon="pi pi-pencil"
+          [text]="true"
+          [rounded]="true"
+          size="small"
+          severity="info"
+          pTooltip="Editar Observação e Serviço"
+          tooltipPosition="top"
+          (click)="openEditLaborDialog()"
+        />
+      </div>
+
       <div class="detail-row">
         <div class="detail-field detail-field--grow">
           <span class="field-label">Observação</span>
@@ -253,7 +267,9 @@
         }
       </div>
 
+      
       @if (maintenance.type !== 'WARRANTY') {
+        <p-divider></p-divider>
         <div class="detail-row detail-row--total-only">
           <div class="detail-field detail-field--total">
             <span class="field-label">Valor Total</span>
@@ -495,6 +511,15 @@
     [type]="maintenance.type"
     [productDescription]="maintenance.productDescription"
     [productAmount]="maintenance.productAmount"
+    (saved)="reload()"
+  />
+
+  <app-maintenance-labor-dialog
+    [(visible)]="laborDialogVisible"
+    [maintenanceId]="maintenance.id"
+    [type]="maintenance.type"
+    [observation]="maintenance.observation"
+    [laborAmount]="maintenance.laborAmount"
     (saved)="reload()"
   />
 }

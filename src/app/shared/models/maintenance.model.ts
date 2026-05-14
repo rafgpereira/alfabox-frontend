@@ -43,6 +43,13 @@ export interface UpdateMaintenanceProduct {
   productAmount: number | null;
 }
 
+// ── Payload de atualização de observação + mão de obra ───────────────────
+
+export interface UpdateMaintenanceLabor {
+  observation: string | null;
+  laborAmount: number | null;
+}
+
 // ── Resposta resumida (create / register-execution) ──────────────────────
 
 export interface MaintenanceResponse {
