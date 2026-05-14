@@ -4,6 +4,185 @@
     <p-button label="Voltar" icon="pi pi-arrow-left" [outlined]="true" (click)="return()"></p-button>
   </div>
 
+  @if (loading) {
+    <!-- ═══ Skeleton ═══ -->
+
+    <!-- Toolbar skeleton -->
+    <div class="card toolbar skeleton-toolbar">
+      <div class="skeleton-toolbar-info">
+        <div class="skeleton-info-block">
+          <p-skeleton width="3rem" height="0.75rem" borderRadius="4px" />
+          <p-skeleton width="6rem" height="1.5rem" borderRadius="4px" />
+        </div>
+        <div class="skeleton-info-block">
+          <p-skeleton width="2.5rem" height="0.75rem" borderRadius="4px" />
+          <p-skeleton width="5rem" height="1.5rem" borderRadius="16px" />
+        </div>
+        <div class="skeleton-info-block">
+          <p-skeleton width="4.5rem" height="0.75rem" borderRadius="4px" />
+          <p-skeleton width="5rem" height="1.5rem" borderRadius="16px" />
+        </div>
+        <div class="skeleton-info-block">
+          <p-skeleton width="4rem" height="0.75rem" borderRadius="4px" />
+          <p-skeleton width="5rem" height="1.5rem" borderRadius="16px" />
+        </div>
+      </div>
+      <div class="skeleton-toolbar-actions">
+        <p-skeleton width="2.25rem" height="2.25rem" borderRadius="6px" />
+        <p-skeleton width="6rem" height="2.25rem" borderRadius="6px" />
+        <p-skeleton width="6rem" height="2.25rem" borderRadius="6px" />
+      </div>
+    </div>
+
+    <!-- Content skeleton -->
+    <div class="content">
+
+      <!-- Coluna esquerda: detalhes -->
+      <div class="details card skeleton-card">
+
+        <!-- Data + OS de Origem -->
+        <div class="detail-row">
+          <div class="skeleton-field">
+            <p-skeleton width="2.5rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="6rem" height="1rem" borderRadius="4px" />
+          </div>
+          <div class="skeleton-field">
+            <p-skeleton width="6rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="7rem" height="1rem" borderRadius="4px" />
+          </div>
+        </div>
+
+        <p-divider />
+
+        <!-- Cliente -->
+        <div class="section-title-row">
+          <p-skeleton width="4rem" height="0.75rem" borderRadius="4px" />
+          <p-skeleton width="2rem" height="2rem" borderRadius="50%" />
+        </div>
+        <div class="detail-row">
+          <div class="skeleton-field">
+            <p-skeleton width="2.5rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="12rem" height="1rem" borderRadius="4px" />
+          </div>
+          <div class="skeleton-field">
+            <p-skeleton width="2.5rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="5rem" height="1rem" borderRadius="4px" />
+          </div>
+          <div class="skeleton-field">
+            <p-skeleton width="3rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="8rem" height="1rem" borderRadius="4px" />
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="skeleton-field">
+            <p-skeleton width="5rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="9rem" height="1rem" borderRadius="4px" />
+          </div>
+        </div>
+
+        <p-divider />
+
+        <!-- Endereço -->
+        <p-skeleton width="5rem" height="0.75rem" borderRadius="4px" styleClass="skeleton-section-title" />
+        <div class="detail-row">
+          <div class="skeleton-field">
+            <p-skeleton width="2rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="10rem" height="1rem" borderRadius="4px" />
+          </div>
+          <div class="skeleton-field">
+            <p-skeleton width="4rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="3rem" height="1rem" borderRadius="4px" />
+          </div>
+          <div class="skeleton-field">
+            <p-skeleton width="5rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="7rem" height="1rem" borderRadius="4px" />
+          </div>
+        </div>
+
+        <p-divider />
+
+        <!-- Produto -->
+        <p-skeleton width="4rem" height="0.75rem" borderRadius="4px" styleClass="skeleton-section-title" />
+        <div class="detail-row">
+          <div class="skeleton-field skeleton-field--grow">
+            <p-skeleton width="4rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="80%" height="1rem" borderRadius="4px" />
+          </div>
+          <div class="skeleton-field">
+            <p-skeleton width="6rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="6rem" height="1rem" borderRadius="4px" />
+          </div>
+        </div>
+
+        <p-divider />
+
+        <!-- Observação + Mão de Obra + Total -->
+        <p-skeleton width="9rem" height="0.75rem" borderRadius="4px" styleClass="skeleton-section-title" />
+        <div class="detail-row">
+          <div class="skeleton-field skeleton-field--grow">
+            <p-skeleton width="6rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="75%" height="1rem" borderRadius="4px" />
+          </div>
+          <div class="skeleton-field">
+            <p-skeleton width="5rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="6rem" height="1rem" borderRadius="4px" />
+          </div>
+        </div>
+
+        <p-divider />
+
+        <div class="detail-row">
+          <div class="skeleton-field">
+            <p-skeleton width="5rem" height="0.65rem" borderRadius="4px" />
+            <p-skeleton width="8rem" height="2rem" borderRadius="4px" />
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Coluna direita -->
+      <div class="payments-executions">
+
+        <!-- Pagamentos -->
+        <div class="card skeleton-card">
+          <div class="skeleton-card-header">
+            <p-skeleton width="7rem" height="1rem" borderRadius="4px" />
+            <p-skeleton width="9rem" height="2rem" borderRadius="6px" />
+          </div>
+          <div class="skeleton-kpi-row">
+            @for (k of [1,2]; track k) {
+              <div class="skeleton-kpi">
+                <p-skeleton width="5rem" height="0.7rem" borderRadius="4px" />
+                <p-skeleton width="7rem" height="1.5rem" borderRadius="4px" />
+              </div>
+            }
+          </div>
+          @for (i of [1,2]; track i) {
+            <div class="skeleton-table-row skeleton-table-row--spaced">
+              <p-skeleton width="5rem" height="0.9rem" borderRadius="4px" />
+              <p-skeleton width="6rem" height="0.9rem" borderRadius="4px" />
+              <p-skeleton width="4rem" height="0.9rem" borderRadius="4px" />
+            </div>
+          }
+        </div>
+
+        <!-- Execução -->
+        <div class="card skeleton-card">
+          <div class="skeleton-card-header">
+            <p-skeleton width="5rem" height="1rem" borderRadius="4px" />
+            <p-skeleton width="9rem" height="2rem" borderRadius="6px" />
+          </div>
+          <div class="skeleton-table-row skeleton-table-row--spaced">
+            <p-skeleton width="5rem" height="0.9rem" borderRadius="4px" />
+            <p-skeleton width="6rem" height="0.9rem" borderRadius="4px" />
+            <p-skeleton width="8rem" height="0.9rem" borderRadius="4px" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
   @if (!loading && maintenance) {
 
   <!-- ═══ Toolbar ═══ -->
@@ -38,6 +217,7 @@
       </div>
     </div>
     <div class="actions">
+      <p-button icon="pi pi-link" [outlined]="true" pTooltip="Copiar link" tooltipPosition="top" (click)="copyLink()" [style]="{ height: '33px', width: '33px' }"></p-button>
       <p-button label="Imprimir" outlined="true" icon="pi pi-print"></p-button>
       <p-button *hasRole="'ADMIN'" label="Excluir" severity="danger" icon="pi pi-trash" (click)="confirmDeleteMaintenance($event)"></p-button>
     </div>

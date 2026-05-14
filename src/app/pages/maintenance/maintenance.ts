@@ -64,6 +64,14 @@ export class Maintenance implements OnInit, OnDestroy {
   endDate: Date | null = null;
   selectedMonth: Date | null = null;
 
+  // ── Busca rápida por código ───────────────────────────────────────────
+
+  /** Código digitado no atalho de busca do cabeçalho. */
+  codeSearchText = '';
+
+  /** Regex de validação: M + 4 dígitos + traço + 1+ dígitos (ex.: M2504-1). */
+  private readonly MAINT_CODE_PATTERN = /^M\d{4}-\d+$/;
+
   // ── Busca global ──────────────────────────────────────────────────────
 
   searchText = '';
@@ -141,6 +149,19 @@ export class Maintenance implements OnInit, OnDestroy {
 
   navigateToDetail(code: string): void {
     this.router.navigate(['/manutencao', code]);
+  }
+
+  navigateByCode(): void {
+    const code = this.codeSearchText.trim().toUpperCase();
+    if (!code) return;
+    if (!this.MAINT_CODE_PATTERN.test(code)) {
+      return;
+    }
+    this.router.navigate(['/manutencao', code]);
+  }
+
+  onCodeSearchKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') this.navigateByCode();
   }
 
   // ── Carregamento ──────────────────────────────────────────────────────

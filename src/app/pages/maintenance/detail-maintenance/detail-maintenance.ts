@@ -101,12 +101,7 @@ export class DetailMaintenance implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Não foi possível carregar a manutenção.',
-        });
-        this.loading = false;
+        this.router.navigate(['/manutencao']);
       },
     });
   }
@@ -190,6 +185,17 @@ export class DetailMaintenance implements OnInit {
     } else {
       this.router.navigate(['/manutencao']);
     }
+  }
+
+  copyLink(): void {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Link copiado!',
+        detail: window.location.href,
+        life: 3000,
+      });
+    });
   }
 
   navigateToServiceOrder(code: string): void {

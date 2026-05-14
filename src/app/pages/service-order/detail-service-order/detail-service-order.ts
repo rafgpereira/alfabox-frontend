@@ -317,6 +317,17 @@ export class DetailServiceOrder implements OnInit {
     }
   }
 
+  copyLink(): void {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Link copiado!',
+        detail: window.location.href,
+        life: 3000,
+      });
+    });
+  }
+
   printOrder(): void {
     window.open(`/os/${this.order!.code}/imprimir`, '_blank');
   }

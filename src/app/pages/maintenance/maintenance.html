@@ -3,6 +3,23 @@
   <!-- ═══ Título ═══ -->
   <div class="title">
     <h1><span>|</span> Manutenções</h1>
+
+    <div class="code-search">
+      <p-floatlabel variant="on">
+        <p-iconfield>
+          <p-inputicon class="pi pi-search" />
+          <input
+            pInputText
+            id="code_search"
+            [(ngModel)]="codeSearchText"
+            (keydown)="onCodeSearchKeydown($event)"
+            class="code-search-input"
+          />
+        </p-iconfield>
+        <label for="code_search">Código Manutenção</label>
+      </p-floatlabel>
+    </div>
+
     <p-button label="Nova Manutenção" size="large" icon="pi pi-plus-circle" (onClick)="createNewMaintenance()"></p-button>
   </div>
 
@@ -68,6 +85,7 @@
           icon="pi pi-refresh"
           severity="secondary"
           [outlined]="true"
+          [style]="{ height: '33px', width: '33px' }"
           pTooltip="Restaurar filtros e período padrão"
           tooltipPosition="top"
           (click)="resetAll()"

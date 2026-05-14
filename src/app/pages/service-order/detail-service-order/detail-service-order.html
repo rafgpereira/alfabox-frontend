@@ -190,6 +190,7 @@
             </div>
         </div>
         <div class="actions">
+            <p-button icon="pi pi-link" [outlined]="true" pTooltip="Copiar link" tooltipPosition="top" (click)="copyLink()" [style]="{ height: '33px', width: '33px' }"></p-button>
             <p-button label="Imprimir" outlined="true" icon="pi pi-print" (click)="printOrder()"></p-button>
             <p-button *hasRole="'ADMIN'" label="Excluir" severity="danger" icon="pi pi-trash" (click)="confirmDeleteOrder($event)"></p-button>
         </div>
