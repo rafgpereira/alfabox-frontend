@@ -137,6 +137,12 @@ h1, h2, h3 {
   .section-title {
     margin: 0;
   }
+
+  .section-title-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
 }
 
 .field-label {

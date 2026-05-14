@@ -1,0 +1,71 @@
+<p-dialog
+  [header]="header"
+  [modal]="true"
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  [style]="{ width: '50rem' }"
+  [draggable]="false"
+  [resizable]="false"
+  [focusOnShow]="false"
+>
+  <form [formGroup]="form" class="dialog-form">
+
+    <div class="form-row">
+
+      <!-- Descrição (80%) -->
+      <div class="form-field field-description">
+        <p-floatlabel variant="on" class="full-width-control">
+          <input
+            pInputText
+            [fluid]="true"
+            inputId="prod_description"
+            formControlName="productDescription"
+            maxlength="500"
+            [invalid]="isInvalid('productDescription')"
+          />
+          <label for="prod_description">Descrição do Produto *</label>
+        </p-floatlabel>
+        <app-error-message [control]="form.get('productDescription')" />
+      </div>
+
+      <!-- Valor (20%) — oculto em garantia -->
+      @if (!isWarranty) {
+        <div class="form-field field-amount">
+          <p-floatlabel variant="on" class="full-width-control">
+            <p-inputnumber
+              inputId="prod_amount"
+              formControlName="productAmount"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              [fluid]="true"
+              [invalid]="isInvalid('productAmount')"
+            />
+            <label for="prod_amount">Valor *</label>
+          </p-floatlabel>
+          <app-error-message [control]="form.get('productAmount')" />
+        </div>
+      }
+
+    </div>
+
+  </form>
+
+  <ng-template #footer>
+    <p-button
+      label="Cancelar"
+      icon="pi pi-times"
+      [outlined]="true"
+      severity="secondary"
+      (click)="close()"
+      [disabled]="saving"
+    />
+    <p-button
+      label="Salvar"
+      icon="pi pi-save"
+      [loading]="saving"
+      [disabled]="form.invalid"
+      (click)="save()"
+    />
+  </ng-template>
+</p-dialog>

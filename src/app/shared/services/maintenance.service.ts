@@ -6,6 +6,7 @@ import {
   CreateMaintenance,
   UpdateMaintenanceAddress,
   UpdateMaintenanceServiceOrder,
+  UpdateMaintenanceProduct,
   MaintenanceResponse,
   MaintenanceListItem,
   MaintenanceDetail,
@@ -46,6 +47,10 @@ export class MaintenanceService {
 
   updateServiceOrder(id: string, payload: UpdateMaintenanceServiceOrder): Observable<void> {
     return this.http.patch<void>(`${this.baseUrl}/${id}/service-order`, payload);
+  }
+
+  updateProduct(id: string, payload: UpdateMaintenanceProduct): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${id}/product`, payload);
   }
 
   registerExecution(

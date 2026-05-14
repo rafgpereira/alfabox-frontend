@@ -183,6 +183,43 @@
       <!-- Produto -->
       <div class="section-title-row">
         <p class="section-title">Produto</p>
+        <div class="section-title-actions">
+          @if (!maintenance.productDescription) {
+            <!-- Sem produto: botão de adicionar -->
+            <p-button
+              icon="pi pi-plus"
+              [text]="true"
+              [rounded]="true"
+              size="small"
+              severity="info"
+              pTooltip="Adicionar Produto"
+              tooltipPosition="top"
+              (click)="openEditProductDialog()"
+            />
+          } @else {
+            <!-- Com produto: botão de editar + lixeira -->
+            <p-button
+              icon="pi pi-pencil"
+              [text]="true"
+              [rounded]="true"
+              size="small"
+              severity="info"
+              pTooltip="Editar Produto"
+              tooltipPosition="top"
+              (click)="openEditProductDialog()"
+            />
+            <p-button
+              icon="pi pi-trash"
+              [text]="true"
+              [rounded]="true"
+              size="small"
+              severity="danger"
+              pTooltip="Remover Produto"
+              tooltipPosition="top"
+              (click)="confirmRemoveProduct($event)"
+            />
+          }
+        </div>
       </div>
 
       @if (maintenance.productDescription) {
@@ -450,5 +487,14 @@
     [clientId]="maintenance.client.id"
     [currentServiceOrder]="currentServiceOrderLookup"
     (saved)="onServiceOrderSaved($event)"
+  />
+
+  <app-maintenance-product-dialog
+    [(visible)]="productDialogVisible"
+    [maintenanceId]="maintenance.id"
+    [type]="maintenance.type"
+    [productDescription]="maintenance.productDescription"
+    [productAmount]="maintenance.productAmount"
+    (saved)="reload()"
   />
 }

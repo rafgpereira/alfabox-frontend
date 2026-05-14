@@ -30,6 +30,7 @@ import { Client } from '../../../shared/models/client.model';
 import { AddressDialogComponent } from '../../../shared/components/address-dialog/address-dialog';
 import { MaintenanceServiceOrderDialogComponent } from '../../../shared/components/maintenance-service-order-dialog/maintenance-service-order-dialog';
 import { ServiceOrderLookup } from '../../../shared/models/service-order.model';
+import { MaintenanceProductDialogComponent } from '../../../shared/components/maintenance-product-dialog/maintenance-product-dialog';
 
 @Component({
   selector: 'app-detail-maintenance',
@@ -45,6 +46,7 @@ import { ServiceOrderLookup } from '../../../shared/models/service-order.model';
     ClientDialogComponent,
     AddressDialogComponent,
     MaintenanceServiceOrderDialogComponent,
+    MaintenanceProductDialogComponent,
   ],
   templateUrl: './detail-maintenance.html',
   styleUrl: './detail-maintenance.scss',
@@ -77,6 +79,9 @@ export class DetailMaintenance implements OnInit {
 
   // ── Dialog OS de Origem ───────────────────────────────────────────────
   serviceOrderDialogVisible = false;
+
+  // ── Dialog Produto ────────────────────────────────────────────────────
+  productDialogVisible = false;
 
   ngOnInit(): void {
     const code = this.route.snapshot.paramMap.get('code')!;
@@ -243,6 +248,43 @@ export class DetailMaintenance implements OnInit {
         serviceOrderId: so?.id ?? null,
       };
     }
+  }
+
+  // ── Ações: Produto ────────────────────────────────────────────────────
+
+  openEditProductDialog(): void {
+    this.productDialogVisible = true;
+  }
+
+  confirmRemoveProduct(event: Event): void {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Deseja remover o produto desta manutenção?',
+      icon: 'pi pi-trash',
+      acceptLabel: 'Remover',
+      rejectLabel: 'Cancelar',
+      acceptIcon: 'pi pi-trash',
+      rejectIcon: 'pi pi-times',
+      acceptButtonProps: { severity: 'danger' },
+      rejectButtonProps: { severity: 'secondary', outlined: true },
+      accept: () => {
+        this.maintenanceService
+          .updateProduct(this.maintenance!.id, {
+            productDescription: null,
+            productAmount: null,
+          })
+          .subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Produto removido com sucesso!',
+              });
+              this.reload();
+            },
+          });
+      },
+    });
   }
 
   // ── Ações: Cliente ────────────────────────────────────────────────────

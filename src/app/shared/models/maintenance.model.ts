@@ -36,6 +36,13 @@ export interface UpdateMaintenanceServiceOrder {
   serviceOrderId: string | null;
 }
 
+// ── Payload de atualização de produto ───────────────────────────────────
+
+export interface UpdateMaintenanceProduct {
+  productDescription: string | null;
+  productAmount: number | null;
+}
+
 // ── Resposta resumida (create / register-execution) ──────────────────────
 
 export interface MaintenanceResponse {
