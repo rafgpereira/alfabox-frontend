@@ -12,36 +12,39 @@
 
     <div class="header-info">
 
-      <!-- Linha 1: checkboxes de tipo -->
-      <div class="header-type-row">
+      <!-- Barra de título -->
+      <div class="info-title-bar">ORDEM DE MANUTENÇÃO</div>
+
+      <!-- Tipo -->
+      <div class="info-type-row">
         <span class="type-option">
-          <span class="checkbox" [class.checkbox--checked]="isWarranty">&#9744;</span>
-          <span class="type-label">Manutenção (Garantia)</span>
+          <span class="cb-box" [class.cb-box--checked]="isWarranty"></span>
+          <span class="type-label">Garantia</span>
         </span>
         <span class="type-option">
-          <span class="checkbox" [class.checkbox--checked]="!isWarranty">&#9744;</span>
+          <span class="cb-box" [class.cb-box--checked]="!isWarranty"></span>
           <span class="type-label">Serviço Cobrado</span>
         </span>
       </div>
 
-      <!-- Linha 2: Código + OS de Origem -->
-      <div class="header-meta-row">
-        <span class="meta-field">
-          <span class="field-label">Código:</span>
-          <span class="field-value field-value--red">{{ maintenance.code }}</span>
-        </span>
-        <span class="meta-field">
-          <span class="field-label">OS Vinculada:</span>
-          <span class="field-value">{{ maintenance.serviceOrderCode ?? '' }}</span>
-        </span>
+      <!-- Código + OS Vinculada -->
+      <div class="info-data-row">
+        <div class="info-field">
+          <span class="info-label">Código</span>
+          <span class="info-value info-value--code">{{ maintenance.code }}</span>
+        </div>
+        <div class="info-field info-field--grow">
+          <span class="info-label">OS Vinculada</span>
+          <span class="info-value">{{ maintenance.serviceOrderCode ?? '' }}</span>
+        </div>
       </div>
 
-      <!-- Linha 3: Data -->
-      <div class="header-meta-row">
-        <span class="meta-field">
-          <span class="field-label">Data:</span>
-          <span class="field-value">{{ toDate(maintenance.maintenanceDate) | date:'dd/MM/yyyy' }}</span>
-        </span>
+      <!-- Data -->
+      <div class="info-data-row info-data-row--last">
+        <div class="info-field">
+          <span class="info-label">Data</span>
+          <span class="info-value">{{ toDate(maintenance.maintenanceDate) | date:'dd/MM/yyyy' }}</span>
+        </div>
       </div>
 
     </div>

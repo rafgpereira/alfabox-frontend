@@ -56,18 +56,26 @@ $border: #003399;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  gap: 2mm;
   border: 1.5px solid $border;
-  padding: 2mm 3mm;
+  overflow: hidden;
 }
 
-// Linha de tipo (checkboxes)
-.header-type-row {
+.info-title-bar {
+  background: $blue !important;
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 9pt;
+  text-align: center;
+  padding: 1.5mm 2mm;
+  letter-spacing: 0.08em;
+}
+
+.info-type-row {
   display: flex;
-  gap: 4mm;
   align-items: center;
+  gap: 5mm;
+  padding: 1.5mm 3mm;
   border-bottom: 1px solid $border;
-  padding-bottom: 1.5mm;
 }
 
 .type-option {
@@ -76,49 +84,81 @@ $border: #003399;
   gap: 1.5mm;
 }
 
-.checkbox {
-  font-size: 11pt;
-  color: $blue;
-  line-height: 1;
+// Checkbox — caixa quadrada desenhada em CSS
+.cb-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5mm;
+  height: 3.5mm;
+  border: 1.5px solid $blue;
+  background: #fff;
+  flex-shrink: 0;
 
-  &--checked::before {
-    content: '✔';
-    font-size: 9pt;
-    color: $blue;
-    display: inline-block;
-    width: 1em;
-    text-align: center;
-  }
-}
+  &--checked {
+    background: $blue !important;
 
-// Override: when checked, show filled box
-.checkbox--checked {
-  // The &#9744; character is the empty checkbox. We replace the content.
-  font-size: 0; // hide the original character
-  &::before {
-    font-size: 11pt;
-    content: '☑';
-    color: $blue;
+    &::after {
+      content: '\00D7'; // ×
+      color: #fff;
+      font-size: 7pt;
+      font-weight: 900;
+      line-height: 1;
+    }
   }
 }
 
 .type-label {
-  font-size: 8pt;
+  font-size: 7.5pt;
   color: $black;
   font-weight: bold;
 }
 
-// Linhas de meta (código, OS, data)
-.header-meta-row {
+.info-data-row {
   display: flex;
-  gap: 5mm;
-  align-items: baseline;
+  border-bottom: 1px solid $border;
+
+  &--last {
+    border-bottom: none;
+    flex: 1;
+  }
 }
 
-.meta-field {
+.info-field {
   display: flex;
-  align-items: baseline;
-  gap: 1.5mm;
+  flex-direction: column;
+  padding: 1mm 3mm 1.5mm;
+  gap: 0.5mm;
+
+  &--grow { flex: 1 1 auto; }
+
+  & + & {
+    border-left: 1px solid $border;
+  }
+}
+
+.info-label {
+  color: $blue;
+  font-weight: bold;
+  font-size: 6.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.info-value {
+  color: $black;
+  font-size: 8.5pt;
+  border-bottom: 1px solid $border !important;
+  min-height: 4mm;
+  min-width: 20mm;
+
+  &--code {
+    color: $red;
+    font-weight: bold;
+    font-size: 11pt;
+    border-bottom: none !important;
+    white-space: nowrap;
+  }
 }
 
 .field-label {
@@ -127,6 +167,7 @@ $border: #003399;
   font-size: 7.5pt;
   white-space: nowrap;
   flex-shrink: 0;
+  margin-right: 2.5mm;
 }
 
 .field-value {
@@ -219,7 +260,7 @@ $border: #003399;
     padding: 2mm 3mm;
     font-size: 8.5pt;
     color: $black;
-    min-height: 10mm;
+    height: 16mm;
     vertical-align: top;
     &:last-child { border-right: none !important; }
   }
