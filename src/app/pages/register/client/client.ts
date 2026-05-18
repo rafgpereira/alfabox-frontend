@@ -206,7 +206,7 @@ export class Client implements OnInit {
   confirmDelete(event: Event, client: ClientModel): void {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `Tem certeza que deseja excluir "${client.name}"? O cliente só poderá ser excluído se não estiver vinculado em nenhuma Ordem de Serviço.`,
+      message: `Tem certeza que deseja excluir "${client.name}"? O cliente só poderá ser excluído se não estiver vinculado em nenhuma Ordem de Serviço ou Manutenção.`,
       icon: 'pi pi-trash',
       acceptLabel: 'Excluir',
       rejectLabel: 'Cancelar',

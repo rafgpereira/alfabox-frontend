@@ -161,7 +161,7 @@ export class ClientDialogComponent implements OnChanges {
       this.confirmationService.confirm({
         target: event.target as EventTarget,
         message:
-          'Ao editar este cliente, a alteração será refletida em todas as Ordens de Serviço vinculadas a ele. Deseja continuar?',
+          'Ao editar este cliente, a alteração será refletida em todas as Ordens de Serviço e Manutenções vinculadas a ele. Deseja continuar?',
         icon: 'pi pi-exclamation-triangle',
         acceptLabel: 'Confirmar',
         rejectLabel: 'Cancelar',
