@@ -26,10 +26,52 @@ export interface ExecutionsReportFilter {
   assemblerId?: string;
 }
 
+export interface MaintenanceExecutionReportItem {
+  code: string;
+  executionDate: string;
+  type: 'NORMAL' | 'WARRANTY';
+  totalAmount: number;
+  laborAmount: number;
+  assemblersTotalAmount: number;
+  amountPerAssembler: number;
+  assemblerCount: number;
+  assemblers: string;
+}
+
+export interface MaintenanceExecutionsReportResponse {
+  totalLaborAmount: number;
+  totalAssemblersAmount: number;
+  totalAssemblerAmount: number;
+  maintenances: MaintenanceExecutionReportItem[];
+}
+
+export interface MaintenanceExecutionsReportFilter {
+  startDate: string;
+  endDate: string;
+  assemblerId?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ReportsService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/reports`;
+
+  getMaintenanceExecutionsReport(
+    filters: MaintenanceExecutionsReportFilter,
+  ): Observable<MaintenanceExecutionsReportResponse> {
+    let params = new HttpParams()
+      .set('startDate', filters.startDate)
+      .set('endDate', filters.endDate);
+
+    if (filters.assemblerId) {
+      params = params.set('assemblerId', filters.assemblerId);
+    }
+
+    return this.http.get<MaintenanceExecutionsReportResponse>(
+      `${this.baseUrl}/maintenance-executions`,
+      { params },
+    );
+  }
 
   getExecutionsReport(filters: ExecutionsReportFilter): Observable<ExecutionsReportResponse> {
     let params = new HttpParams()

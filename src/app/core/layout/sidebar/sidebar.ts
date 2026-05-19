@@ -69,7 +69,7 @@ export class Sidebar implements OnInit {
         roles: ['ADMIN'],
         items: [
           {
-            label: 'Montadores',
+            label: 'Montadores - OS',
             icon: 'pi pi-fw pi-wrench',
             routerLink: '/relatorios/montadores',
           },
@@ -77,6 +77,11 @@ export class Sidebar implements OnInit {
             label: 'Vendedores',
             icon: 'pi pi-fw pi-id-card',
             routerLink: '/relatorios/vendedores',
+          },
+          {
+            label: 'Manutenções',
+            icon: 'pi pi-fw pi-hammer',
+            routerLink: '/relatorios/manutencao',
           },
         ],
       },

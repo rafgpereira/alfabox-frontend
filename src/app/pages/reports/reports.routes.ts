@@ -16,5 +16,12 @@ export const REPORTS_ROUTES: Routes = [
     path: 'vendedores',
     loadComponent: () =>
       import('./service-orders-sellers/service-orders-sellers').then((m) => m.ServiceOrdersSellers),
-  }
+  },
+  {
+    path: 'manutencao',
+    loadComponent: () =>
+      import('./maintenances-assemblers/maintenances-assemblers').then(
+        (m) => m.MaintenancesAssemblers,
+      ),
+  },
 ];

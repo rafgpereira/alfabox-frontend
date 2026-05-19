@@ -2,7 +2,7 @@
 
   <!-- ═══ Título ═══ -->
   <div class="title">
-    <h1><span>|</span> Execuções de OS por Montador</h1>
+    <h1><span>|</span> Execuções de Manutenção por Montador</h1>
   </div>
 
   <!-- ═══ Card Principal ═══ -->
@@ -85,25 +85,37 @@
     </div>
 
     <!-- ── KPIs ── -->
-    <div class="kpi-grid" [class.kpi-grid--single]="!selectedAssemblerId">
+    <div class="kpi-grid">
 
-      <!-- Total Período -->
-      <div class="kpi-card kpi-card--periodo">
+      <!-- Total Mão de Obra -->
+      <div class="kpi-card kpi-card--labor">
         <div class="kpi-body">
           <div class="kpi-left">
-            <i class="pi pi-calendar kpi-icon"></i>
+            <i class="pi pi-wrench kpi-icon"></i>
             <div class="kpi-info">
-              <span class="kpi-label">Total das Execuções no Período</span>
-              @if (selectedAssemblerId) {
-                <span class="kpi-sublabel">Soma de todas as execuções filtradas</span>
-              }
+              <span class="kpi-label">Total Mão de Obra</span>
+              <span class="kpi-sublabel">Soma da mão de obra das manutenções executadas</span>
             </div>
           </div>
-          <span class="kpi-value">{{ (report?.totalPeriodAmount ?? 0) | currency:'BRL' }}</span>
+          <span class="kpi-value">{{ (report?.totalLaborAmount ?? 0) | currency:'BRL' }}</span>
         </div>
       </div>
 
-      <!-- Total Montador (só exibe se montador selecionado) -->
+      <!-- Total Destinado aos Montadores -->
+      <div class="kpi-card kpi-card--montadores">
+        <div class="kpi-body">
+          <div class="kpi-left">
+            <i class="pi pi-users kpi-icon"></i>
+            <div class="kpi-info">
+              <span class="kpi-label">Total Destinado aos Montadores</span>
+              <span class="kpi-sublabel">50% da mão de obra das manutenções listadas</span>
+            </div>
+          </div>
+          <span class="kpi-value">{{ (report?.totalAssemblersAmount ?? 0) | currency:'BRL' }}</span>
+        </div>
+      </div>
+
+      <!-- Total do Montador Selecionado (condicional) -->
       @if (selectedAssemblerId) {
         <div class="kpi-card kpi-card--montador">
           <div class="kpi-body">
@@ -111,7 +123,7 @@
               <i class="pi pi-user kpi-icon"></i>
               <div class="kpi-info">
                 <span class="kpi-label">Total do Montador Selecionado</span>
-                <span class="kpi-sublabel">Soma da parte proporcional nas execuções</span>
+                <span class="kpi-sublabel">Parte proporcional nas manutenções listadas</span>
               </div>
             </div>
             <span class="kpi-value">{{ (report?.totalAssemblerAmount ?? 0) | currency:'BRL' }}</span>
@@ -127,32 +139,41 @@
       [size]="'large'"
       [scrollable]="true"
       scrollHeight="calc(100vh - 25rem)"
-      [value]="executions"
+      [value]="maintenances"
       [loading]="loading"
-      [tableStyle]="{ 'min-width': '55rem', 'table-layout': 'fixed' }"
-      dataKey="id"
+      [tableStyle]="{ 'min-width': '80rem', 'table-layout': 'fixed' }"
+      dataKey="code"
     >
 
       <!-- Cabeçalho -->
       <ng-template #header>
         <tr>
-          <th pSortableColumn="executionDate" style="width: 9rem">
-            <div class="column-header">Data <p-sortIcon field="executionDate" /></div>
+          <th pSortableColumn="executionDate" style="width: 11rem">
+            <div class="column-header">Data Execução <p-sortIcon field="executionDate" /></div>
           </th>
-          <th pSortableColumn="totalAmount" style="width: 12rem">
+          <th pSortableColumn="type" style="width: 8rem">
+            <div class="column-header">Tipo <p-sortIcon field="type" /></div>
+          </th>
+          <th pSortableColumn="totalAmount" style="width: 10rem">
             <div class="column-header">Valor Total <p-sortIcon field="totalAmount" /></div>
           </th>
-          <th pSortableColumn="splitAmount" style="width: 14rem">
-            <div class="column-header">Valor por Montador <p-sortIcon field="splitAmount" /></div>
+          <th pSortableColumn="laborAmount" style="width: 10rem">
+            <div class="column-header">Mão de Obra <p-sortIcon field="laborAmount" /></div>
           </th>
-          <th style="width: 6rem; text-align: center">
-            <div class="column-header" style="justify-content: center">Qtd.</div>
+          <th pSortableColumn="assemblersTotalAmount" style="width: 12rem">
+            <div class="column-header">Val. Montadores <p-sortIcon field="assemblersTotalAmount" /></div>
           </th>
+          <th pSortableColumn="amountPerAssembler" style="width: 13rem">
+              <div class="column-header">Val. por Montador <p-sortIcon field="amountPerAssembler" /></div>
+            </th>
+            <th style="width: 5rem; text-align: center">
+                <div class="column-header" style="justify-content: center">Qtd.</div>
+            </th>
           <th style="width: auto">
             <div class="column-header">Montadores</div>
           </th>
-          <th style="width: 9rem">
-            <div class="column-header">Código OS</div>
+          <th style="width: 12rem">
+            <div class="column-header">Cód. Manutenção</div>
           </th>
         </tr>
       </ng-template>
@@ -161,13 +182,21 @@
       <ng-template #body let-item>
         <tr>
           <td>{{ item.executionDate | date:'dd/MM/yyyy' }}</td>
-          <td>{{ item.totalAmount | currency:'BRL' }}</td>
-          <td>{{ item.splitAmount | currency:'BRL' }}</td>
+          <td>
+            <p-tag
+              [value]="getTypeLabel(item.type)"
+              [severity]="getTypeSeverity(item.type)"
+            />
+          </td>
+          <td>{{ item.type !== 'WARRANTY' ? (item.totalAmount | currency:'BRL') : '' }}</td>
+          <td>{{ item.type !== 'WARRANTY' ? (item.laborAmount | currency:'BRL') : '' }}</td>
+          <td>{{ item.type !== 'WARRANTY' ? (item.assemblersTotalAmount | currency:'BRL') : '' }}</td>
+          <td>{{ item.type !== 'WARRANTY' ? (item.amountPerAssembler | currency:'BRL') : '' }}</td>
           <td style="text-align: center">{{ item.assemblerCount }}</td>
           <td>{{ item.assemblers }}</td>
           <td>
-            <span class="os-code-link" (click)="navigateToOrder(item.osCode)">
-              {{ item.osCode }}
+            <span class="maint-code-link" (click)="navigateToMaintenance(item.code)">
+              {{ item.code }}
             </span>
           </td>
         </tr>
@@ -176,7 +205,7 @@
       <!-- Vazio -->
       <ng-template #emptymessage>
         <tr style="height: 60px;">
-          <td colspan="6" class="empty-message">Nenhuma execução encontrada para o período.</td>
+          <td colspan="9" class="empty-message">Nenhuma manutenção executada encontrada para o período.</td>
         </tr>
       </ng-template>
 
