@@ -19,6 +19,7 @@ import { SelectModule } from 'primeng/select';
 import { ErrorMessageComponent } from '../components/error-message/error-message';
 import { MultiInputComponent } from '../components/multi-input/multi-input';
 import { HasRoleDirective } from '../directives/has-role.directive';
+import { DialogKeyboardDirective } from '../directives/dialog-keyboard.directive';
 import { TooltipModule } from 'primeng/tooltip';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SelectButtonModule } from 'primeng/selectbutton';
@@ -40,6 +41,7 @@ export const SHARED_CRUD_IMPORTS = [
   TableModule,
   TagModule,
   Dialog,
+  DialogKeyboardDirective,
   ToggleSwitch,
   SelectModule,
   SelectButtonModule,

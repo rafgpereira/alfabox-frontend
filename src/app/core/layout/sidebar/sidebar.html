@@ -1,4 +1,4 @@
-<aside class="sidebar-container" [class.expanded]="isExpanded">
+<aside class="sidebar-container" [class.expanded]="isExpanded" [attr.inert]="!isExpanded ? '' : null">
     <p>Menu</p>
-    <p-panelmenu [model]="items" ></p-panelmenu>
+    <p-panelmenu [model]="items"></p-panelmenu>
 </aside>
