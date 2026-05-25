@@ -88,6 +88,11 @@ export class Sidebar implements OnInit {
             icon: 'pi pi-fw pi-dollar',
             routerLink: '/relatorios/pagamentos',
           },
+          {
+            label: 'Vendas',
+            icon: 'pi pi-fw pi-shopping-cart',
+            routerLink: '/relatorios/vendas',
+          },
         ],
       },
     ];

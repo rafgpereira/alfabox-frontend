@@ -1,0 +1,412 @@
+<div class="page">
+
+  <!-- ═══ Título ═══ -->
+  <div class="title">
+    <h1><span>|</span> Vendas</h1>
+  </div>
+
+  <!-- ═══ Card Principal ═══ -->
+  <div class="card">
+
+    <h3><span><i class="pi pi-list"></i></span> Registros do Período</h3>
+
+    <!-- ── Toolbar de Filtros de Data ── -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="month_picker"
+            [(ngModel)]="selectedMonth"
+            (ngModelChange)="onMonthSelect($event)"
+            view="month"
+            dateFormat="MM/yy"
+            [readonlyInput]="true"
+            showIcon
+            iconDisplay="input"
+            appendTo="body"
+            [inputStyle]="{ width: '12rem' }"
+          />
+          <label for="month_picker">Mês</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="start_date"
+            [(ngModel)]="startDate"
+            (ngModelChange)="onStartDateChange($event)"
+            dateFormat="dd/mm/yy"
+            showIcon
+            iconDisplay="input"
+            [readonlyInput]="true"
+            appendTo="body"
+            [inputStyle]="{ width: '10rem' }"
+          />
+          <label for="start_date">Início</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="end_date"
+            [(ngModel)]="endDate"
+            (ngModelChange)="onEndDateChange($event)"
+            dateFormat="dd/mm/yy"
+            showIcon
+            iconDisplay="input"
+            [readonlyInput]="true"
+            appendTo="body"
+            [inputStyle]="{ width: '10rem' }"
+          />
+          <label for="end_date">Fim</label>
+        </p-floatlabel>
+
+      </div>
+    </div>
+
+    <!-- ── KPIs + Gráficos ── -->
+    @if (loading || !report || report.list.length > 0) {
+
+      <!-- KPIs -->
+      <div class="kpi-section">
+
+        <!-- Total Vendido (largura completa) -->
+        <div class="kpi-card kpi-card--total">
+          <div class="kpi-body">
+            <div class="kpi-left">
+              <i class="pi pi-wallet kpi-icon"></i>
+              <div class="kpi-info">
+                <span class="kpi-label">Total Vendido</span>
+                <span class="kpi-count">
+                  {{ (report?.kpis?.os?.count ?? 0) + (report?.kpis?.maintenanceNormal?.count ?? 0) }}
+                  {{ ((report?.kpis?.os?.count ?? 0) + (report?.kpis?.maintenanceNormal?.count ?? 0)) === 1 ? 'venda' : 'vendas' }}
+                </span>
+              </div>
+            </div>
+            <span class="kpi-value">{{ (report?.kpis?.totalAmount ?? 0) | currency:'BRL' }}</span>
+          </div>
+        </div>
+
+        <!-- Linha: OS + Manutenção Padrão -->
+        <div class="kpi-row">
+
+          <div class="kpi-card kpi-card--os">
+            <div class="kpi-body">
+              <div class="kpi-left">
+                <i class="pi pi-briefcase kpi-icon"></i>
+                <div class="kpi-info">
+                  <span class="kpi-label">Ordens de Serviço</span>
+                  <span class="kpi-count">
+                    {{ (report?.kpis?.os?.count ?? 0) }}
+                    {{ (report?.kpis?.os?.count === 1) ? 'ordem' : 'ordens' }}
+                  </span>
+                </div>
+              </div>
+              <div class="kpi-right-rich">
+                <span class="kpi-value">{{ (report?.kpis?.os?.amount ?? 0) | currency:'BRL' }}</span>
+                <span class="kpi-avg">Ticket médio: {{ (report?.kpis?.os?.avg ?? 0) | currency:'BRL' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-card--manut">
+            <div class="kpi-body">
+              <div class="kpi-left">
+                <i class="pi pi-wrench kpi-icon"></i>
+                <div class="kpi-info">
+                  <span class="kpi-label">Manutenções</span>
+                  <span class="kpi-count">
+                    {{ (report?.kpis?.maintenanceNormal?.count ?? 0) }}
+                    {{ (report?.kpis?.maintenanceNormal?.count === 1) ? 'manutenção' : 'manutenções' }}
+                  </span>
+                </div>
+              </div>
+              <div class="kpi-right-rich">
+                <span class="kpi-value">{{ (report?.kpis?.maintenanceNormal?.amount ?? 0) | currency:'BRL' }}</span>
+                <span class="kpi-avg">Ticket médio: {{ (report?.kpis?.maintenanceNormal?.avg ?? 0) | currency:'BRL' }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Garantia (menor destaque) -->
+        <div class="kpi-card kpi-card--garantia">
+          <div class="kpi-body">
+            <div class="kpi-left">
+              <i class="pi pi-shield kpi-icon"></i>
+              <div class="kpi-info">
+                <span class="kpi-label">Manutenções de Garantia</span>
+                <span class="kpi-count">Acionamentos no período</span>
+              </div>
+            </div>
+            <span class="kpi-value kpi-value--count">{{ report?.kpis?.maintenanceWarranty?.count ?? 0 }}</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Dois gráficos de rosca lado a lado -->
+      <div class="dual-chart-row">
+
+        <div class="chart-section">
+          <div class="chart-title">Distribuição de Receita</div>
+          @if (revenueChartData) {
+            <p-chart
+              type="doughnut"
+              [data]="revenueChartData"
+              [options]="revenueChartOptions"
+              class="chart-container"
+            />
+          } @else {
+            <div class="chart-empty">Sem dados no período</div>
+          }
+        </div>
+
+        <div class="chart-section">
+          <div class="chart-title">Distribuição de Volume</div>
+          @if (volumeChartData) {
+            <p-chart
+              type="doughnut"
+              [data]="volumeChartData"
+              [options]="volumeChartOptions"
+              class="chart-container"
+            />
+          } @else {
+            <div class="chart-empty">Sem dados no período</div>
+          }
+        </div>
+
+      </div>
+
+    } @else {
+      <div class="empty-state">
+        <i class="pi pi-inbox"></i>
+        <span>Nenhuma venda encontrada para os filtros selecionados.</span>
+      </div>
+    }
+
+    <!-- ── Tabela ── -->
+    <p-table
+      stripedRows
+      [size]="'large'"
+      [scrollable]="true"
+      scrollHeight="380px"
+      [value]="list"
+      [loading]="loading"
+      [tableStyle]="{ 'table-layout': 'auto' }"
+      dataKey="id"
+    >
+
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="date">
+            <div class="column-header">Data <p-sortIcon field="date" /></div>
+          </th>
+          <th pSortableColumn="type">
+            <div class="column-header">Tipo <p-sortIcon field="type" /></div>
+          </th>
+          <th pSortableColumn="amount">
+            <div class="column-header">Valor <p-sortIcon field="amount" /></div>
+          </th>
+          <th pSortableColumn="clientName">
+            <div class="column-header">Cliente <p-sortIcon field="clientName" /></div>
+          </th>
+          <th>
+            <div class="column-header">Código</div>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-item>
+        <tr>
+          <td>{{ item.date | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <p-tag
+              [value]="getTypeLabel(item.type)"
+              [severity]="getTypeSeverity(item.type)"
+            />
+          </td>
+          <td>
+            @if (item.type !== 'MAINTENANCE_WARRANTY') {
+              {{ item.amount | currency:'BRL' }}
+            }
+          </td>
+          <td>{{ item.clientName }}</td>
+          <td>
+            <span class="code-link" (click)="navigateToItem(item)">
+              {{ item.code }}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr style="height: 60px;">
+          <td colspan="5" class="empty-message">Nenhuma venda encontrada para o período.</td>
+        </tr>
+      </ng-template>
+
+    </p-table>
+
+  </div>
+
+  <!-- ═══ Card: Distribuição por Dia ═══ -->
+  <div class="card">
+
+    <h3><span><i class="pi pi-calendar-times"></i></span> Distribuição por Dia</h3>
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="daily_month_picker"
+            [(ngModel)]="dailySelectedMonth"
+            (ngModelChange)="onDailyMonthSelect($event)"
+            view="month"
+            dateFormat="MM/yy"
+            [readonlyInput]="true"
+            showIcon
+            iconDisplay="input"
+            appendTo="body"
+            [inputStyle]="{ width: '12rem' }"
+          />
+          <label for="daily_month_picker">Mês</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="daily_start_date"
+            [(ngModel)]="dailyStartDate"
+            (ngModelChange)="onDailyStartDateChange($event)"
+            dateFormat="dd/mm/yy"
+            showIcon
+            iconDisplay="input"
+            [readonlyInput]="true"
+            appendTo="body"
+            [inputStyle]="{ width: '10rem' }"
+          />
+          <label for="daily_start_date">Início</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="daily_end_date"
+            [(ngModel)]="dailyEndDate"
+            (ngModelChange)="onDailyEndDateChange($event)"
+            dateFormat="dd/mm/yy"
+            showIcon
+            iconDisplay="input"
+            [readonlyInput]="true"
+            appendTo="body"
+            [inputStyle]="{ width: '10rem' }"
+          />
+          <label for="daily_end_date">Fim</label>
+        </p-floatlabel>
+
+      </div>
+    </div>
+
+    @if (dailyBarData) {
+      <p-chart
+        type="bar"
+        [data]="dailyBarData"
+        [options]="dailyBarOptions"
+        class="bar-chart-container"
+      />
+    } @else if (dailyBarLoading) {
+      <div class="chart-loading">
+        <i class="pi pi-spin pi-spinner"></i>
+      </div>
+    } @else {
+      <div class="empty-state">
+        <i class="pi pi-inbox"></i>
+        <span>Nenhuma venda encontrada para o período selecionado.</span>
+      </div>
+    }
+
+  </div>
+
+  <!-- ═══ Card: Distribuição por Mês ═══ -->
+  <div class="card">
+
+    <h3><span><i class="pi pi-chart-bar"></i></span> Distribuição por Mês</h3>
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="monthly_year_picker"
+            [(ngModel)]="monthlySelectedYear"
+            (ngModelChange)="onMonthlyYearSelect($event)"
+            view="year"
+            dateFormat="yy"
+            [readonlyInput]="true"
+            showIcon
+            iconDisplay="input"
+            appendTo="body"
+            [inputStyle]="{ width: '12rem' }"
+          />
+          <label for="monthly_year_picker">Ano</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="monthly_start_month"
+            [(ngModel)]="monthlyStartMonth"
+            (ngModelChange)="onMonthlyStartMonthChange($event)"
+            view="month"
+            dateFormat="MM/yy"
+            [readonlyInput]="true"
+            showIcon
+            iconDisplay="input"
+            appendTo="body"
+            [maxDate]="monthlyStartMaxDate"
+            [inputStyle]="{ width: '11.5rem' }"
+          />
+          <label for="monthly_start_month">Início</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on">
+          <p-datepicker
+            inputId="monthly_end_month"
+            [(ngModel)]="monthlyEndMonth"
+            (ngModelChange)="onMonthlyEndMonthChange($event)"
+            view="month"
+            dateFormat="MM/yy"
+            [readonlyInput]="true"
+            showIcon
+            iconDisplay="input"
+            appendTo="body"
+            [minDate]="monthlyEndMinDate"
+            [inputStyle]="{ width: '11.5rem' }"
+          />
+          <label for="monthly_end_month">Fim</label>
+        </p-floatlabel>
+
+      </div>
+    </div>
+
+    @if (monthlyBarData) {
+      <p-chart
+        type="bar"
+        [data]="monthlyBarData"
+        [options]="monthlyBarOptions"
+        class="bar-chart-container"
+      />
+    } @else if (monthlyBarLoading) {
+      <div class="chart-loading">
+        <i class="pi pi-spin pi-spinner"></i>
+      </div>
+    } @else {
+      <div class="empty-state">
+        <i class="pi pi-inbox"></i>
+        <span>Nenhuma venda encontrada para o período selecionado.</span>
+      </div>
+    }
+
+  </div>
+
+</div>
+

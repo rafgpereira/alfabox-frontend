@@ -28,4 +28,8 @@ export const REPORTS_ROUTES: Routes = [
     path: 'pagamentos',
     loadComponent: () => import('./payments/payments').then((m) => m.Payments),
   },
+  {
+    path: 'vendas',
+    loadComponent: () => import('./sales/sales').then((m) => m.Sales),
+  },
 ];

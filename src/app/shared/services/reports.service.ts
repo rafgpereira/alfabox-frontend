@@ -131,6 +131,32 @@ export class ReportsService {
       params,
     });
   }
+
+  getSalesReport(filters: SalesReportFilter): Observable<SalesReportResponse> {
+    const params = new HttpParams()
+      .set('startDate', filters.startDate)
+      .set('endDate', filters.endDate);
+    return this.http.get<SalesReportResponse>(`${this.baseUrl}/sales`, { params });
+  }
+
+  getSalesChartDaily(filters: SalesReportFilter): Observable<SalesChartResponse> {
+    const params = new HttpParams()
+      .set('startDate', filters.startDate)
+      .set('endDate', filters.endDate);
+    return this.http.get<SalesChartResponse>(`${this.baseUrl}/sales/charts/daily`, { params });
+  }
+
+  getSalesChartMonthly(filters: SalesReportFilter): Observable<SalesChartResponse> {
+    const params = new HttpParams()
+      .set('startDate', filters.startDate)
+      .set('endDate', filters.endDate);
+    return this.http.get<SalesChartResponse>(`${this.baseUrl}/sales/charts/monthly`, { params });
+  }
+}
+
+export interface SalesChartResponse {
+  labels: string[];
+  datasets: Array<{ label: string; data: number[] }>;
 }
 
 export interface OrderReportItem {
@@ -216,4 +242,51 @@ export interface PaymentsChartYearlyFilter {
   year: number;
   origin?: PaymentOrigin;
   paymentMethod?: PaymentMethod;
+}
+
+// ── Relatório de Vendas ───────────────────────────────────────────────
+
+export type SaleType = 'OS' | 'MAINTENANCE_NORMAL' | 'MAINTENANCE_WARRANTY';
+
+export interface SalesReportFilter {
+  startDate: string;
+  endDate: string;
+}
+
+export interface SaleKpiMetric {
+  amount: number;
+  count: number;
+  avg: number;
+}
+
+export interface SalesKpis {
+  totalAmount: number;
+  os: SaleKpiMetric;
+  maintenanceNormal: SaleKpiMetric;
+  maintenanceWarranty: { count: number };
+}
+
+export interface SalesDoughnutChart {
+  labels: string[];
+  datasets: Array<{ data: number[] }>;
+}
+
+export interface SalesCharts {
+  revenueDoughnut: SalesDoughnutChart;
+  volumeDoughnut: SalesDoughnutChart;
+}
+
+export interface SaleListItem {
+  id: string;
+  date: string;
+  type: SaleType;
+  amount: number;
+  clientName: string;
+  code: string;
+}
+
+export interface SalesReportResponse {
+  kpis: SalesKpis;
+  charts: SalesCharts;
+  list: SaleListItem[];
 }

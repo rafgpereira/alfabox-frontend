@@ -269,6 +269,13 @@ export class Payments implements OnInit {
                 style: 'currency',
                 currency: 'BRL',
               }).format(ctx.raw)}`,
+            footer: (items: Array<{ raw: number }>) => {
+              const total = items.reduce((sum, item) => sum + Number(item.raw), 0);
+              return `Total: ${new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+              }).format(total)}`;
+            },
           },
         },
       },
@@ -285,7 +292,14 @@ export class Payments implements OnInit {
             callback: (value: number | string) => {
               const n = Number(value);
               if (n === 0) return 'R$ 0';
-              if (n >= 1000) return `R$ ${(n / 1000).toFixed(0)}k`;
+              if (n >= 1_000_000) {
+                const m = n / 1_000_000;
+                return `R$ ${m % 1 === 0 ? m.toFixed(0) : m.toFixed(1)}M`;
+              }
+              if (n >= 1000) {
+                const k = n / 1000;
+                return `R$ ${k % 1 === 0 ? k.toFixed(0) : k.toFixed(1)}k`;
+              }
               return `R$ ${n.toFixed(0)}`;
             },
           },
