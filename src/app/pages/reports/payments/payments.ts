@@ -64,13 +64,21 @@ export class Payments implements OnInit {
 
   // ── Gráficos de barras (cards 2 e 3) ──────────────────────────────
 
-  // Filtros próprios de cada card
-  chartMonth: Date = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-  chartYear: Date = new Date(new Date().getFullYear(), 0, 1);
+  // Card 2: Distribuição por Dia
+  dailyChartStartDate: Date | null = null;
+  dailyChartEndDate: Date | null = null;
+  dailyChartSelectedMonth: Date | null = null;
 
   monthlyBarData: object | null = null;
   monthlyBarOptions: object | null = null;
   monthlyBarLoading = false;
+
+  // Card 3: Distribuição por Mês
+  yearlyChartStartMonth: Date | null = null;
+  yearlyChartEndMonth: Date | null = null;
+  yearlyChartSelectedYear: Date | null = null;
+  yearlyChartStartMaxDate: Date | null = null;
+  yearlyChartEndMinDate: Date | null = null;
 
   yearlyBarData: object | null = null;
   yearlyBarOptions: object | null = null;
@@ -82,8 +90,8 @@ export class Payments implements OnInit {
     this.initChartOptions();
     this.initBarChartOptions();
     this.loadCurrentMonth();
-    this.loadMonthlyChart();
-    this.loadYearlyChart();
+    this.initDailyChart();
+    this.initYearlyChart();
   }
 
   // ── Carregamento ──────────────────────────────────────────────────────
@@ -194,7 +202,7 @@ export class Payments implements OnInit {
 
   onGlobalFilterChange(): void {
     this.load();
-    this.loadMonthlyChart();
+    this.loadDailyChart();
     this.loadYearlyChart();
   }
 
@@ -312,9 +320,7 @@ export class Payments implements OnInit {
     this.yearlyBarOptions = { ...options };
   }
 
-  private buildBarChartData(res: PaymentsChartResponse): object | null {
-    if (res.datasets.length === 0) return null;
-
+  private buildBarChartData(res: PaymentsChartResponse): object {
     const style = getComputedStyle(document.documentElement);
     const colorMap: Record<string, string> = {
       Pix: style.getPropertyValue('--p-cyan-500').trim(),
@@ -335,15 +341,13 @@ export class Payments implements OnInit {
   }
 
   private loadMonthlyChart(): void {
-    if (!this.chartMonth) return;
+    if (!this.dailyChartStartDate || !this.dailyChartEndDate) return;
     this.monthlyBarLoading = true;
-    const year = this.chartMonth.getFullYear();
-    const month = this.chartMonth.getMonth() + 1;
 
     this.reportsService
       .getPaymentsChartMonthly({
-        year,
-        month,
+        startDate: toApiDate(this.dailyChartStartDate),
+        endDate: toApiDate(this.dailyChartEndDate),
         origin: this.selectedOrigin ?? undefined,
         paymentMethod: this.selectedMethod ?? undefined,
       })
@@ -359,14 +363,25 @@ export class Payments implements OnInit {
       });
   }
 
+  // Alias para método chamado por onGlobalFilterChange
+  private loadDailyChart(): void {
+    this.loadMonthlyChart();
+  }
+
   private loadYearlyChart(): void {
-    if (!this.chartYear) return;
+    if (!this.yearlyChartStartMonth || !this.yearlyChartEndMonth) return;
     this.yearlyBarLoading = true;
-    const year = this.chartYear.getFullYear();
+
+    const endDate = new Date(
+      this.yearlyChartEndMonth.getFullYear(),
+      this.yearlyChartEndMonth.getMonth() + 1,
+      0,
+    );
 
     this.reportsService
       .getPaymentsChartYearly({
-        year,
+        startDate: toApiDate(this.yearlyChartStartMonth),
+        endDate: toApiDate(endDate),
         origin: this.selectedOrigin ?? undefined,
         paymentMethod: this.selectedMethod ?? undefined,
       })
@@ -382,12 +397,106 @@ export class Payments implements OnInit {
       });
   }
 
-  onChartMonthChange(): void {
+  // ── Card 2: handlers do gráfico diário ─────────────────────────────────
+
+  private initDailyChart(): void {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const thirtyDaysAgo = new Date(today);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    this.dailyChartEndDate = today;
+    this.dailyChartStartDate = thirtyDaysAgo;
+    this.dailyChartSelectedMonth = null;
     this.loadMonthlyChart();
   }
 
-  onChartYearChange(): void {
+  applyDailyChartMonth(ref: Date): void {
+    const start = new Date(ref.getFullYear(), ref.getMonth(), 1);
+    const end = new Date(ref.getFullYear(), ref.getMonth() + 1, 0);
+    this.dailyChartStartDate = start;
+    this.dailyChartEndDate = end;
+    this.dailyChartSelectedMonth = start;
+    this.loadMonthlyChart();
+  }
+
+  onDailyChartMonthSelect(date: Date): void {
+    if (!date) return;
+    this.applyDailyChartMonth(date);
+  }
+
+  onDailyChartStartDateChange(date: Date | null): void {
+    this.dailyChartStartDate = date;
+    this.dailyChartSelectedMonth = this.resolveSelectedDailyChartMonth();
+    if (this.dailyChartStartDate && this.dailyChartEndDate) this.loadMonthlyChart();
+  }
+
+  onDailyChartEndDateChange(date: Date | null): void {
+    this.dailyChartEndDate = date;
+    this.dailyChartSelectedMonth = this.resolveSelectedDailyChartMonth();
+    if (this.dailyChartStartDate && this.dailyChartEndDate) this.loadMonthlyChart();
+  }
+
+  private resolveSelectedDailyChartMonth(): Date | null {
+    const s = this.dailyChartStartDate;
+    const e = this.dailyChartEndDate;
+    if (!s || !e) return null;
+    const firstDay = new Date(s.getFullYear(), s.getMonth(), 1);
+    const lastDay = new Date(s.getFullYear(), s.getMonth() + 1, 0);
+    const isFullMonth = s.getTime() === firstDay.getTime() && e.getTime() === lastDay.getTime();
+    return isFullMonth ? firstDay : null;
+  }
+
+  // ── Card 3: handlers do gráfico mensal ────────────────────────────────
+
+  private initYearlyChart(): void {
+    const now = new Date();
+    this.yearlyChartEndMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    this.yearlyChartStartMonth = new Date(now.getFullYear() - 1, now.getMonth(), 1);
+    this.yearlyChartSelectedYear = null;
+    this.updateYearlyChartConstraints();
     this.loadYearlyChart();
+  }
+
+  private updateYearlyChartConstraints(): void {
+    this.yearlyChartStartMaxDate = this.yearlyChartEndMonth;
+    this.yearlyChartEndMinDate = this.yearlyChartStartMonth;
+  }
+
+  applyYearlyChartYear(ref: Date): void {
+    this.yearlyChartStartMonth = new Date(ref.getFullYear(), 0, 1);
+    this.yearlyChartEndMonth = new Date(ref.getFullYear(), 11, 1);
+    this.yearlyChartSelectedYear = new Date(ref.getFullYear(), 0, 1);
+    this.updateYearlyChartConstraints();
+    this.loadYearlyChart();
+  }
+
+  onYearlyChartYearSelect(date: Date): void {
+    if (!date) return;
+    this.applyYearlyChartYear(date);
+  }
+
+  onYearlyChartStartMonthChange(date: Date | null): void {
+    this.yearlyChartStartMonth = date;
+    this.yearlyChartSelectedYear = this.resolveSelectedYearlyChartYear();
+    this.updateYearlyChartConstraints();
+    if (this.yearlyChartStartMonth && this.yearlyChartEndMonth) this.loadYearlyChart();
+  }
+
+  onYearlyChartEndMonthChange(date: Date | null): void {
+    this.yearlyChartEndMonth = date;
+    this.yearlyChartSelectedYear = this.resolveSelectedYearlyChartYear();
+    this.updateYearlyChartConstraints();
+    if (this.yearlyChartStartMonth && this.yearlyChartEndMonth) this.loadYearlyChart();
+  }
+
+  private resolveSelectedYearlyChartYear(): Date | null {
+    const s = this.yearlyChartStartMonth;
+    const e = this.yearlyChartEndMonth;
+    if (!s || !e) return null;
+    const isJan = s.getMonth() === 0;
+    const isDec = e.getMonth() === 11;
+    const sameYear = s.getFullYear() === e.getFullYear();
+    return isJan && isDec && sameYear ? new Date(s.getFullYear(), 0, 1) : null;
   }
 
   // ── Navegação ─────────────────────────────────────────────────────────

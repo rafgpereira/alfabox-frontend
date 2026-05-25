@@ -110,8 +110,8 @@ export class ReportsService {
 
   getPaymentsChartMonthly(filters: PaymentsChartMonthlyFilter): Observable<PaymentsChartResponse> {
     let params = new HttpParams()
-      .set('year', String(filters.year))
-      .set('month', String(filters.month));
+      .set('startDate', filters.startDate)
+      .set('endDate', filters.endDate);
 
     if (filters.origin) params = params.set('origin', filters.origin);
     if (filters.paymentMethod) params = params.set('paymentMethod', filters.paymentMethod);
@@ -122,7 +122,9 @@ export class ReportsService {
   }
 
   getPaymentsChartYearly(filters: PaymentsChartYearlyFilter): Observable<PaymentsChartResponse> {
-    let params = new HttpParams().set('year', String(filters.year));
+    let params = new HttpParams()
+      .set('startDate', filters.startDate)
+      .set('endDate', filters.endDate);
 
     if (filters.origin) params = params.set('origin', filters.origin);
     if (filters.paymentMethod) params = params.set('paymentMethod', filters.paymentMethod);
@@ -232,14 +234,15 @@ export interface PaymentsChartResponse {
 }
 
 export interface PaymentsChartMonthlyFilter {
-  year: number;
-  month: number;
+  startDate: string;
+  endDate: string;
   origin?: PaymentOrigin;
   paymentMethod?: PaymentMethod;
 }
 
 export interface PaymentsChartYearlyFilter {
-  year: number;
+  startDate: string;
+  endDate: string;
   origin?: PaymentOrigin;
   paymentMethod?: PaymentMethod;
 }
