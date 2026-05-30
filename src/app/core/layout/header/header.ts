@@ -18,6 +18,10 @@ export class Header {
     return this.authService.getUser()?.name ?? '';
   }
 
+  get firstUserName(): string {
+    return this.userName.split(' ')[0];
+  }
+
   onToggleSidebar() {
     this.toggleSidebar.emit();
   }

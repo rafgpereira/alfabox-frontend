@@ -37,3 +37,26 @@ header {
   font-size: 1rem;
   font-weight: 600;
 }
+
+.first-name {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  header {
+    font-size: 17px;
+  }
+
+  .logo {
+    width: 19px;
+  }
+
+  .full-name {
+    display: none;
+  }
+
+  .first-name {
+    display: inline;
+    font-size: 0.875rem;
+  }
+}

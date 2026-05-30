@@ -25,6 +25,13 @@ p {
   border-right: 1px solid var(--p-surface-200); /* Opcional: divisória visual */
 }
 
+/* Mobile: sombra lateral para destacar o sidebar sobreposto */
+@media (max-width: 768px) {
+  .sidebar-container.expanded {
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
 /* 1. Remove o gap nativo do container raiz (o causador do espaço entre os painéis) */
 ::ng-deep .p-panelmenu {
   display: flex !important;

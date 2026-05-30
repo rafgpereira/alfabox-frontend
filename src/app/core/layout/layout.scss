@@ -19,6 +19,21 @@ app-header {
   overflow: hidden;
 }
 
+/* ── Mobile: sidebar sobreposta (não empurra o conteúdo) ───────────── */
+@media (max-width: 768px) {
+  .main-container {
+    position: relative; /* âncora para o absolute do sidebar */
+  }
+
+  app-sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 50; /* acima do conteúdo, abaixo do header */
+  }
+}
+
 /* A área de conteúdo principal */
 .content-container {
   flex: 1; /* Ocupa toda a largura que o sidebar não estiver usando */
