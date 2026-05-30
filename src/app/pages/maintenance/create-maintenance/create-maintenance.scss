@@ -250,3 +250,15 @@ h1, h2, h3 {
   margin: 0;
   justify-content: flex-end;
 }
+
+.type-banner__label--short { display: none; }
+
+// ── Responsivo (mobile) ──────────────────────────────────────────────────
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .type-banner__label--full  { display: none; }
+  .type-banner__label--short { display: inline; }
+}
