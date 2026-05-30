@@ -66,3 +66,22 @@ p-divider {
   justify-content: flex-end;
   gap: 0.75rem;
 }
+
+.items-scroll {
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  :host ::ng-deep .p-dialog {
+    max-width: calc(100vw - 2rem);
+    width: calc(100vw - 2rem) !important;
+  }
+
+  :host ::ng-deep .p-dialog-content {
+    overflow-x: hidden;
+  }
+
+  .bottom-row {
+    flex-direction: column;
+  }
+}

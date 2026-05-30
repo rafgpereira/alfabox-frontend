@@ -227,8 +227,7 @@ h1, h2, h3 {
   }
 }
 
-// ── Responsivo ───────────────────────────────────────────────────────────
-
+// ── Responsivo (mobile) ───────────────────────────────────────────────
 @media (max-width: 48rem) {
   .selected-client {
     flex-direction: column;
@@ -237,6 +236,16 @@ h1, h2, h3 {
 
   .edit-person-doc-row {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .card--items {
+    overflow-x: auto;
   }
 }
 

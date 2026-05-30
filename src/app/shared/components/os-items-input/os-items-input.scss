@@ -61,12 +61,20 @@
 
 .os-item-field--product {
   flex: 1;
+  min-width: 12rem;
 }
 
 .os-item-field--details {
   flex: 2;
+  min-width: 9rem;
 }
 
 .os-item-field--amount {
   flex: 0 0 10rem;
+}
+
+@media (max-width: 768px) {
+  .os-items-container {
+    min-width: 44rem;
+  }
 }

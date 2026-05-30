@@ -24,10 +24,12 @@
     </div>
 
     <!-- Componente de itens -->
-    <app-os-items-input
-      [formControl]="$any(form.controls.items)"
-      scrollHeight="284px"
-    />
+    <div class="items-scroll">
+      <app-os-items-input
+        [formControl]="$any(form.controls.items)"
+        scrollHeight="284px"
+      />
+    </div>
 
     <p-divider></p-divider>
 
