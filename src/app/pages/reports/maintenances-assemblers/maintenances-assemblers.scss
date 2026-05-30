@@ -139,3 +139,27 @@ h1, h2, h3 {
   color: var(--p-text-muted-color);
   padding: 2rem 0;
 }
+
+// ── Mobile ────────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+  h1 { font-size: 1.1rem; }
+
+  .toolbar-separator { display: none; }
+
+  .kpi-grid { grid-template-columns: 1fr; }
+
+  .kpi-card {
+    padding: 0.85rem 1rem;
+
+    .kpi-body { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+    .kpi-label { font-size: 0.68rem; }
+    .kpi-sublabel { font-size: 0.62rem; }
+    .kpi-icon { font-size: 1.1rem; }
+    .kpi-value { font-size: 1.3rem; white-space: normal; }
+  }
+
+  :host ::ng-deep .p-datatable-table-container { overflow-x: auto; }
+
+  :host ::ng-deep .p-datatable-thead th,
+  :host ::ng-deep .p-datatable-tbody td { white-space: nowrap; }
+}
